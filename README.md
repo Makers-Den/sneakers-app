@@ -15,12 +15,12 @@ yarn install
 Android Emulator:
 
 ```sh
-yarn start:ios
+yarn start:android
 ```
 
 iOS Simulator:
 ```sh
-yarn start:android
+yarn start:ios
 ```
 
 ## Useful URLs
