@@ -26,3 +26,4 @@ yarn start:android
 
 - [GitHub](https://github.com/Makers-Den/sneakers-app)
 - [Asana](https://app.asana.com/0/1205906532682422/board)
+- [Shopify Store](https://admin.shopify.com/store/sneakers-app-store)
