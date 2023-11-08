@@ -10,11 +10,15 @@ export function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={Screen.ProductList}>
-        <Stack.Screen name={Screen.ProductList} component={ProductListScreen} />
+        <Stack.Screen
+          name={Screen.ProductList}
+          component={ProductListScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name={Screen.ProductDetails}
           component={ProductDetailsScreen}
-          options={{ animation: "slide_from_bottom" }}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
