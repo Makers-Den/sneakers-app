@@ -18,7 +18,7 @@ Android Emulator:
 yarn start:ios
 ```
 
-iOS Simulator
+iOS Simulator:
 ```sh
 yarn start:android
 ```
