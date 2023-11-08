@@ -12,12 +12,13 @@ yarn install
 
 3. Start the app:
 
+Android Emulator:
+
 ```sh
 yarn start:ios
 ```
 
-or
-
+iOS Simulator
 ```sh
 yarn start:android
 ```
