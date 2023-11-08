@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5047a071-227e-4102-a30b-b89c86ef709b"
+      }
+    },
+    "owner": "makers-den"
   }
 }
