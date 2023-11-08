@@ -28,4 +28,5 @@ yarn start:android
 - [Asana](https://app.asana.com/0/1205906532682422/board)
 - [Shopify Store](https://admin.shopify.com/store/makers-sneakers/)
 - [Expo](https://expo.dev/accounts/makers-den/projects/sneakers-app)
+- [Figma](https://www.figma.com/file/bHwPCoH6JkSKMX4CQGk7D0/MakerSneakers?type=design&node-id=0%3A1&mode=design&t=LWR79xHmBxtVUJbh-1)
 - [Inspired By](https://www.nike.com/snkrs-app)
