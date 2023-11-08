@@ -28,3 +28,4 @@ yarn start:android
 - [Asana](https://app.asana.com/0/1205906532682422/board)
 - [Shopify Store](https://admin.shopify.com/store/sneakers-app-store)
 - [Expo](https://expo.dev/accounts/makers-den/projects/sneakers-app)
+- [Inspired By](https://www.nike.com/snkrs-app)
