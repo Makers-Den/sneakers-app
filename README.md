@@ -10,7 +10,7 @@
 yarn install
 ```
 
-3. Start the app
+3. Start the app:
 
 ```sh
 yarn start:ios
