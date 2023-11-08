@@ -1,6 +1,6 @@
 # Sneakers App
 
-## Running app locally
+## Running the app locally
 
 1. Setup [iOS Simulator](https://docs.expo.dev/workflow/ios-simulator/) or [Android Studio Emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 
