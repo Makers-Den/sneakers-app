@@ -4,7 +4,7 @@ import { BaseScreenProps, Screen } from "../types/navigation";
 export function ProductDetailsScreen({ navigation }: BaseScreenProps) {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Product List Screen</Text>
+      <Text>Product Details Screen</Text>
 
       <Button
         title="Go Back"
