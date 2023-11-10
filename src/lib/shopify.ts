@@ -18,9 +18,14 @@ const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/ap
 
 const logger = createNamedLogger("Shopify");
 
+interface MakeShopifyGraphqlRequestCommand<T extends z.ZodTypeAny> {
+  query: string;
+  schema: T;
+  signal?: AbortSignal;
+}
+
 async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
-  query: string,
-  schema: T
+  command: MakeShopifyGraphqlRequestCommand<T>
 ): Promise<z.infer<T>> {
   try {
     const response = await fetch(SHOPIFY_GRAPHQL_ENDPOINT, {
@@ -31,16 +36,17 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
           envVariables.shopify.storefrontAccessToken,
       },
       body: JSON.stringify({
-        query,
+        query: command.query,
       }),
+      signal: command.signal,
     });
 
     const jsonResponse = await response.json();
-    const parsedResponse = schema.parse(jsonResponse);
+    const parsedResponse = command.schema.parse(jsonResponse);
 
     return parsedResponse;
   } catch (error) {
-    logger.error("Making shopify graphql request failed", query, error);
+    logger.error("Making shopify graphql request failed", command.query, error);
 
     throw error;
   }
@@ -48,15 +54,17 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
 
 interface GetSneakersByCollectionIdQuery {
   collectionId: string;
+  signal?: AbortSignal;
 }
 
 export async function getSneakersByCollectionId(
   query: GetSneakersByCollectionIdQuery
 ) {
-  const response = await makeShopifyGraphqlRequest(
-    getCollectionByIdQuery({ collectionId: query.collectionId }),
-    getCollectionByIdSchema
-  );
+  const response = await makeShopifyGraphqlRequest({
+    query: getCollectionByIdQuery({ collectionId: query.collectionId }),
+    schema: getCollectionByIdSchema,
+    signal: query.signal,
+  });
 
   const sneakers = response.data.collection.products.edges.map((edge) => {
     const modelVariant = edge.node.metafields.find(
@@ -115,13 +123,15 @@ export async function getSneakersByCollectionId(
 
 interface GetSneakersByIdQuery {
   sneakersId: string;
+  signal?: AbortSignal;
 }
 
 export async function getSneakersById(query: GetSneakersByIdQuery) {
-  const response = await makeShopifyGraphqlRequest(
-    getProductByIdQuery({ productId: query.sneakersId }),
-    getProductByIdSchema
-  );
+  const response = await makeShopifyGraphqlRequest({
+    query: getProductByIdQuery({ productId: query.sneakersId }),
+    schema: getProductByIdSchema,
+    signal: query.signal,
+  });
 
   const { product } = response.data;
 

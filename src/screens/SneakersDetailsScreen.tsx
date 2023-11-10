@@ -20,7 +20,7 @@ export function SneakersDetailsScreen({
   const { width } = useWindowDimensions();
   const { sneakersId } = route.params;
   const sneakersQuery = useQuery({
-    queryFn: () => getSneakersById({ sneakersId }),
+    queryFn: ({ signal }) => getSneakersById({ sneakersId, signal }),
     queryKey: queryKeys.sneakers.detail({ sneakersId }),
   });
 

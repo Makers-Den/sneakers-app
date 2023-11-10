@@ -10,9 +10,10 @@ export function SneakersListScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, Screen.SneakersList>) {
   const feedSneakersQuery = useQuery({
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.feed,
+        signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.feed,
@@ -20,9 +21,10 @@ export function SneakersListScreen({
   });
 
   const inStockSneakersQuery = useQuery({
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.inStock,
+        signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.inStock,
@@ -30,9 +32,10 @@ export function SneakersListScreen({
   });
 
   const upcomingSneakersQuery = useQuery({
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.upcoming,
+        signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.upcoming,
@@ -43,8 +46,8 @@ export function SneakersListScreen({
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Feed:</Text>
       {feedSneakersQuery.data?.map((sneakers) => (
-        <View>
-          <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View key={sneakers.id}>
+          <Text>{sneakers.model}</Text>
           <Button
             title="Go to Details"
             onPress={() => {
@@ -58,8 +61,8 @@ export function SneakersListScreen({
 
       <Text>In Stock:</Text>
       {inStockSneakersQuery.data?.map((sneakers) => (
-        <View>
-          <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View key={sneakers.id}>
+          <Text>{sneakers.model}</Text>
           <Button
             title="Go to Details"
             onPress={() => {
@@ -73,8 +76,8 @@ export function SneakersListScreen({
 
       <Text>Upcoming:</Text>
       {upcomingSneakersQuery.data?.map((sneakers) => (
-        <View>
-          <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View key={sneakers.id}>
+          <Text>{sneakers.model}</Text>
           <Button
             title="Go to Details"
             onPress={() => {
