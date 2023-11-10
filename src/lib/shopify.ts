@@ -8,15 +8,24 @@ import {
 import dayjs from "dayjs";
 import { ShopifyMetaFieldKey } from "../types/shopify";
 import { todayNoonUtc } from "./time";
+import {
+  getProductByIdQuery,
+  getProductByIdSchema,
+} from "../queries/getProductByIs";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 
 const logger = createNamedLogger("Shopify");
 
+interface MakeShopifyGraphqlRequestCommand<T extends z.ZodTypeAny> {
+  query: string;
+  schema: T;
+  signal?: AbortSignal;
+}
+
 async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
-  query: string,
-  schema: T
+  command: MakeShopifyGraphqlRequestCommand<T>
 ): Promise<z.infer<T>> {
   try {
     const response = await fetch(SHOPIFY_GRAPHQL_ENDPOINT, {
@@ -27,16 +36,17 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
           envVariables.shopify.storefrontAccessToken,
       },
       body: JSON.stringify({
-        query,
+        query: command.query,
       }),
+      signal: command.signal,
     });
 
     const jsonResponse = await response.json();
-    const parsedResponse = schema.parse(jsonResponse);
+    const parsedResponse = command.schema.parse(jsonResponse);
 
     return parsedResponse;
   } catch (error) {
-    logger.error("Making shopify graphql request failed", query, error);
+    logger.error("Making shopify graphql request failed", command.query, error);
 
     throw error;
   }
@@ -44,15 +54,17 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
 
 interface GetSneakersByCollectionIdQuery {
   collectionId: string;
+  signal?: AbortSignal;
 }
 
 export async function getSneakersByCollectionId(
   query: GetSneakersByCollectionIdQuery
 ) {
-  const response = await makeShopifyGraphqlRequest(
-    getCollectionByIdQuery({ collectionId: query.collectionId }),
-    getCollectionByIdSchema
-  );
+  const response = await makeShopifyGraphqlRequest({
+    query: getCollectionByIdQuery({ collectionId: query.collectionId }),
+    schema: getCollectionByIdSchema,
+    signal: query.signal,
+  });
 
   const sneakers = response.data.collection.products.edges.map((edge) => {
     const modelVariant = edge.node.metafields.find(
@@ -107,4 +119,71 @@ export async function getSneakersByCollectionId(
   });
 
   return sneakers;
+}
+
+interface GetSneakersByIdQuery {
+  sneakersId: string;
+  signal?: AbortSignal;
+}
+
+export async function getSneakersById(query: GetSneakersByIdQuery) {
+  const response = await makeShopifyGraphqlRequest({
+    query: getProductByIdQuery({ productId: query.sneakersId }),
+    schema: getProductByIdSchema,
+    signal: query.signal,
+  });
+
+  const { product } = response.data;
+
+  const modelVariant = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
+  );
+
+  const modelIsForMen = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelIsForMen
+  );
+
+  const modelDropOffsetDays = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelDropOffsetDays
+  );
+
+  const images = product.media.nodes.map((node) => node.previewImage.url);
+
+  const sizes = product.variants.nodes.map((node) => ({
+    id: node.id,
+    name: node.title,
+  }));
+
+  const dropsAt = modelDropOffsetDays
+    ? dayjs(todayNoonUtc())
+        .add(parseInt(modelDropOffsetDays.value, 10), "day")
+        .toDate()
+    : null;
+
+  return {
+    id: product.id,
+    model: product.title,
+    modelVariant: modelVariant?.value || null,
+    isInStock: product.availableForSale,
+    isUpcoming: !product.availableForSale,
+    isForMen: modelIsForMen?.value ? modelIsForMen.value === "true" : null,
+    descriptionHtml: product.descriptionHtml,
+    sizes,
+    sizeRange:
+      sizes.length === 0
+        ? null
+        : {
+            min: sizes[0],
+            max: sizes[sizes.length - 1],
+          },
+    dropsAt,
+    images,
+    price: {
+      amount: product.priceRange.maxVariantPrice.amount,
+      currencyCode: product.priceRange.maxVariantPrice.currencyCode,
+    },
+  };
 }

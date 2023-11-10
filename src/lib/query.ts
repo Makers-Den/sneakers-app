@@ -8,5 +8,8 @@ export const queryKeys = {
     lists: () => [...queryKeys.sneakers.all(), "lists"] as const,
     list: (params: { collectionId: string }) =>
       [...queryKeys.sneakers.lists(), params.collectionId] as const,
+    details: () => [...queryKeys.sneakers.all(), "detail"] as const,
+    detail: (params: { sneakersId: string }) =>
+      [...queryKeys.sneakers.details(), params.sneakersId] as const,
   },
 };
