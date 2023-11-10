@@ -1,4 +1,4 @@
-import { useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { RootStackParamList, Screen } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -43,7 +43,7 @@ export function SneakersListScreen({
   }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.wrapper}>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -54,3 +54,9 @@ export function SneakersListScreen({
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+});
