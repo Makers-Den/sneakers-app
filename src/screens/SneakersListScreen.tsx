@@ -1,11 +1,14 @@
 import { Button, Text, View } from "react-native";
-import { BaseScreenProps, Screen } from "../types/navigation";
+import { RootStackParamList, Screen } from "../types/navigation";
 import { useQuery } from "react-query";
 import { getSneakersByCollectionId } from "../lib/shopify";
 import { queryKeys } from "../lib/query";
 import { envVariables } from "../lib/env";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export function ProductListScreen({ navigation }: BaseScreenProps) {
+export function SneakersListScreen({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, Screen.SneakersList>) {
   const feedSneakersQuery = useQuery({
     queryFn: () =>
       getSneakersByCollectionId({
@@ -40,25 +43,48 @@ export function ProductListScreen({ navigation }: BaseScreenProps) {
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Feed:</Text>
       {feedSneakersQuery.data?.map((sneakers) => (
-        <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View>
+          <Text key={sneakers.id}>{sneakers.model}</Text>
+          <Button
+            title="Go to Details"
+            onPress={() => {
+              navigation.navigate(Screen.SneakersDetails, {
+                sneakersId: sneakers.id,
+              });
+            }}
+          />
+        </View>
       ))}
 
       <Text>In Stock:</Text>
       {inStockSneakersQuery.data?.map((sneakers) => (
-        <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View>
+          <Text key={sneakers.id}>{sneakers.model}</Text>
+          <Button
+            title="Go to Details"
+            onPress={() => {
+              navigation.navigate(Screen.SneakersDetails, {
+                sneakersId: sneakers.id,
+              });
+            }}
+          />
+        </View>
       ))}
 
       <Text>Upcoming:</Text>
       {upcomingSneakersQuery.data?.map((sneakers) => (
-        <Text key={sneakers.id}>{sneakers.model}</Text>
+        <View>
+          <Text key={sneakers.id}>{sneakers.model}</Text>
+          <Button
+            title="Go to Details"
+            onPress={() => {
+              navigation.navigate(Screen.SneakersDetails, {
+                sneakersId: sneakers.id,
+              });
+            }}
+          />
+        </View>
       ))}
-
-      <Button
-        title="Go to Details"
-        onPress={() => {
-          navigation.navigate(Screen.ProductDetails);
-        }}
-      />
     </View>
   );
 }

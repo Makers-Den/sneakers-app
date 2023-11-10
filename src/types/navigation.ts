@@ -1,12 +1,9 @@
-export interface BaseScreenProps {
-  navigation: Navigation;
-}
-
-export interface Navigation {
-  navigate: (screen: Screen) => void;
-}
+export type RootStackParamList = {
+  [Screen.SneakersList]: undefined;
+  [Screen.SneakersDetails]: { sneakersId: string };
+};
 
 export enum Screen {
-  ProductList = "ProductList",
-  ProductDetails = "ProductDetails",
+  SneakersList = "SneakersList",
+  SneakersDetails = "SneakersDetails",
 }
