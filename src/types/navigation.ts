@@ -1,3 +1,5 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 export type RootStackParamList = {
   [Screen.SneakersList]: undefined;
   [Screen.SneakersDetails]: { sneakersId: string };
@@ -9,3 +11,9 @@ export enum Screen {
   SneakersDetails = "SneakersDetails",
   SneakersSearch = "SneakersSearch",
 }
+
+export type Navigation = NativeStackNavigationProp<
+  RootStackParamList,
+  Screen,
+  undefined
+>;
