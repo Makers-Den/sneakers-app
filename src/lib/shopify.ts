@@ -12,6 +12,10 @@ import {
   getProductByIdQuery,
   getProductByIdSchema,
 } from "../queries/getProductByIs";
+import {
+  searchProductsQuery,
+  searchProductsSchema,
+} from "../queries/searchProducts";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -26,7 +30,7 @@ interface MakeShopifyGraphqlRequestCommand<T extends z.ZodTypeAny> {
 
 async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
   command: MakeShopifyGraphqlRequestCommand<T>
-): Promise<z.infer<T>> {
+): Promise<z.infer<T> | null> {
   try {
     const response = await fetch(SHOPIFY_GRAPHQL_ENDPOINT, {
       method: "POST",
@@ -46,6 +50,10 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
 
     return parsedResponse;
   } catch (error) {
+    if (command.signal?.aborted) {
+      return null;
+    }
+
     logger.error("Making shopify graphql request failed", command.query, error);
 
     throw error;
@@ -65,6 +73,10 @@ export async function getSneakersByCollectionId(
     schema: getCollectionByIdSchema,
     signal: query.signal,
   });
+
+  if (response === null) {
+    return null;
+  }
 
   const sneakers = response.data.collection.products.edges.map((edge) => {
     const modelVariant = edge.node.metafields.find(
@@ -133,6 +145,10 @@ export async function getSneakersById(query: GetSneakersByIdQuery) {
     signal: query.signal,
   });
 
+  if (response === null) {
+    return null;
+  }
+
   const { product } = response.data;
 
   const modelVariant = product.metafields.find(
@@ -186,4 +202,37 @@ export async function getSneakersById(query: GetSneakersByIdQuery) {
       currencyCode: product.priceRange.maxVariantPrice.currencyCode,
     },
   };
+}
+
+interface SearchSneakersQuery {
+  query: string;
+  signal?: AbortSignal;
+}
+
+export async function searchSneakers(query: SearchSneakersQuery) {
+  const response = await makeShopifyGraphqlRequest({
+    query: searchProductsQuery({ query: query.query }),
+    schema: searchProductsSchema,
+    signal: query.signal,
+  });
+
+  if (response === null) {
+    return null;
+  }
+
+  return response.data.search.nodes.map((node) => {
+    const modelVariant = node.metafields.find(
+      (metafield) =>
+        metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
+    );
+
+    const images = node.media.nodes.map((node) => node.previewImage.url);
+
+    return {
+      id: node.id,
+      model: node.title,
+      modelVariant: modelVariant?.value || null,
+      previewImage: images.length === 0 ? null : images[0],
+    };
+  });
 }

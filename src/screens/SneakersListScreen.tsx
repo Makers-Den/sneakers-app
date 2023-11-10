@@ -5,6 +5,7 @@ import { getSneakersByCollectionId } from "../lib/shopify";
 import { queryKeys } from "../lib/query";
 import { envVariables } from "../lib/env";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function SneakersListScreen({
   navigation,
@@ -43,51 +44,60 @@ export function SneakersListScreen({
   });
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Feed:</Text>
-      {feedSneakersQuery.data?.map((sneakers) => (
-        <View key={sneakers.id}>
-          <Text>{sneakers.model}</Text>
-          <Button
-            title="Go to Details"
-            onPress={() => {
-              navigation.navigate(Screen.SneakersDetails, {
-                sneakersId: sneakers.id,
-              });
-            }}
-          />
-        </View>
-      ))}
+    <SafeAreaView>
+      <View>
+        <Button
+          title="Search"
+          onPress={() => {
+            navigation.navigate(Screen.SneakersSearch);
+          }}
+        />
 
-      <Text>In Stock:</Text>
-      {inStockSneakersQuery.data?.map((sneakers) => (
-        <View key={sneakers.id}>
-          <Text>{sneakers.model}</Text>
-          <Button
-            title="Go to Details"
-            onPress={() => {
-              navigation.navigate(Screen.SneakersDetails, {
-                sneakersId: sneakers.id,
-              });
-            }}
-          />
-        </View>
-      ))}
+        <Text>Feed:</Text>
+        {feedSneakersQuery.data?.map((sneakers) => (
+          <View key={sneakers.id}>
+            <Text>{sneakers.model}</Text>
+            <Button
+              title="Go to Details"
+              onPress={() => {
+                navigation.navigate(Screen.SneakersDetails, {
+                  sneakersId: sneakers.id,
+                });
+              }}
+            />
+          </View>
+        ))}
 
-      <Text>Upcoming:</Text>
-      {upcomingSneakersQuery.data?.map((sneakers) => (
-        <View key={sneakers.id}>
-          <Text>{sneakers.model}</Text>
-          <Button
-            title="Go to Details"
-            onPress={() => {
-              navigation.navigate(Screen.SneakersDetails, {
-                sneakersId: sneakers.id,
-              });
-            }}
-          />
-        </View>
-      ))}
-    </View>
+        <Text>In Stock:</Text>
+        {inStockSneakersQuery.data?.map((sneakers) => (
+          <View key={sneakers.id}>
+            <Text>{sneakers.model}</Text>
+            <Button
+              title="Go to Details"
+              onPress={() => {
+                navigation.navigate(Screen.SneakersDetails, {
+                  sneakersId: sneakers.id,
+                });
+              }}
+            />
+          </View>
+        ))}
+
+        <Text>Upcoming:</Text>
+        {upcomingSneakersQuery.data?.map((sneakers) => (
+          <View key={sneakers.id}>
+            <Text>{sneakers.model}</Text>
+            <Button
+              title="Go to Details"
+              onPress={() => {
+                navigation.navigate(Screen.SneakersDetails, {
+                  sneakersId: sneakers.id,
+                });
+              }}
+            />
+          </View>
+        ))}
+      </View>
+    </SafeAreaView>
   );
 }
