@@ -11,7 +11,7 @@ export function ProductListScreen({ navigation }: BaseScreenProps) {
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.feed,
       }),
-    queryKey: queryKeys.products.list({
+    queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.feed,
     }),
   });
@@ -21,7 +21,7 @@ export function ProductListScreen({ navigation }: BaseScreenProps) {
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.inStock,
       }),
-    queryKey: queryKeys.products.list({
+    queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.inStock,
     }),
   });
@@ -31,7 +31,7 @@ export function ProductListScreen({ navigation }: BaseScreenProps) {
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.upcoming,
       }),
-    queryKey: queryKeys.products.list({
+    queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.upcoming,
     }),
   });
