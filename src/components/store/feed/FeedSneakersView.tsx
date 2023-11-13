@@ -87,9 +87,7 @@ export function FeedSneakersView({ navigation }: FeedSneakersViewProps) {
                 buttonText={
                   sneakers.isUpcoming
                     ? "Notify Me"
-                    : currencyFormatter.format(
-                        parseFloat(sneakers.price.amount)
-                      )
+                    : currencyFormatter.format(sneakers.price.amount)
                 }
                 onPress={() => {
                   navigation.navigate(Screen.SneakersDetails, {

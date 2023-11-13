@@ -132,7 +132,7 @@ export async function getSneakersByCollectionId(
       dropsAt,
       previewImage: images.length === 0 ? null : images[0],
       price: {
-        amount: edge.node.priceRange.maxVariantPrice.amount,
+        amount: parseFloat(edge.node.priceRange.maxVariantPrice.amount),
         currencyCode: edge.node.priceRange.maxVariantPrice.currencyCode,
       },
     };
@@ -206,7 +206,7 @@ export async function getSneakersById(query: GetSneakersByIdQuery) {
     dropsAt,
     images,
     price: {
-      amount: product.priceRange.maxVariantPrice.amount,
+      amount: parseFloat(product.priceRange.maxVariantPrice.amount),
       currencyCode: product.priceRange.maxVariantPrice.currencyCode,
     },
   };
