@@ -1,21 +1,21 @@
 import { z } from "zod";
+import dayjs from "dayjs";
+import { ShopifyMetaFieldKey } from "@/types/shopify";
+import { todayNoonUtc } from "./time";
 import { envVariables } from "./env";
 import { createNamedLogger } from "./log";
 import {
   getCollectionByIdQuery,
   getCollectionByIdSchema,
-} from "../queries/getCollectionById";
-import dayjs from "dayjs";
-import { ShopifyMetaFieldKey } from "../types/shopify";
-import { todayNoonUtc } from "./time";
+} from "@/queries/getCollectionById";
 import {
   getProductByIdQuery,
   getProductByIdSchema,
-} from "../queries/getProductByIs";
+} from "@/queries/getProductByIs";
 import {
   searchProductsQuery,
   searchProductsSchema,
-} from "../queries/searchProducts";
+} from "@/queries/searchProducts";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
