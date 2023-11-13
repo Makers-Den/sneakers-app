@@ -43,7 +43,9 @@ export function FeedSneakersCard({
           <View />
           <Button
             text={buttonText}
-            onPress={onPress}
+            onPress={() => {
+              // @TODO Add on press
+            }}
           />
         </View>
       </View>

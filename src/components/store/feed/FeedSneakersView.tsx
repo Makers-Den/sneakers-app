@@ -92,7 +92,9 @@ export function FeedSneakersView({ navigation }: FeedSneakersViewProps) {
                       )
                 }
                 onPress={() => {
-                  // @TODO Handle press
+                  navigation.navigate(Screen.SneakersDetails, {
+                    sneakersId: sneakers.id,
+                  });
                 }}
               />
             );
