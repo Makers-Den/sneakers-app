@@ -1,5 +1,11 @@
 export const theme = {
   spacing: (value: number) => value * 8,
+  borderRadius: {
+    full: "50%",
+  },
+  opacity: {
+    sm: 0.8,
+  },
   typography: {
     fontSize: {
       base: 14,

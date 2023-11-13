@@ -6,6 +6,9 @@ import { queryKeys } from "@/lib/query";
 import { Navigation, Screen } from "@/types/navigation";
 import { memo } from "react";
 
+const SNEAKERS_IMAGE_MAX_WIDTH = 352;
+const SNEAKERS_IMAGE_MAX_HEIGHT = 340;
+
 export interface InStockSneakersViewProps {
   navigation: Navigation;
 }
@@ -15,10 +18,14 @@ export function InStockSneakersView({ navigation }: InStockSneakersViewProps) {
     queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.inStock,
+        maxImageHeight: SNEAKERS_IMAGE_MAX_WIDTH,
+        maxImageWidth: SNEAKERS_IMAGE_MAX_HEIGHT,
         signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.inStock,
+      maxImageHeight: SNEAKERS_IMAGE_MAX_WIDTH,
+      maxImageWidth: SNEAKERS_IMAGE_MAX_HEIGHT,
     }),
   });
 
