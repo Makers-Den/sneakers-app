@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   ShopifyMetaFieldKey,
   ShopifyMetaFieldNamespace,
-} from "../types/shopify";
+} from "@/types/shopify";
 
 export interface GetProductByIdVars {
   productId: string;

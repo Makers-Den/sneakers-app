@@ -1,11 +1,11 @@
 import { Button, Text, View, TextInput } from "react-native";
-import { RootStackParamList, Screen } from "../types/navigation";
 import { useQuery } from "react-query";
-import { searchSneakers } from "../lib/shopify";
-import { queryKeys } from "../lib/query";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { RootStackParamList, Screen } from "@/types/navigation";
+import { searchSneakers } from "@/lib/shopify";
+import { queryKeys } from "@/lib/query";
 
 export function SneakersSeachScreen({
   navigation,

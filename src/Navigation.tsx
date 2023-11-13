@@ -1,9 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList, Screen } from "./types/navigation";
-import { SneakersListScreen } from "./screens/SneakersListScreen";
-import { SneakersDetailsScreen } from "./screens/SneakersDetailsScreen";
-import { SneakersSeachScreen } from "./screens/SneakersSearchScreen";
+import { RootStackParamList, Screen } from "@/types/navigation";
+import { SneakersListScreen } from "@/screens/SneakersListScreen";
+import { SneakersDetailsScreen } from "@/screens/SneakersDetailsScreen";
+import { SneakersSeachScreen } from "@/screens/SneakersSearchScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

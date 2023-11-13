@@ -1,9 +1,9 @@
 import { Button, Text, View } from "react-native";
 import { useQuery } from "react-query";
-import { getSneakersByCollectionId } from "../../../lib/shopify";
-import { envVariables } from "../../../lib/env";
-import { queryKeys } from "../../../lib/query";
-import { Navigation, Screen } from "../../../types/navigation";
+import { getSneakersByCollectionId } from "@/lib/shopify";
+import { envVariables } from "@/lib/env";
+import { queryKeys } from "@/lib/query";
+import { Navigation, Screen } from "@/types/navigation";
 import { memo } from "react";
 
 export interface InStockSneakersViewProps {

@@ -7,11 +7,11 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import RenderHtml from "react-native-render-html";
-import { RootStackParamList, Screen } from "../types/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { RootStackParamList, Screen } from "@/types/navigation";
 import { useQuery } from "react-query";
-import { getSneakersById } from "../lib/shopify";
-import { queryKeys } from "../lib/query";
+import { getSneakersById } from "@/lib/shopify";
+import { queryKeys } from "@/lib/query";
 
 export function SneakersDetailsScreen({
   navigation,

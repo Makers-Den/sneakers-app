@@ -1,13 +1,13 @@
+import { useMemo, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
-import { RootStackParamList, Screen } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabView } from "react-native-tab-view";
-import { MemoFeedSneakersView } from "../components/store/feed/FeedSneakersView";
-import { MemoInStockSneakersView } from "../components/store/in-stock/InStockSneakersView";
-import { MemoUpcomingSneakersView } from "../components/store/upcoming/UpcomingSneakersView";
-import { useMemo, useState } from "react";
-import { TabBar } from "../components/store/TabBar";
+import { RootStackParamList, Screen } from "@/types/navigation";
+import { MemoFeedSneakersView } from "@/components/store/feed/FeedSneakersView";
+import { MemoInStockSneakersView } from "@/components/store/in-stock/InStockSneakersView";
+import { MemoUpcomingSneakersView } from "@/components/store/upcoming/UpcomingSneakersView";
+import { TabBar } from "@/components/store/TabBar";
 
 enum SneakersListScreenTab {
   FEED = "Feed",
