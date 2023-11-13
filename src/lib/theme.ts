@@ -1,4 +1,5 @@
 export const theme = {
+  spacing: (value: number) => value * 8,
   typography: {
     fontSize: {
       base: 14,

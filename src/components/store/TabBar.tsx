@@ -1,3 +1,4 @@
+import { theme } from "@/lib/theme";
 import { StyleSheet, Text, View } from "react-native";
 import {
   TabBar as BaseTabBar,
@@ -12,14 +13,18 @@ export function TabBar<T extends Route>(props: BaseTabBarProps<T>) {
         {...props}
         style={styles.tabBar}
         tabStyle={styles.tab}
-        indicatorStyle={styles.indicator}
-        activeColor="red"
+        indicatorStyle={styles.tabIndicator}
+        activeColor={theme.palette.gray[100]}
         pressColor="transparent"
-        inactiveColor="black"
+        inactiveColor={theme.palette.gray[400]}
+        gap={theme.spacing(3)}
+        renderLabel={({ route, color }) => (
+          <Text style={[styles.tabLabel, { color }]}>{route.title}</Text>
+        )}
       />
 
       <View style={styles.searchWrapper}>
-        <Text>Search</Text>
+        <Text style={styles.searchText}>Search</Text>
       </View>
     </View>
   );
@@ -27,9 +32,13 @@ export function TabBar<T extends Route>(props: BaseTabBarProps<T>) {
 
 const styles = StyleSheet.create({
   wrapper: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    backgroundColor: theme.palette.gray[800],
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    paddingBottom: 1,
   },
   tabBar: {
     flexGrow: 1,
@@ -43,14 +52,21 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 0,
   },
-  indicator: {
-    backgroundColor: "red",
+  tabIndicator: {
+    backgroundColor: theme.palette.green[400],
   },
   tab: {
     width: "auto",
+    padding: 0,
+  },
+  tabLabel: {
+    fontSize: theme.typography.fontSize.base,
   },
   searchWrapper: {
     flexGrow: 0,
     flexShrink: 1,
+  },
+  searchText: {
+    color: theme.palette.gray[100],
   },
 });
