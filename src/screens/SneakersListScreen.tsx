@@ -8,6 +8,7 @@ import { MemoFeedSneakersView } from "@/components/store/feed/FeedSneakersView";
 import { MemoInStockSneakersView } from "@/components/store/in-stock/InStockSneakersView";
 import { MemoUpcomingSneakersView } from "@/components/store/upcoming/UpcomingSneakersView";
 import { TabBar } from "@/components/store/TabBar";
+import { theme } from "@/lib/theme";
 
 enum SneakersListScreenTab {
   FEED = "Feed",
@@ -58,5 +59,6 @@ export function SneakersListScreen({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    backgroundColor: theme.palette.gray[900]
   },
 });

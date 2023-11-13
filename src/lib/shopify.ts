@@ -11,7 +11,7 @@ import {
 import {
   getProductByIdQuery,
   getProductByIdSchema,
-} from "@/queries/getProductByIs";
+} from "@/queries/getProductById";
 import {
   searchProductsQuery,
   searchProductsSchema,
@@ -62,6 +62,8 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
 
 interface GetSneakersByCollectionIdQuery {
   collectionId: string;
+  maxImageHeight: number;
+  maxImageWidth: number;
   signal?: AbortSignal;
 }
 
@@ -69,7 +71,11 @@ export async function getSneakersByCollectionId(
   query: GetSneakersByCollectionIdQuery
 ) {
   const response = await makeShopifyGraphqlRequest({
-    query: getCollectionByIdQuery({ collectionId: query.collectionId }),
+    query: getCollectionByIdQuery({
+      collectionId: query.collectionId,
+      maxImageHeight: query.maxImageHeight,
+      maxImageWidth: query.maxImageWidth,
+    }),
     schema: getCollectionByIdSchema,
     signal: query.signal,
   });
@@ -94,7 +100,9 @@ export async function getSneakersByCollectionId(
         metafield && metafield.key === ShopifyMetaFieldKey.ModelDropOffsetDays
     );
 
-    const images = edge.node.media.nodes.map((node) => node.previewImage.url);
+    const images = edge.node.media.nodes.map(
+      (node) => node.previewImage.resizedUrl
+    );
 
     const sizes = edge.node.variants.nodes.map((node) => ({
       id: node.id,
@@ -124,7 +132,7 @@ export async function getSneakersByCollectionId(
       dropsAt,
       previewImage: images.length === 0 ? null : images[0],
       price: {
-        amount: edge.node.priceRange.maxVariantPrice.amount,
+        amount: parseFloat(edge.node.priceRange.maxVariantPrice.amount),
         currencyCode: edge.node.priceRange.maxVariantPrice.currencyCode,
       },
     };
@@ -198,7 +206,7 @@ export async function getSneakersById(query: GetSneakersByIdQuery) {
     dropsAt,
     images,
     price: {
-      amount: product.priceRange.maxVariantPrice.amount,
+      amount: parseFloat(product.priceRange.maxVariantPrice.amount),
       currencyCode: product.priceRange.maxVariantPrice.currencyCode,
     },
   };

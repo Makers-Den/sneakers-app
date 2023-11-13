@@ -6,13 +6,15 @@ import {
 
 export interface GetCollectionByIdVars {
   collectionId: string;
+  maxImageWidth: number;
+  maxImageHeight: number;
 }
 
 export function getCollectionByIdQuery(vars: GetCollectionByIdVars) {
   return `
   query GetCollectionByIdQuery {
     collection(id: "${vars.collectionId}") {
-      products(first: 50) {
+      products(first: 20) {
         edges {
           node {
             id,
@@ -33,7 +35,7 @@ export function getCollectionByIdQuery(vars: GetCollectionByIdVars) {
             media(first: 1) {
               nodes {
                 previewImage {
-                  url
+                  resizedUrl: url(transform: { maxHeight: ${vars.maxImageHeight}, maxWidth: ${vars.maxImageWidth} })
                 }
               }
             },
@@ -76,7 +78,7 @@ export const getCollectionByIdSchema = z.object({
                 nodes: z.array(
                   z.object({
                     previewImage: z.object({
-                      url: z.string(),
+                      resizedUrl: z.string(),
                     }),
                   })
                 ),

@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 1,
   },
   tabBar: {
     flexGrow: 1,
