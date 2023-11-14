@@ -3,11 +3,11 @@ import { theme } from "@/lib/theme";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-export const FEED_SNEAKERS_CARD_HEIGHT = 500;
-export const FEED_SNEAKERS_IMAGE_WIDTH = 352;
-export const FEED_SNEAKERS_IMAGE_HEIGHT = 340;
+export const FEED_SHOES_CARD_HEIGHT = 500;
+export const FEED_SHOES_IMAGE_WIDTH = 352;
+export const FEED_SHOES_IMAGE_HEIGHT = 340;
 
-export interface FeedSneakersCardProps {
+export interface FeedShoesCardProps {
   model: string;
   modelVariant: string | null;
   image: string | null;
@@ -15,13 +15,13 @@ export interface FeedSneakersCardProps {
   onPress: () => void;
 }
 
-export function FeedSneakersCard({
+export function FeedShoesCard({
   image,
   model,
   modelVariant,
   buttonText,
   onPress,
-}: FeedSneakersCardProps) {
+}: FeedShoesCardProps) {
   return (
     <Pressable onPress={onPress}>
       <View style={styles.wrapper}>
@@ -31,7 +31,7 @@ export function FeedSneakersCard({
         </View>
 
         <View style={styles.imageWrapper}>
-          {image && <Image style={[styles.image]} source={{ uri: image }} />}
+          {image && <Image style={styles.image} source={{ uri: image }} />}
         </View>
 
         <View style={styles.bottomWrapper}>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: FEED_SNEAKERS_CARD_HEIGHT,
+    height: FEED_SHOES_CARD_HEIGHT,
     position: "relative",
     padding: theme.spacing(2),
     backgroundColor: theme.palette.gray[700],
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: FEED_SNEAKERS_IMAGE_WIDTH,
-    height: FEED_SNEAKERS_IMAGE_HEIGHT,
+    width: FEED_SHOES_IMAGE_WIDTH,
+    height: FEED_SHOES_IMAGE_HEIGHT,
   },
   bottomWrapper: {
     display: "flex",

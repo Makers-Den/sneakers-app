@@ -4,39 +4,39 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabView } from "react-native-tab-view";
 import { RootStackParamList, Screen } from "@/types/navigation";
-import { MemoFeedSneakersView } from "@/components/store/feed/FeedSneakersView";
-import { MemoInStockSneakersView } from "@/components/store/in-stock/InStockSneakersView";
-import { MemoUpcomingSneakersView } from "@/components/store/upcoming/UpcomingSneakersView";
+import { MemoFeedShoesView } from "@/components/store/feed/FeedShoesView";
+import { MemoInStockShoesView } from "@/components/store/in-stock/InStockShoesView";
+import { MemoUpcomingShoesView } from "@/components/store/upcoming/UpcomingShoesView";
 import { TabBar } from "@/components/store/TabBar";
 import { theme } from "@/lib/theme";
 
-enum SneakersListScreenTab {
+enum ShoesListScreenTab {
   FEED = "Feed",
   IN_STOCK = "InStock",
   UPCOMING = "Upcoming",
 }
 
 const routes = [
-  { key: SneakersListScreenTab.FEED, title: "Feed" },
-  { key: SneakersListScreenTab.IN_STOCK, title: "In Stock" },
-  { key: SneakersListScreenTab.UPCOMING, title: "Upcoming" },
+  { key: ShoesListScreenTab.FEED, title: "Feed" },
+  { key: ShoesListScreenTab.IN_STOCK, title: "In Stock" },
+  { key: ShoesListScreenTab.UPCOMING, title: "Upcoming" },
 ];
 
-export function SneakersListScreen({
+export function ShoesListScreen({
   navigation,
-}: NativeStackScreenProps<RootStackParamList, Screen.SneakersList>) {
+}: NativeStackScreenProps<RootStackParamList, Screen.ShoesList>) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
   const renderScene = useMemo(() => {
-    return ({ route }: { route: { key: SneakersListScreenTab } }) => {
+    return ({ route }: { route: { key: ShoesListScreenTab } }) => {
       switch (route.key) {
-        case SneakersListScreenTab.FEED:
-          return <MemoFeedSneakersView navigation={navigation} />;
-        case SneakersListScreenTab.IN_STOCK:
-          return <MemoInStockSneakersView navigation={navigation} />;
-        case SneakersListScreenTab.UPCOMING:
-          return <MemoUpcomingSneakersView navigation={navigation} />;
+        case ShoesListScreenTab.FEED:
+          return <MemoFeedShoesView navigation={navigation} />;
+        case ShoesListScreenTab.IN_STOCK:
+          return <MemoInStockShoesView navigation={navigation} />;
+        case ShoesListScreenTab.UPCOMING:
+          return <MemoUpcomingShoesView navigation={navigation} />;
         default:
           return null;
       }
@@ -59,6 +59,6 @@ export function SneakersListScreen({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: theme.palette.gray[900]
+    backgroundColor: theme.palette.gray[900],
   },
 });

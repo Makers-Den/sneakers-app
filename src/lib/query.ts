@@ -3,18 +3,18 @@ import { QueryClient } from "react-query";
 export const queryClient = new QueryClient();
 
 export const queryKeys = {
-  sneakers: {
-    all: () => ["sneakers"] as const,
-    lists: () => [...queryKeys.sneakers.all(), "lists"] as const,
+  shoes: {
+    all: () => ["shoes"] as const,
+    lists: () => [...queryKeys.shoes.all(), "lists"] as const,
     list: (params: {
       collectionId: string;
       maxImageWidth: number;
       maxImageHeight: number;
-    }) => [...queryKeys.sneakers.lists(), params] as const,
-    details: () => [...queryKeys.sneakers.all(), "detail"] as const,
-    detail: (params: { sneakersId: string }) =>
-      [...queryKeys.sneakers.details(), params.sneakersId] as const,
+    }) => [...queryKeys.shoes.lists(), params] as const,
+    details: () => [...queryKeys.shoes.all(), "detail"] as const,
+    detail: (params: { shoesId: string }) =>
+      [...queryKeys.shoes.details(), params.shoesId] as const,
     search: (params: { query: string }) =>
-      [...queryKeys.sneakers.all(), "search", params.query] as const,
+      [...queryKeys.shoes.all(), "search", params.query] as const,
   },
 };

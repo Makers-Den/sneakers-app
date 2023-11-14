@@ -60,15 +60,15 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
   }
 }
 
-interface GetSneakersByCollectionIdQuery {
+interface GetShoesByCollectionIdQuery {
   collectionId: string;
   maxImageHeight: number;
   maxImageWidth: number;
   signal?: AbortSignal;
 }
 
-export async function getSneakersByCollectionId(
-  query: GetSneakersByCollectionIdQuery
+export async function getShoesByCollectionId(
+  query: GetShoesByCollectionIdQuery
 ) {
   const response = await makeShopifyGraphqlRequest({
     query: getCollectionByIdQuery({
@@ -84,7 +84,7 @@ export async function getSneakersByCollectionId(
     return null;
   }
 
-  const sneakers = response.data.collection.products.edges.map((edge) => {
+  const shoes = response.data.collection.products.edges.map((edge) => {
     const modelVariant = edge.node.metafields.find(
       (metafield) =>
         metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
@@ -138,17 +138,17 @@ export async function getSneakersByCollectionId(
     };
   });
 
-  return sneakers;
+  return shoes;
 }
 
-interface GetSneakersByIdQuery {
-  sneakersId: string;
+interface GetShoesByIdQuery {
+  shoesId: string;
   signal?: AbortSignal;
 }
 
-export async function getSneakersById(query: GetSneakersByIdQuery) {
+export async function getShoesById(query: GetShoesByIdQuery) {
   const response = await makeShopifyGraphqlRequest({
-    query: getProductByIdQuery({ productId: query.sneakersId }),
+    query: getProductByIdQuery({ productId: query.shoesId }),
     schema: getProductByIdSchema,
     signal: query.signal,
   });
@@ -212,12 +212,12 @@ export async function getSneakersById(query: GetSneakersByIdQuery) {
   };
 }
 
-interface SearchSneakersQuery {
+interface SearchShoesQuery {
   query: string;
   signal?: AbortSignal;
 }
 
-export async function searchSneakers(query: SearchSneakersQuery) {
+export async function searchShoes(query: SearchShoesQuery) {
   const response = await makeShopifyGraphqlRequest({
     query: searchProductsQuery({ query: query.query }),
     schema: searchProductsSchema,
