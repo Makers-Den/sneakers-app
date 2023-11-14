@@ -4,19 +4,19 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export const FEED_SNEAKERS_CARD_HEIGHT = 500;
+export const FEED_SNEAKERS_IMAGE_WIDTH = 352;
+export const FEED_SNEAKERS_IMAGE_HEIGHT = 340;
 
 export interface FeedSneakersCardProps {
   model: string;
   modelVariant: string | null;
   image: string | null;
-  imageAspectRatio: number;
   buttonText: string;
   onPress: () => void;
 }
 
 export function FeedSneakersCard({
   image,
-  imageAspectRatio,
   model,
   modelVariant,
   buttonText,
@@ -31,12 +31,7 @@ export function FeedSneakersCard({
         </View>
 
         <View style={styles.imageWrapper}>
-          {image && (
-            <Image
-              style={[styles.image, { aspectRatio: imageAspectRatio }]}
-              source={{ uri: image }}
-            />
-          )}
+          {image && <Image style={[styles.image]} source={{ uri: image }} />}
         </View>
 
         <View style={styles.bottomWrapper}>
@@ -85,8 +80,8 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    flex: 1,
-    aspectRatio: 1,
+    width: FEED_SNEAKERS_IMAGE_WIDTH,
+    height: FEED_SNEAKERS_IMAGE_HEIGHT,
   },
   bottomWrapper: {
     display: "flex",
