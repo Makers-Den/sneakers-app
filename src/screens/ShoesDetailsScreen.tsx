@@ -10,18 +10,18 @@ import RenderHtml from "react-native-render-html";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList, Screen } from "@/types/navigation";
 import { useQuery } from "react-query";
-import { getSneakersById } from "@/lib/shopify";
+import { getShoesById } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 
-export function SneakersDetailsScreen({
+export function ShoesDetailsScreen({
   navigation,
   route,
-}: NativeStackScreenProps<RootStackParamList, Screen.SneakersDetails>) {
+}: NativeStackScreenProps<RootStackParamList, Screen.ShoesDetails>) {
   const { width } = useWindowDimensions();
-  const { sneakersId } = route.params;
-  const sneakersQuery = useQuery({
-    queryFn: ({ signal }) => getSneakersById({ sneakersId, signal }),
-    queryKey: queryKeys.sneakers.detail({ sneakersId }),
+  const { shoesId } = route.params;
+  const shoesQuery = useQuery({
+    queryFn: ({ signal }) => getShoesById({ shoesId, signal }),
+    queryKey: queryKeys.shoes.detail({ shoesId }),
   });
 
   return (
@@ -32,13 +32,13 @@ export function SneakersDetailsScreen({
         >
           <Text>Product Details Screen</Text>
 
-          {sneakersQuery.data && (
+          {shoesQuery.data && (
             <View>
-              <Text>{sneakersQuery.data.model}</Text>
+              <Text>{shoesQuery.data.model}</Text>
 
               <RenderHtml
                 contentWidth={width}
-                source={{ html: sneakersQuery.data.descriptionHtml }}
+                source={{ html: shoesQuery.data.descriptionHtml }}
               />
             </View>
           )}

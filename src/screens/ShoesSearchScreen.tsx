@@ -4,21 +4,21 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList, Screen } from "@/types/navigation";
-import { searchSneakers } from "@/lib/shopify";
+import { searchShoes } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 
-export function SneakersSeachScreen({
+export function ShoesSearchScreen({
   navigation,
-}: NativeStackScreenProps<RootStackParamList, Screen.SneakersSearch>) {
+}: NativeStackScreenProps<RootStackParamList, Screen.ShoesSearch>) {
   // @TODO Add debounce
   const [query, setQuery] = useState("");
-  const searchSneakersQuery = useQuery({
+  const searchShoesQuery = useQuery({
     queryFn: ({ signal }) =>
-      searchSneakers({
+      searchShoes({
         query,
         signal,
       }),
-    queryKey: queryKeys.sneakers.search({
+    queryKey: queryKeys.shoes.search({
       query,
     }),
     enabled: query.trim() !== "",
@@ -38,14 +38,14 @@ export function SneakersSeachScreen({
         />
 
         <Text>Results:</Text>
-        {searchSneakersQuery.data?.map((sneakers) => (
-          <View key={sneakers.id}>
-            <Text>{sneakers.model}</Text>
+        {searchShoesQuery.data?.map((shoes) => (
+          <View key={shoes.id}>
+            <Text>{shoes.model}</Text>
             <Button
               title="Go to Details"
               onPress={() => {
-                navigation.navigate(Screen.SneakersDetails, {
-                  sneakersId: sneakers.id,
+                navigation.navigate(Screen.ShoesDetails, {
+                  shoesId: shoes.id,
                 });
               }}
             />
