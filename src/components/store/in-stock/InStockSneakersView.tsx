@@ -8,8 +8,8 @@ import { memo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import {
   IN_STOCK_SNEAKERS_CARD_HEIGHT,
-  IN_STOCK_SNEAKERS_IMAGE_MAX_HEIGHT,
-  IN_STOCK_SNEAKERS_IMAGE_MAX_WIDTH,
+  IN_STOCK_SNEAKERS_IMAGE_HEIGHT,
+  IN_STOCK_SNEAKERS_IMAGE_WIDTH,
   InStockSneakersCard,
 } from "./InStockSneakersCard";
 import {
@@ -40,14 +40,14 @@ export function InStockSneakersView({ navigation }: InStockSneakersViewProps) {
     queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.inStock,
-        maxImageHeight: IN_STOCK_SNEAKERS_IMAGE_MAX_HEIGHT,
-        maxImageWidth: IN_STOCK_SNEAKERS_IMAGE_MAX_WIDTH,
+        maxImageHeight: IN_STOCK_SNEAKERS_IMAGE_HEIGHT,
+        maxImageWidth: IN_STOCK_SNEAKERS_IMAGE_WIDTH,
         signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.inStock,
-      maxImageHeight: IN_STOCK_SNEAKERS_IMAGE_MAX_HEIGHT,
-      maxImageWidth: IN_STOCK_SNEAKERS_IMAGE_MAX_WIDTH,
+      maxImageHeight: IN_STOCK_SNEAKERS_IMAGE_HEIGHT,
+      maxImageWidth: IN_STOCK_SNEAKERS_IMAGE_WIDTH,
     }),
   });
 

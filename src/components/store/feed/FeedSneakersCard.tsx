@@ -4,8 +4,8 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export const FEED_SNEAKERS_CARD_HEIGHT = 500;
-export const FEED_SNEAKERS_IMAGE_MAX_WIDTH = 352;
-export const FEED_SNEAKERS_IMAGE_MAX_HEIGHT = 340;
+export const FEED_SNEAKERS_IMAGE_WIDTH = 352;
+export const FEED_SNEAKERS_IMAGE_HEIGHT = 340;
 
 export interface FeedSneakersCardProps {
   model: string;
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: FEED_SNEAKERS_IMAGE_MAX_WIDTH,
-    height: FEED_SNEAKERS_IMAGE_MAX_HEIGHT,
+    width: FEED_SNEAKERS_IMAGE_WIDTH,
+    height: FEED_SNEAKERS_IMAGE_HEIGHT,
   },
   bottomWrapper: {
     display: "flex",

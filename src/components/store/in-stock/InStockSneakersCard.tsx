@@ -3,8 +3,8 @@ import React from "react";
 import { Image, Pressable, StyleSheet } from "react-native";
 
 export const IN_STOCK_SNEAKERS_CARD_HEIGHT = 215;
-export const IN_STOCK_SNEAKERS_IMAGE_MAX_WIDTH = 150;
-export const IN_STOCK_SNEAKERS_IMAGE_MAX_HEIGHT = 85;
+export const IN_STOCK_SNEAKERS_IMAGE_WIDTH = 150;
+export const IN_STOCK_SNEAKERS_IMAGE_HEIGHT = 85;
 
 export interface InStockSneakersCardProps {
   image: string | null;
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: IN_STOCK_SNEAKERS_IMAGE_MAX_WIDTH,
-    height: IN_STOCK_SNEAKERS_IMAGE_MAX_HEIGHT,
+    width: IN_STOCK_SNEAKERS_IMAGE_WIDTH,
+    height: IN_STOCK_SNEAKERS_IMAGE_HEIGHT,
   },
 });
