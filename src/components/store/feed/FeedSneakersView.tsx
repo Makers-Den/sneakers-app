@@ -7,6 +7,8 @@ import { Navigation, Screen } from "@/types/navigation";
 import { memo } from "react";
 import {
   FEED_SNEAKERS_CARD_HEIGHT,
+  FEED_SNEAKERS_IMAGE_MAX_HEIGHT,
+  FEED_SNEAKERS_IMAGE_MAX_WIDTH,
   FeedSneakersCard,
 } from "./FeedSneakersCard";
 import { FlashList } from "@shopify/flash-list";
@@ -16,10 +18,6 @@ import {
 } from "./FeedSneakersListItemSeparator";
 import { FeedSneakersCardPlaceholder } from "./FeedSneakersCardPlaceholder";
 
-const SNEAKERS_IMAGE_MAX_WIDTH = 352;
-const SNEAKERS_IMAGE_MAX_HEIGHT = 340;
-const SNEAKERS_IMAGE_ASPECT_RATIO =
-  SNEAKERS_IMAGE_MAX_WIDTH / SNEAKERS_IMAGE_MAX_HEIGHT;
 const SNEAKERS_PLACEHOLDERS_TO_DISPLAY = 10;
 
 function estimateListHeight(listItemCount: number) {
@@ -38,14 +36,14 @@ export function FeedSneakersView({ navigation }: FeedSneakersViewProps) {
     queryFn: ({ signal }) =>
       getSneakersByCollectionId({
         collectionId: envVariables.shopify.collectionId.feed,
-        maxImageHeight: SNEAKERS_IMAGE_MAX_WIDTH,
-        maxImageWidth: SNEAKERS_IMAGE_MAX_HEIGHT,
+        maxImageHeight: FEED_SNEAKERS_IMAGE_MAX_HEIGHT,
+        maxImageWidth: FEED_SNEAKERS_IMAGE_MAX_WIDTH,
         signal,
       }),
     queryKey: queryKeys.sneakers.list({
       collectionId: envVariables.shopify.collectionId.feed,
-      maxImageHeight: SNEAKERS_IMAGE_MAX_WIDTH,
-      maxImageWidth: SNEAKERS_IMAGE_MAX_HEIGHT,
+      maxImageHeight: FEED_SNEAKERS_IMAGE_MAX_HEIGHT,
+      maxImageWidth: FEED_SNEAKERS_IMAGE_MAX_WIDTH,
     }),
   });
 
@@ -81,7 +79,6 @@ export function FeedSneakersView({ navigation }: FeedSneakersViewProps) {
             return (
               <FeedSneakersCard
                 image={sneakers.previewImage}
-                imageAspectRatio={SNEAKERS_IMAGE_ASPECT_RATIO}
                 model={sneakers.model}
                 modelVariant={sneakers.modelVariant}
                 buttonText={
