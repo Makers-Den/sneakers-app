@@ -4,7 +4,7 @@ export const todayNoonUtc = () => {
   return Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
-    now.getUTCDay(),
+    now.getUTCDate(),
     12,
     0,
     0,

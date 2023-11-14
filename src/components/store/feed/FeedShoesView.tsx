@@ -12,18 +12,15 @@ import {
   FeedShoesCard,
 } from "./FeedShoesCard";
 import { FlashList } from "@shopify/flash-list";
-import {
-  FEED_SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
-  FeedShoesListItemSeparator,
-} from "./FeedShoesListItemSeparator";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
+import { SHOES_LIST_ITEM_SEPARATOR_HEIGHT, ShoesListItemSeparator } from "../ShoesListItemSeparator";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
 function estimateListHeight(listItemCount: number) {
   return (
     FEED_SHOES_CARD_HEIGHT * listItemCount +
-    Math.max(0, listItemCount - 1) * FEED_SHOES_LIST_ITEM_SEPARATOR_HEIGHT
+    Math.max(0, listItemCount - 1) * SHOES_LIST_ITEM_SEPARATOR_HEIGHT
   );
 }
 
@@ -60,7 +57,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
             height: estimateListHeight(SHOES_PLACEHOLDERS_TO_DISPLAY),
           }}
           renderItem={FeedShoesCardPlaceholder}
-          ItemSeparatorComponent={FeedShoesListItemSeparator}
+          ItemSeparatorComponent={ShoesListItemSeparator}
         />
       ) : (
         <FlashList
@@ -94,7 +91,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
               />
             );
           }}
-          ItemSeparatorComponent={FeedShoesListItemSeparator}
+          ItemSeparatorComponent={ShoesListItemSeparator}
         />
       )}
     </View>

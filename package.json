@@ -11,6 +11,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@shopify/flash-list": "1.4.3",
+    "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
