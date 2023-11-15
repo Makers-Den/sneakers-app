@@ -12,12 +12,12 @@ import {
   IN_STOCK_SHOES_IMAGE_WIDTH,
   InStockShoesCard,
 } from "./InStockShoesCard";
-import {
-  IN_STOCK_SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
-  InStockShoesListItemSeparator,
-} from "./InStockShoesListItemSeparator";
 import { InStockShoesCardPlaceholder } from "./InStockShoesCardPlaceholder";
 import { InStockShoesCardWrapper } from "./InStockShoesCardWrapper";
+import {
+  SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
+  ShoesListItemSeparator,
+} from "../ShoesListItemSeparator";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 20;
 const SHOES_LIST_NUM_OF_COLUMNS = 2;
@@ -27,7 +27,7 @@ function estimateListHeight(listItemCount: number) {
 
   return (
     IN_STOCK_SHOES_CARD_HEIGHT * listRowCount +
-    Math.max(0, listRowCount - 1) * IN_STOCK_SHOES_LIST_ITEM_SEPARATOR_HEIGHT
+    Math.max(0, listRowCount - 1) * SHOES_LIST_ITEM_SEPARATOR_HEIGHT
   );
 }
 
@@ -69,7 +69,7 @@ export function InStockShoesView({ navigation }: InStockShoesViewProps) {
               <InStockShoesCardPlaceholder />
             </InStockShoesCardWrapper>
           )}
-          ItemSeparatorComponent={InStockShoesListItemSeparator}
+          ItemSeparatorComponent={ShoesListItemSeparator}
         />
       ) : (
         <FlashList
@@ -92,7 +92,7 @@ export function InStockShoesView({ navigation }: InStockShoesViewProps) {
               />
             </InStockShoesCardWrapper>
           )}
-          ItemSeparatorComponent={InStockShoesListItemSeparator}
+          ItemSeparatorComponent={ShoesListItemSeparator}
         />
       )}
     </View>
