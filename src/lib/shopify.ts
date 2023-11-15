@@ -16,6 +16,7 @@ import {
   searchProductsQuery,
   searchProductsSchema,
 } from "@/queries/searchProducts";
+import { add } from "date-fns";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -110,9 +111,7 @@ export async function getShoesByCollectionId(
     }));
 
     const dropsAt = modelDropOffsetDays
-      ? dayjs(todayNoonUtc())
-          .add(parseInt(modelDropOffsetDays.value, 10), "day")
-          .toDate()
+      ? add(todayNoonUtc(), { days: parseInt(modelDropOffsetDays.value, 10) })
       : null;
 
     return {
@@ -143,12 +142,18 @@ export async function getShoesByCollectionId(
 
 interface GetShoesByIdQuery {
   shoesId: string;
+  maxImageHeight: number;
+  maxImageWidth: number;
   signal?: AbortSignal;
 }
 
 export async function getShoesById(query: GetShoesByIdQuery) {
   const response = await makeShopifyGraphqlRequest({
-    query: getProductByIdQuery({ productId: query.shoesId }),
+    query: getProductByIdQuery({
+      productId: query.shoesId,
+      maxImageHeight: query.maxImageHeight,
+      maxImageWidth: query.maxImageWidth,
+    }),
     schema: getProductByIdSchema,
     signal: query.signal,
   });
@@ -174,7 +179,9 @@ export async function getShoesById(query: GetShoesByIdQuery) {
       metafield && metafield.key === ShopifyMetaFieldKey.ModelDropOffsetDays
   );
 
-  const images = product.media.nodes.map((node) => node.previewImage.url);
+  const images = product.media.nodes.map(
+    (node) => node.previewImage.resizedUrl
+  );
 
   const sizes = product.variants.nodes.map((node) => ({
     id: node.id,
@@ -182,9 +189,7 @@ export async function getShoesById(query: GetShoesByIdQuery) {
   }));
 
   const dropsAt = modelDropOffsetDays
-    ? dayjs(todayNoonUtc())
-        .add(parseInt(modelDropOffsetDays.value, 10), "day")
-        .toDate()
+    ? add(todayNoonUtc(), { days: parseInt(modelDropOffsetDays.value, 10) })
     : null;
 
   return {

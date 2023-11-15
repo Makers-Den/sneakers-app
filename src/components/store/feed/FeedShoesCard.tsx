@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
   },
   modelVariantText: {
     fontSize: theme.typography.fontSize["2xl"],
-    lineHeight: theme.typography.fontSize["2xl"] * 1.41,
+    lineHeight:
+      theme.typography.fontSize["2xl"] * theme.typography.lineHeight.normal,
     color: theme.palette.gray[100],
   },
   imageWrapper: {

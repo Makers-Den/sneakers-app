@@ -12,8 +12,11 @@ export const queryKeys = {
       maxImageHeight: number;
     }) => [...queryKeys.shoes.lists(), params] as const,
     details: () => [...queryKeys.shoes.all(), "detail"] as const,
-    detail: (params: { shoesId: string }) =>
-      [...queryKeys.shoes.details(), params.shoesId] as const,
+    detail: (params: {
+      shoesId: string;
+      maxImageWidth: number;
+      maxImageHeight: number;
+    }) => [...queryKeys.shoes.details(), params] as const,
     search: (params: { query: string }) =>
       [...queryKeys.shoes.all(), "search", params.query] as const,
   },
