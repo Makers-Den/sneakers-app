@@ -33,9 +33,13 @@ function estimateListHeight(listItemCount: number) {
 
 export interface InStockShoesViewProps {
   navigation: Navigation;
+  isLazy: boolean;
 }
 
-export function InStockShoesView({ navigation }: InStockShoesViewProps) {
+export function InStockShoesView({
+  navigation,
+  isLazy,
+}: InStockShoesViewProps) {
   const inStockShoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -49,6 +53,7 @@ export function InStockShoesView({ navigation }: InStockShoesViewProps) {
       maxImageHeight: IN_STOCK_SHOES_IMAGE_HEIGHT,
       maxImageWidth: IN_STOCK_SHOES_IMAGE_WIDTH,
     }),
+    enabled: !isLazy,
   });
 
   const dimensions = Dimensions.get("window");

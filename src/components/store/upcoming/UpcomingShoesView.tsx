@@ -41,9 +41,13 @@ type ListItem =
 
 export interface UpcomingShoesViewProps {
   navigation: Navigation;
+  isLazy: boolean;
 }
 
-export function UpcomingShoesView({ navigation }: UpcomingShoesViewProps) {
+export function UpcomingShoesView({
+  navigation,
+  isLazy,
+}: UpcomingShoesViewProps) {
   const listItemsQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -86,6 +90,7 @@ export function UpcomingShoesView({ navigation }: UpcomingShoesViewProps) {
       maxImageHeight: UPCOMING_SHOES_IMAGE_HEIGHT,
       maxImageWidth: UPCOMING_SHOES_IMAGE_WIDTH,
     }),
+    enabled: !isLazy,
   });
 
   const dimensions = Dimensions.get("window");
