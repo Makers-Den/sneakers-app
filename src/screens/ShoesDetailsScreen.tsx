@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet, Modal } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList, Screen } from "@/types/navigation";
@@ -15,15 +15,16 @@ import { ShoesActionBar } from "@/components/store/details/ShoesActionBar";
 import { ShoesHeader } from "@/components/store/details/ShoesHeader";
 import { ShoesDescription } from "@/components/store/details/ShoesDescription";
 import { Button } from "@/components/ui/Button";
-import { useMemo, useState } from "react";
-import { SelectSizeModal } from "@/components/store/checkout/SelectSizeModal";
+import { useMemo } from "react";
+import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
+import { Checkout } from "@/components/store/checkout/Checkout";
 
 export function ShoesDetailsScreen({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, Screen.ShoesDetails>) {
-  const [isSelectSizeModalOpen, setIsSelectSizeModalOpen] = useState(false);
   const { shoesId } = route.params;
+  const checkoutProcess = useCheckoutProcess();
   const shoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesById({
@@ -49,7 +50,13 @@ export function ShoesDetailsScreen({
       return;
     }
 
-    setIsSelectSizeModalOpen(true);
+    checkoutProcess.startCheckoutProcess({
+      model: shoesQuery.data.model,
+      modelVariant: shoesQuery.data.modelVariant,
+      priceAmount: shoesQuery.data.price.amount,
+      priceCurrencyCode: shoesQuery.data.price.currencyCode,
+      sizes: shoesQuery.data.sizes,
+    });
   };
 
   const actionButtonText = useMemo(() => {
@@ -71,34 +78,36 @@ export function ShoesDetailsScreen({
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.wrapper}>
           <ShoesActionBar onClose={navigation.goBack} />
           <ShoesCarousel images={shoesQuery.data?.images || []} />
 
-          {shoesQuery.data && (
-            <View style={styles.contentWrapper}>
-              <ShoesHeader
-                model={shoesQuery.data.model}
-                modelVariant={shoesQuery.data.modelVariant}
-                dropsAt={shoesQuery.data.dropsAt}
-                priceAmount={shoesQuery.data.price.amount}
-                priceCurrencyCode={shoesQuery.data.price.currencyCode}
-                sizeRange={
-                  shoesQuery.data.sizeRange
-                    ? {
-                        max: shoesQuery.data.sizeRange.max.label,
-                        min: shoesQuery.data.sizeRange.min.label,
-                      }
-                    : null
-                }
-              />
+          <View style={styles.contentWrapper}>
+            {shoesQuery.data && (
+              <>
+                <ShoesHeader
+                  model={shoesQuery.data.model}
+                  modelVariant={shoesQuery.data.modelVariant}
+                  dropsAt={shoesQuery.data.dropsAt}
+                  priceAmount={shoesQuery.data.price.amount}
+                  priceCurrencyCode={shoesQuery.data.price.currencyCode}
+                  sizeRange={
+                    shoesQuery.data.sizeRange
+                      ? {
+                          max: shoesQuery.data.sizeRange.max.label,
+                          min: shoesQuery.data.sizeRange.min.label,
+                        }
+                      : null
+                  }
+                />
 
-              <ShoesDescription
-                htmlDescription={shoesQuery.data.descriptionHtml}
-              />
-            </View>
-          )}
+                <ShoesDescription
+                  htmlDescription={shoesQuery.data.descriptionHtml}
+                />
+              </>
+            )}
+          </View>
         </View>
       </ScrollView>
 
@@ -112,11 +121,7 @@ export function ShoesDetailsScreen({
             />
           </View>
 
-          <SelectSizeModal
-            isOpen={isSelectSizeModalOpen}
-            sizes={shoesQuery.data.sizes}
-            onClose={() => setIsSelectSizeModalOpen(false)}
-          />
+          <Checkout {...checkoutProcess.checkoutProps} />
         </>
       )}
     </SafeAreaView>
@@ -126,6 +131,9 @@ export function ShoesDetailsScreen({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: theme.palette.gray[700],
+  },
+  scrollView: {
     backgroundColor: theme.palette.gray[900],
   },
   wrapper: {
@@ -137,6 +145,7 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing(14),
   },
   contentWrapper: {
+    flex: 1,
     width: "100%",
   },
   actionButtonWrapper: {

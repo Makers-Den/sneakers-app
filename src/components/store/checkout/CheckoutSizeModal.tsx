@@ -3,30 +3,36 @@ import { theme } from "@/lib/theme";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SizeButton } from "./SizeButton";
+import { Size } from "./Checkout";
 
 const SIZE_BUTTONS_PER_ROW = 4;
 
-export interface Size {
-  id: string;
-  label: string;
-}
-
-export interface SelectSizeModalProps {
+export interface CheckoutSizeModalProps {
   isOpen: boolean;
   sizes: Size[];
   onClose: () => void;
+  onSelect: (size: Size) => void;
 }
 
-export function SelectSizeModal({
+export function CheckoutSizeModal({
   isOpen,
   sizes,
   onClose,
-}: SelectSizeModalProps) {
-  const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null);
+  onSelect,
+}: CheckoutSizeModalProps) {
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const validSelectedSizeId =
-    sizes.find((size) => size.id === selectedSizeId)?.id || null;
+    sizes.find((size) => size.id === selectedSize?.id)?.id || null;
 
   const sizeRowCount = Math.ceil(sizes.length / SIZE_BUTTONS_PER_ROW);
+
+  const handleContinuePress = () => {
+    if (!selectedSize) {
+      return;
+    }
+
+    onSelect(selectedSize);
+  };
 
   return (
     <Modal
@@ -57,7 +63,7 @@ export function SelectSizeModal({
                       <SizeButton
                         label={`EU ${size.label}`}
                         isSelected={validSelectedSizeId === size.id}
-                        onPress={() => setSelectedSizeId(size.id)}
+                        onPress={() => setSelectedSize(size)}
                       />
                     </View>
                   ))}
@@ -69,7 +75,13 @@ export function SelectSizeModal({
               );
             })}
           </View>
-          <Button isDisabled={!validSelectedSizeId} text="Continue" size="lg" />
+
+          <Button
+            isDisabled={!validSelectedSizeId}
+            text="Continue"
+            size="lg"
+            onPress={handleContinuePress}
+          />
         </View>
       </View>
     </Modal>
@@ -83,7 +95,7 @@ const styles = StyleSheet.create({
   exitArea: {
     flex: 1,
     backgroundColor: theme.palette.gray[900],
-    opacity: theme.opacity.lg,
+    opacity: theme.opacity.md,
   },
   contentWrapper: {
     backgroundColor: theme.palette.gray[800],

@@ -4,7 +4,7 @@ import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
 import { Navigation, Screen } from "@/types/navigation";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 import {
   FEED_SHOES_CARD_HEIGHT,
   FEED_SHOES_IMAGE_HEIGHT,
@@ -17,7 +17,8 @@ import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
 } from "../ShoesListItemSeparator";
-import { SelectSizeModal } from "../checkout/SelectSizeModal";
+import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
+import { Checkout } from "../checkout/Checkout";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
@@ -37,9 +38,7 @@ export interface FeedShoesViewProps {
 }
 
 export function FeedShoesView({ navigation }: FeedShoesViewProps) {
-  const [activeShoesSizeSelector, setActiveShoesSizeSelector] =
-    useState<FeedShoes | null>();
-
+  const checkoutProcess = useCheckoutProcess();
   const feedShoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -64,9 +63,15 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         return;
       }
 
-      setActiveShoesSizeSelector(shoes);
+      checkoutProcess.startCheckoutProcess({
+        model: shoes.model,
+        modelVariant: shoes.modelVariant,
+        priceAmount: shoes.price.amount,
+        priceCurrencyCode: shoes.price.currencyCode,
+        sizes: shoes.sizes,
+      });
     },
-    [setActiveShoesSizeSelector]
+    [checkoutProcess]
   );
 
   return (
@@ -119,11 +124,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         />
       )}
 
-      <SelectSizeModal
-        isOpen={activeShoesSizeSelector !== null}
-        sizes={activeShoesSizeSelector?.sizes || []}
-        onClose={() => setActiveShoesSizeSelector(null)}
-      />
+      <Checkout {...checkoutProcess.checkoutProps} />
     </View>
   );
 }
