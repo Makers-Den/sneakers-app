@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Modal } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList, Screen } from "@/types/navigation";
@@ -15,12 +15,14 @@ import { ShoesActionBar } from "@/components/store/details/ShoesActionBar";
 import { ShoesHeader } from "@/components/store/details/ShoesHeader";
 import { ShoesDescription } from "@/components/store/details/ShoesDescription";
 import { Button } from "@/components/ui/Button";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { SelectSizeModal } from "@/components/store/checkout/SelectSizeModal";
 
 export function ShoesDetailsScreen({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, Screen.ShoesDetails>) {
+  const [isSelectSizeModalOpen, setIsSelectSizeModalOpen] = useState(false);
   const { shoesId } = route.params;
   const shoesQuery = useQuery({
     queryFn: ({ signal }) =>
@@ -37,7 +39,20 @@ export function ShoesDetailsScreen({
     }),
   });
 
-  const bottomButtonText = useMemo(() => {
+  const handleActionButtonPress = () => {
+    if (!shoesQuery.data) {
+      return;
+    }
+
+    if (shoesQuery.data.dropsAt) {
+      // @TODO Handle
+      return;
+    }
+
+    setIsSelectSizeModalOpen(true);
+  };
+
+  const actionButtonText = useMemo(() => {
     if (!shoesQuery.data) {
       return "";
     }
@@ -72,8 +87,8 @@ export function ShoesDetailsScreen({
                 sizeRange={
                   shoesQuery.data.sizeRange
                     ? {
-                        max: shoesQuery.data.sizeRange.max.name,
-                        min: shoesQuery.data.sizeRange.min.name,
+                        max: shoesQuery.data.sizeRange.max.label,
+                        min: shoesQuery.data.sizeRange.min.label,
                       }
                     : null
                 }
@@ -87,22 +102,31 @@ export function ShoesDetailsScreen({
         </View>
       </ScrollView>
 
-      <View style={styles.buttonWrapper}>
-        <Button
-          text={bottomButtonText}
-          onPress={() => {
-            // @TODO handlePress
-          }}
-          size="lg"
-        />
-      </View>
+      {shoesQuery.data && (
+        <>
+          <View style={styles.actionButtonWrapper}>
+            <Button
+              text={actionButtonText}
+              onPress={handleActionButtonPress}
+              size="lg"
+            />
+          </View>
+
+          <SelectSizeModal
+            isOpen={isSelectSizeModalOpen}
+            sizes={shoesQuery.data.sizes}
+            onClose={() => setIsSelectSizeModalOpen(false)}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: theme.palette.gray[700],
+    flex: 1,
+    backgroundColor: theme.palette.gray[900],
   },
   wrapper: {
     position: "relative",
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
   contentWrapper: {
     width: "100%",
   },
-  buttonWrapper: {
+  actionButtonWrapper: {
     position: "absolute",
     bottom: theme.spacing(4),
     left: theme.spacing(2),

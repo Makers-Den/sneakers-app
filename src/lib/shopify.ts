@@ -107,7 +107,7 @@ export async function getShoesByCollectionId(
 
     const sizes = edge.node.variants.nodes.map((node) => ({
       id: node.id,
-      name: node.title,
+      label: node.title,
     }));
 
     const dropsAt = modelDropOffsetDays
@@ -121,6 +121,7 @@ export async function getShoesByCollectionId(
       isInStock: edge.node.availableForSale,
       isUpcoming: !edge.node.availableForSale,
       isForMen: modelIsForMen?.value ? modelIsForMen.value === "true" : null,
+      sizes,
       sizeRange:
         sizes.length === 0
           ? null
@@ -185,7 +186,7 @@ export async function getShoesById(query: GetShoesByIdQuery) {
 
   const sizes = product.variants.nodes.map((node) => ({
     id: node.id,
-    name: node.title,
+    label: node.title,
   }));
 
   const dropsAt = modelDropOffsetDays
