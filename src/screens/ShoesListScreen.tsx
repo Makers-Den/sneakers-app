@@ -28,15 +28,32 @@ export function ShoesListScreen({
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
+  const renderLazyPlaceholder = useMemo(() => {
+    return ({ route }: { route: { key: ShoesListScreenTab } }) => {
+      switch (route.key) {
+        case ShoesListScreenTab.IN_STOCK:
+          return <MemoInStockShoesView isLazy navigation={navigation} />;
+        case ShoesListScreenTab.UPCOMING:
+          return <MemoUpcomingShoesView isLazy navigation={navigation} />;
+        default:
+          return null;
+      }
+    };
+  }, [navigation]);
+
   const renderScene = useMemo(() => {
     return ({ route }: { route: { key: ShoesListScreenTab } }) => {
       switch (route.key) {
         case ShoesListScreenTab.FEED:
           return <MemoFeedShoesView navigation={navigation} />;
         case ShoesListScreenTab.IN_STOCK:
-          return <MemoInStockShoesView navigation={navigation} />;
+          return (
+            <MemoInStockShoesView isLazy={false} navigation={navigation} />
+          );
         case ShoesListScreenTab.UPCOMING:
-          return <MemoUpcomingShoesView navigation={navigation} />;
+          return (
+            <MemoUpcomingShoesView isLazy={false} navigation={navigation} />
+          );
         default:
           return null;
       }
@@ -46,7 +63,9 @@ export function ShoesListScreen({
   return (
     <SafeAreaView style={styles.wrapper}>
       <TabView
+        lazy={({ route }) => route.key !== ShoesListScreenTab.FEED}
         navigationState={{ index, routes }}
+        renderLazyPlaceholder={renderLazyPlaceholder}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
