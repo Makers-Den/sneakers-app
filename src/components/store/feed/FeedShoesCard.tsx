@@ -12,6 +12,7 @@ export interface FeedShoesCardProps {
   modelVariant: string | null;
   image: string | null;
   buttonText: string;
+  onButtonPress: () => void;
   onPress: () => void;
 }
 
@@ -21,6 +22,7 @@ export function FeedShoesCard({
   modelVariant,
   buttonText,
   onPress,
+  onButtonPress,
 }: FeedShoesCardProps) {
   return (
     <Pressable onPress={onPress}>
@@ -36,12 +38,7 @@ export function FeedShoesCard({
 
         <View style={styles.bottomWrapper}>
           <View />
-          <Button
-            text={buttonText}
-            onPress={() => {
-              // @TODO Add on press
-            }}
-          />
+          <Button text={buttonText} onPress={onButtonPress} />
         </View>
       </View>
     </Pressable>

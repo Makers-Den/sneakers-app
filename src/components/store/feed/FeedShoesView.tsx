@@ -4,7 +4,7 @@ import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
 import { Navigation, Screen } from "@/types/navigation";
-import { memo } from "react";
+import { memo, useCallback, useState } from "react";
 import {
   FEED_SHOES_CARD_HEIGHT,
   FEED_SHOES_IMAGE_HEIGHT,
@@ -13,7 +13,11 @@ import {
 } from "./FeedShoesCard";
 import { FlashList } from "@shopify/flash-list";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
-import { SHOES_LIST_ITEM_SEPARATOR_HEIGHT, ShoesListItemSeparator } from "../ShoesListItemSeparator";
+import {
+  SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
+  ShoesListItemSeparator,
+} from "../ShoesListItemSeparator";
+import { SelectSizeModal } from "../checkout/SelectSizeModal";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
@@ -24,11 +28,18 @@ function estimateListHeight(listItemCount: number) {
   );
 }
 
+type FeedShoes = NonNullable<
+  Awaited<ReturnType<typeof getShoesByCollectionId>>
+>[number];
+
 export interface FeedShoesViewProps {
   navigation: Navigation;
 }
 
 export function FeedShoesView({ navigation }: FeedShoesViewProps) {
+  const [activeShoesSizeSelector, setActiveShoesSizeSelector] =
+    useState<FeedShoes | null>();
+
   const feedShoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -45,6 +56,18 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
   });
 
   const dimensions = Dimensions.get("window");
+
+  const handleButtonPress = useCallback(
+    (shoes: FeedShoes) => {
+      if (shoes.isUpcoming) {
+        // @TODO Handle press
+        return;
+      }
+
+      setActiveShoesSizeSelector(shoes);
+    },
+    [setActiveShoesSizeSelector]
+  );
 
   return (
     <View style={styles.wrapper}>
@@ -83,6 +106,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
                     ? "Notify Me"
                     : currencyFormatter.format(shoes.price.amount)
                 }
+                onButtonPress={() => handleButtonPress(shoes)}
                 onPress={() => {
                   navigation.navigate(Screen.ShoesDetails, {
                     shoesId: shoes.id,
@@ -94,6 +118,12 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
           ItemSeparatorComponent={ShoesListItemSeparator}
         />
       )}
+
+      <SelectSizeModal
+        isOpen={activeShoesSizeSelector !== null}
+        sizes={activeShoesSizeSelector?.sizes || []}
+        onClose={() => setActiveShoesSizeSelector(null)}
+      />
     </View>
   );
 }

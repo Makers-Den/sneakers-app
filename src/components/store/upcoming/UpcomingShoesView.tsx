@@ -154,8 +154,8 @@ export function UpcomingShoesView({
                       sizeRange={
                         item.shoes.sizeRange
                           ? {
-                              min: item.shoes.sizeRange.min.name,
-                              max: item.shoes.sizeRange.max.name,
+                              min: item.shoes.sizeRange.min.label,
+                              max: item.shoes.sizeRange.max.label,
                             }
                           : null
                       }
