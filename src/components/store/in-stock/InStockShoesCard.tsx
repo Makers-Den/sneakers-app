@@ -14,7 +14,7 @@ export interface InStockShoesCardProps {
 export function InStockShoesCard({ image, onPress }: InStockShoesCardProps) {
   return (
     <Pressable style={styles.wrapper} onPress={onPress}>
-      {image && <Image style={[styles.image]} source={{ uri: image }} />}
+      {image && <Image style={styles.image} source={{ uri: image }} />}
     </Pressable>
   );
 }

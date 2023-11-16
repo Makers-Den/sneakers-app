@@ -1,13 +1,18 @@
 export const theme = {
   spacing: (value: number) => value * 8,
   opacity: {
-    sm: 0.75,
+    sm: 0.85,
   },
   typography: {
     fontSize: {
       base: 14,
       lg: 18,
       "2xl": 26,
+    },
+    lineHeight: {
+      tight: 1.25,
+      normal: 1.41,
+      loose: 2,
     },
   },
   palette: {

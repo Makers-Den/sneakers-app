@@ -6,6 +6,8 @@ import {
 
 export interface GetProductByIdVars {
   productId: string;
+  maxImageWidth: number;
+  maxImageHeight: number;
 }
 
 export function getProductByIdQuery(vars: GetProductByIdVars) {
@@ -31,7 +33,7 @@ export function getProductByIdQuery(vars: GetProductByIdVars) {
       media(first: 50) {
         nodes {
           previewImage {
-            url
+            resizedUrl: url(transform: { maxHeight: ${vars.maxImageHeight}, maxWidth: ${vars.maxImageWidth} })
           }
         }
       },
@@ -68,7 +70,7 @@ export const getProductByIdSchema = z.object({
         nodes: z.array(
           z.object({
             previewImage: z.object({
-              url: z.string(),
+              resizedUrl: z.string(),
             }),
           })
         ),

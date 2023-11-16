@@ -4,10 +4,16 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 export interface ButtonProps {
   text: string;
   variant?: "contained" | "outlined";
+  size?: "md" | "lg";
   onPress?: () => void;
 }
 
-export function Button({ text, variant = "contained", onPress }: ButtonProps) {
+export function Button({
+  text,
+  variant = "contained",
+  size = "md",
+  onPress,
+}: ButtonProps) {
   return (
     <TouchableOpacity
       style={[
@@ -15,6 +21,7 @@ export function Button({ text, variant = "contained", onPress }: ButtonProps) {
         variant === "contained"
           ? styles.buttonContained
           : styles.buttonOutlined,
+        size === "md" ? styles.buttonMd : styles.buttonLg,
       ]}
       activeOpacity={theme.opacity.sm}
       onPress={onPress}
@@ -23,6 +30,7 @@ export function Button({ text, variant = "contained", onPress }: ButtonProps) {
         style={[
           styles.text,
           variant === "contained" ? styles.textContained : styles.textOutlined,
+          size === "md" ? styles.textMd : styles.textLg,
         ]}
       >
         {text}
@@ -34,9 +42,6 @@ export function Button({ text, variant = "contained", onPress }: ButtonProps) {
 const styles = StyleSheet.create({
   button: {
     borderRadius: theme.spacing(8),
-    fontSize: theme.typography.fontSize.base,
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -48,8 +53,24 @@ const styles = StyleSheet.create({
     borderColor: theme.palette.gray[400],
     backgroundColor: "transparent",
   },
+  buttonMd: {
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+  },
+  buttonLg: {
+    fontSize: theme.typography.fontSize.lg,
+    paddingTop: theme.spacing(2.5),
+    paddingBottom: theme.spacing(2.5),
+  },
   text: {
+    textAlign: "center",
     fontWeight: "500",
+  },
+  textMd: {
+    fontSize: theme.typography.fontSize.base,
+  },
+  textLg: {
+    fontSize: theme.typography.fontSize.base,
   },
   textContained: {
     color: theme.palette.gray[900],
