@@ -17,6 +17,10 @@ import {
   searchProductsSchema,
 } from "@/queries/searchProducts";
 import { add } from "date-fns";
+import {
+  createCheckoutMutation,
+  createCheckoutSchema,
+} from "@/mutations/createCheckout";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -249,4 +253,25 @@ export async function searchShoes(query: SearchShoesQuery) {
       previewImage: images.length === 0 ? null : images[0],
     };
   });
+}
+
+interface CreateCheckoutCommand {
+  sizeId: string;
+  signal?: AbortSignal;
+}
+
+export async function createCheckout(command: CreateCheckoutCommand) {
+  const response = await makeShopifyGraphqlRequest({
+    query: createCheckoutMutation({ variantId: command.sizeId }),
+    schema: createCheckoutSchema,
+    signal: command.signal,
+  });
+
+  if (response === null) {
+    return null;
+  }
+
+  return {
+    webUrl: response.data.checkoutCreate.checkout.webUrl,
+  };
 }
