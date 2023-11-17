@@ -1,16 +1,24 @@
 import { theme } from "@/lib/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
   TabBar as BaseTabBar,
   Route,
   TabBarProps as BaseTabBarProps,
 } from "react-native-tab-view";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-export function TabBar<T extends Route>(props: BaseTabBarProps<T>) {
+export interface TabBarProps<T extends Route> extends BaseTabBarProps<T> {
+  onSearchPress: () => void;
+}
+
+export function TabBar<T extends Route>({
+  onSearchPress,
+  ...tabBarProps
+}: TabBarProps<T>) {
   return (
     <View style={styles.wrapper}>
       <BaseTabBar
-        {...props}
+        {...tabBarProps}
         style={styles.tabBar}
         tabStyle={styles.tab}
         indicatorStyle={styles.tabIndicator}
@@ -23,9 +31,17 @@ export function TabBar<T extends Route>(props: BaseTabBarProps<T>) {
         )}
       />
 
-      <View style={styles.searchWrapper}>
-        <Text style={styles.searchText}>Search</Text>
-      </View>
+      <TouchableOpacity
+        style={styles.searchWrapper}
+        activeOpacity={theme.opacity.sm}
+        onPress={onSearchPress}
+      >
+        <Ionicons
+          name="search-outline"
+          size={theme.spacing(2.5)}
+          color={theme.palette.gray[100]}
+        />
+      </TouchableOpacity>
     </View>
   );
 }

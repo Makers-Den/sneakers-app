@@ -224,12 +224,18 @@ export async function getShoesById(query: GetShoesByIdQuery) {
 
 interface SearchShoesQuery {
   query: string;
+  maxImageHeight: number;
+  maxImageWidth: number;
   signal?: AbortSignal;
 }
 
 export async function searchShoes(query: SearchShoesQuery) {
   const response = await makeShopifyGraphqlRequest({
-    query: searchProductsQuery({ query: query.query }),
+    query: searchProductsQuery({
+      query: query.query,
+      maxImageHeight: query.maxImageHeight,
+      maxImageWidth: query.maxImageWidth,
+    }),
     schema: searchProductsSchema,
     signal: query.signal,
   });
@@ -244,7 +250,7 @@ export async function searchShoes(query: SearchShoesQuery) {
         metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
     );
 
-    const images = node.media.nodes.map((node) => node.previewImage.url);
+    const images = node.media.nodes.map((node) => node.previewImage.resizedUrl);
 
     return {
       id: node.id,
