@@ -4,7 +4,7 @@ import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
 import { Navigation, Screen } from "@/types/navigation";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import {
   FEED_SHOES_CARD_HEIGHT,
   FEED_SHOES_IMAGE_HEIGHT,
@@ -19,6 +19,8 @@ import {
 } from "../ShoesListItemSeparator";
 import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
 import { Checkout } from "../checkout/Checkout";
+import { NotificationModal } from "../notification/NotificationModal";
+import { useNotificationModal } from "@/hooks/useNotificationModal";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
@@ -38,6 +40,7 @@ export interface FeedShoesViewProps {
 }
 
 export function FeedShoesView({ navigation }: FeedShoesViewProps) {
+  const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
   const feedShoesQuery = useQuery({
     queryFn: ({ signal }) =>
@@ -59,7 +62,11 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
   const handleButtonPress = useCallback(
     (shoes: FeedShoes) => {
       if (shoes.isUpcoming) {
-        // @TODO Handle press
+        notificationModal.open({
+          id: shoes.id,
+          model: shoes.model,
+        });
+
         return;
       }
 
@@ -125,6 +132,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
       )}
 
       <Checkout {...checkoutProcess.checkoutProps} />
+      <NotificationModal {...notificationModal.props} />
     </View>
   );
 }

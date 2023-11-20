@@ -31,6 +31,7 @@ export interface UpcomingShoesCardProps {
   dropsAt: Date | null;
   image: string | null;
   onPress: () => void;
+  onButtonPress: () => void;
 }
 
 export function UpcomingShoesCard({
@@ -40,6 +41,7 @@ export function UpcomingShoesCard({
   sizeRange,
   image,
   onPress,
+  onButtonPress,
 }: UpcomingShoesCardProps) {
   return (
     <Pressable style={styles.wrapper} onPress={onPress}>
@@ -57,13 +59,7 @@ export function UpcomingShoesCard({
         {image && <Image style={[styles.image]} source={{ uri: image }} />}
       </View>
       <View style={styles.bottomWrapper}>
-        <Button
-          variant="outlined"
-          text="Notify Me"
-          onPress={() => {
-            // @TODO Handle press
-          }}
-        />
+        <Button variant="outlined" text="Notify Me" onPress={onButtonPress} />
         <View />
       </View>
     </Pressable>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/lib/theme";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { Size } from "./Checkout";
+import { StyleSheet, Text, View } from "react-native";
+import { BottomModal } from "@/components/ui/BottomModal";
 
 export interface CheckoutSummaryModalProps {
   model: string;
@@ -32,61 +32,39 @@ export function CheckoutSummaryModal({
   });
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isOpen}
-      onRequestClose={onClose}
-    >
+    <BottomModal isOpen={isOpen} onClose={onClose}>
       <View style={styles.wrapper}>
-        <Pressable style={styles.exitArea} onPress={onClose} />
+        <View style={styles.header}>
+          <Text style={styles.modelText}>{model}</Text>
+          {modelVariant && (
+            <Text style={styles.modelVariantText}>{modelVariant}</Text>
+          )}
+        </View>
 
-        <View style={styles.contentWrapper}>
-          <View style={styles.header}>
-            <Text style={styles.modelText}>{model}</Text>
-            {modelVariant && (
-              <Text style={styles.modelVariantText}>{modelVariant}</Text>
-            )}
+        <View style={styles.propertyList}>
+          <View style={styles.propertyListItem}>
+            <Text style={styles.propertyKey}>Size</Text>
+            <Text style={styles.propertyValue}>EU {sizeLabel}</Text>
           </View>
 
-          <View style={styles.propertyList}>
-            <View style={styles.propertyListItem}>
-              <Text style={styles.propertyKey}>Size</Text>
-              <Text style={styles.propertyValue}>EU {sizeLabel}</Text>
-            </View>
-
-            <View style={styles.propertyListItem}>
-              <Text style={styles.propertyKey}>Purchase Summary</Text>
-              <Text style={styles.propertyValue}>
-                {currencyFormatter.format(priceAmount)}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.footer}>
-            <Button
-              isDisabled={isBuying}
-              text="Buy"
-              size="lg"
-              onPress={onBuy}
-            />
+          <View style={styles.propertyListItem}>
+            <Text style={styles.propertyKey}>Purchase Summary</Text>
+            <Text style={styles.propertyValue}>
+              {currencyFormatter.format(priceAmount)}
+            </Text>
           </View>
         </View>
+
+        <View style={styles.footer}>
+          <Button isDisabled={isBuying} text="Buy" size="lg" onPress={onBuy} />
+        </View>
       </View>
-    </Modal>
+    </BottomModal>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
-  },
-  exitArea: {
-    flex: 1,
-    backgroundColor: theme.palette.gray[900],
-    opacity: theme.opacity.md,
-  },
-  contentWrapper: {
     backgroundColor: theme.palette.gray[800],
   },
   header: {

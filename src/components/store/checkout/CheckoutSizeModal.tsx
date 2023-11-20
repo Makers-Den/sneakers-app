@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/lib/theme";
 import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SizeButton } from "./SizeButton";
 import { Size } from "./Checkout";
+import { BottomModal } from "@/components/ui/BottomModal";
 
 const SIZE_BUTTONS_PER_ROW = 4;
 
@@ -35,69 +36,52 @@ export function CheckoutSizeModal({
   };
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isOpen}
-      onRequestClose={onClose}
-    >
+    <BottomModal isOpen={isOpen} onClose={onClose}>
       <View style={styles.wrapper}>
-        <Pressable style={styles.exitArea} onPress={onClose} />
+        <Text style={styles.selectSizeText}>Select Size</Text>
+        <View style={styles.sizeListWrapper}>
+          {new Array(sizeRowCount).fill(null).map((_, rowIndex) => {
+            const sizeCellsToDisplay = sizes.slice(
+              SIZE_BUTTONS_PER_ROW * rowIndex,
+              SIZE_BUTTONS_PER_ROW * (rowIndex + 1)
+            );
 
-        <View style={styles.contentWrapper}>
-          <Text style={styles.selectSizeText}>Select Size</Text>
-          <View style={styles.sizeListWrapper}>
-            {new Array(sizeRowCount).fill(null).map((_, rowIndex) => {
-              const sizeCellsToDisplay = sizes.slice(
-                SIZE_BUTTONS_PER_ROW * rowIndex,
-                SIZE_BUTTONS_PER_ROW * (rowIndex + 1)
-              );
+            const emptyCellsToDisplay =
+              SIZE_BUTTONS_PER_ROW - sizeCellsToDisplay.length;
 
-              const emptyCellsToDisplay =
-                SIZE_BUTTONS_PER_ROW - sizeCellsToDisplay.length;
+            return (
+              <View key={rowIndex} style={styles.sizeListRow}>
+                {sizeCellsToDisplay.map((size) => (
+                  <View key={size.id} style={styles.sizeListCell}>
+                    <SizeButton
+                      label={`EU ${size.label}`}
+                      isSelected={validSelectedSizeId === size.id}
+                      onPress={() => setSelectedSize(size)}
+                    />
+                  </View>
+                ))}
 
-              return (
-                <View key={rowIndex} style={styles.sizeListRow}>
-                  {sizeCellsToDisplay.map((size) => (
-                    <View key={size.id} style={styles.sizeListCell}>
-                      <SizeButton
-                        label={`EU ${size.label}`}
-                        isSelected={validSelectedSizeId === size.id}
-                        onPress={() => setSelectedSize(size)}
-                      />
-                    </View>
-                  ))}
-
-                  {new Array(emptyCellsToDisplay).fill(null).map((_, index) => (
-                    <View key={index} style={styles.sizeListCell} />
-                  ))}
-                </View>
-              );
-            })}
-          </View>
-
-          <Button
-            isDisabled={!validSelectedSizeId}
-            text="Continue"
-            size="lg"
-            onPress={handleContinuePress}
-          />
+                {new Array(emptyCellsToDisplay).fill(null).map((_, index) => (
+                  <View key={index} style={styles.sizeListCell} />
+                ))}
+              </View>
+            );
+          })}
         </View>
+
+        <Button
+          isDisabled={!validSelectedSizeId}
+          text="Continue"
+          size="lg"
+          onPress={handleContinuePress}
+        />
       </View>
-    </Modal>
+    </BottomModal>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
-  },
-  exitArea: {
-    flex: 1,
-    backgroundColor: theme.palette.gray[900],
-    opacity: theme.opacity.md,
-  },
-  contentWrapper: {
     backgroundColor: theme.palette.gray[800],
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
