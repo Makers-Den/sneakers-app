@@ -4,7 +4,7 @@ import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
 import { Navigation, Screen } from "@/types/navigation";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import {
   UPCOMING_SHOES_CARD_HEIGHT,
   UPCOMING_SHOES_IMAGE_HEIGHT,
@@ -21,6 +21,8 @@ import {
   UPCOMING_SHOES_HEADER_HEIGHT,
   UpcomingShoesHeader,
 } from "./UpcomingShoesHeader";
+import { NotificationModal } from "../notification/NotificationModal";
+import { useNotificationModal } from "@/hooks/useNotificationModal";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
@@ -48,6 +50,7 @@ export function UpcomingShoesView({
   navigation,
   isLazy,
 }: UpcomingShoesViewProps) {
+  const notificationModal = useNotificationModal();
   const listItemsQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -164,6 +167,12 @@ export function UpcomingShoesView({
                           shoesId: item.shoes.id,
                         });
                       }}
+                      onButtonPress={() =>
+                        notificationModal.open({
+                          id: item.shoes.id,
+                          model: item.shoes.model,
+                        })
+                      }
                     />
                     {item.hasSeparator && <ShoesListItemSeparator />}
                   </View>
@@ -172,6 +181,8 @@ export function UpcomingShoesView({
           }}
         />
       )}
+
+      <NotificationModal {...notificationModal.props} />
     </View>
   );
 }

@@ -5,6 +5,7 @@
     },
     "name": "sneakers-app",
     "slug": "sneakers-app",
+    "scheme": "sneakers-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

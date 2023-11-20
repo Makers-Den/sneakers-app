@@ -18,12 +18,15 @@ import { Button } from "@/components/ui/Button";
 import { useMemo } from "react";
 import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
 import { Checkout } from "@/components/store/checkout/Checkout";
+import { NotificationModal } from "@/components/store/notification/NotificationModal";
+import { useNotificationModal } from "@/hooks/useNotificationModal";
 
 export function ShoesDetailsScreen({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, Screen.ShoesDetails>) {
   const { shoesId } = route.params;
+  const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
   const shoesQuery = useQuery({
     queryFn: ({ signal }) =>
@@ -46,7 +49,11 @@ export function ShoesDetailsScreen({
     }
 
     if (shoesQuery.data.dropsAt) {
-      // @TODO Handle
+      notificationModal.open({
+        id: shoesQuery.data.id,
+        model: shoesQuery.data.model,
+      });
+
       return;
     }
 
@@ -112,18 +119,17 @@ export function ShoesDetailsScreen({
       </ScrollView>
 
       {shoesQuery.data && (
-        <>
-          <View style={styles.actionButtonWrapper}>
-            <Button
-              text={actionButtonText}
-              onPress={handleActionButtonPress}
-              size="lg"
-            />
-          </View>
-
-          <Checkout {...checkoutProcess.checkoutProps} />
-        </>
+        <View style={styles.actionButtonWrapper}>
+          <Button
+            text={actionButtonText}
+            onPress={handleActionButtonPress}
+            size="lg"
+          />
+        </View>
       )}
+
+      <Checkout {...checkoutProcess.checkoutProps} />
+      <NotificationModal {...notificationModal.props} />
     </SafeAreaView>
   );
 }
