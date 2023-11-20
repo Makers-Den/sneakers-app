@@ -30,7 +30,7 @@ export function NotificationModal({ shoes, onClose }: NotificationModalProps) {
         content: {
           title: `${shoes.model} dropped! 🎉`,
           data: createNotificationData({
-            type: "OpenShoesDetails",
+            type: "ShoesDropped",
             shoesId: shoes.id,
           }),
         },

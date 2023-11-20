@@ -65,7 +65,7 @@ export function NotificationNavigator() {
     }
 
     switch (parseNotificationDataResult.data.type) {
-      case "OpenShoesDetails":
+      case "ShoesDropped":
         navigation.navigate(Screen.ShoesDetails, {
           shoesId: parseNotificationDataResult.data.shoesId,
         });

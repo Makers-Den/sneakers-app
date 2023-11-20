@@ -4,7 +4,7 @@ export type NotificationData = z.infer<typeof notificationDataSchema>;
 
 export const notificationDataSchema = z.union([
   z.object({
-    type: z.literal("OpenShoesDetails"),
+    type: z.literal("ShoesDropped"),
     shoesId: z.string(),
   }),
   z.object({
