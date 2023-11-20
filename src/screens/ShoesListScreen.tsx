@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TabView } from "react-native-tab-view";
+import { Route, TabBarProps, TabView } from "react-native-tab-view";
 import { RootStackParamList, Screen } from "@/types/navigation";
 import { MemoFeedShoesView } from "@/components/store/feed/FeedShoesView";
 import { MemoInStockShoesView } from "@/components/store/in-stock/InStockShoesView";
@@ -60,6 +60,15 @@ export function ShoesListScreen({
     };
   }, [navigation]);
 
+  const renderTabBar = useMemo(() => {
+    return (props: TabBarProps<Route>) => (
+      <TabBar
+        onSearchPress={() => navigation.navigate(Screen.ShoesSearch)}
+        {...props}
+      />
+    );
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.wrapper}>
       <TabView
@@ -69,7 +78,7 @@ export function ShoesListScreen({
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
-        renderTabBar={TabBar}
+        renderTabBar={renderTabBar}
       />
     </SafeAreaView>
   );

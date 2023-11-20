@@ -6,6 +6,8 @@ import {
 
 export interface SearchProductsVars {
   query: string;
+  maxImageWidth: number;
+  maxImageHeight: number;
 }
 
 export function searchProductsQuery(vars: SearchProductsVars) {
@@ -19,7 +21,7 @@ export function searchProductsQuery(vars: SearchProductsVars) {
           media(first: 1) {
             nodes {
               previewImage {
-                url
+                resizedUrl: url(transform: { maxHeight: ${vars.maxImageHeight}, maxWidth: ${vars.maxImageWidth} })
               }
             }
           },
@@ -47,7 +49,7 @@ export const searchProductsSchema = z.object({
             nodes: z.array(
               z.object({
                 previewImage: z.object({
-                  url: z.string(),
+                  resizedUrl: z.string(),
                 }),
               })
             ),

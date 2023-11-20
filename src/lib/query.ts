@@ -17,7 +17,11 @@ export const queryKeys = {
       maxImageWidth: number;
       maxImageHeight: number;
     }) => [...queryKeys.shoes.details(), params] as const,
-    search: (params: { query: string }) =>
-      [...queryKeys.shoes.all(), "search", params.query] as const,
+    search: (params: {
+      query: string;
+      maxImageWidth: number;
+      maxImageHeight: number;
+    }) => [...queryKeys.shoes.all(), "search", params] as const,
+    recentSearches: () => [...queryKeys.shoes.all(), "recentSearches"] as const,
   },
 };
