@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "981281564397",
+    "project_id": "sneakers-app-206d0",
+    "storage_bucket": "sneakers-app-206d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981281564397:android:b3bbf2dfa3891a3ececee4",
+        "android_client_info": {
+          "package_name": "io.makersden.sneakersapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYICvMmtSrBWQfzjtkmXnkyJHpjZZ1iAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
