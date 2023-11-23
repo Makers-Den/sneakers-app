@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { createNamedLogger } from "@/lib/log";
 import { StyleSheet } from "react-native";
+import { registerForPushNotificationsAsync } from "@/lib/notification";
 
 const logger = createNamedLogger("App");
 
@@ -22,6 +23,12 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().catch((error) =>
+      logger.error("Register push notifications failed", error)
+    );
+  }, []);
 
   useEffect(() => {
     SplashScreen.hideAsync().catch((error) =>
