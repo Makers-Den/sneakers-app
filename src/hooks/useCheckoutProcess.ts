@@ -64,7 +64,7 @@ export function useCheckoutProcess() {
       setShoes(shoes);
       setSelectedSize(null);
     },
-    [setShoes, createCheckoutMutation.isLoading]
+    [createCheckoutMutation.isLoading]
   );
 
   const cancelCheckoutProcess = useCallback(() => {
