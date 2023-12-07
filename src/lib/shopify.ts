@@ -69,6 +69,9 @@ interface GetShoesByCollectionIdQuery {
   collectionId: string;
   maxImageHeight: number;
   maxImageWidth: number;
+  page?: number;
+  perPage?: number;
+  cursor?: string;
   signal?: AbortSignal;
 }
 
@@ -80,6 +83,9 @@ export async function getShoesByCollectionId(
       collectionId: query.collectionId,
       maxImageHeight: query.maxImageHeight,
       maxImageWidth: query.maxImageWidth,
+      page: query.page,
+      cursor: query.cursor,
+      perPage: query.perPage,
     }),
     schema: getCollectionByIdSchema,
     signal: query.signal,
@@ -88,6 +94,8 @@ export async function getShoesByCollectionId(
   if (response === null) {
     return null;
   }
+
+  const pageInfo = response.data.collection.products.pageInfo;
 
   const shoes = response.data.collection.products.edges.map((edge) => {
     const modelVariant = edge.node.metafields.find(
@@ -139,11 +147,17 @@ export async function getShoesByCollectionId(
         amount: parseFloat(edge.node.priceRange.maxVariantPrice.amount),
         currencyCode: edge.node.priceRange.maxVariantPrice.currencyCode,
       },
+      pageInfo,
     };
   });
 
   return shoes;
 }
+
+export type Shoe = Exclude<
+  Awaited<ReturnType<typeof getShoesByCollectionId>>,
+  null
+>[number];
 
 interface GetShoesByIdQuery {
   shoesId: string;
