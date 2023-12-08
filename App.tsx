@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { createNamedLogger } from "@/lib/log";
 import { StyleSheet } from "react-native";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
+import ErrorBoundary from "react-native-error-boundary";
+import { FallbackView } from "@/components/ui/FallbackView";
 
 const logger = createNamedLogger("App");
 
@@ -37,13 +39,19 @@ export default function App() {
   }, [lastNotificationResponse]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider style={styles.safeAreaProvider}>
-        <Navigation />
-      </SafeAreaProvider>
-
-      <StatusBar style="light" backgroundColor={theme.palette.gray[800]} />
-    </QueryClientProvider>
+    <SafeAreaProvider style={styles.safeAreaProvider}>
+      <ErrorBoundary
+        FallbackComponent={FallbackView}
+        onError={(e) => {
+          logger.error("Error Boundary ", e, "Stack ", e.stack);
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <Navigation />
+          <StatusBar style="light" backgroundColor={theme.palette.gray[800]} />
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </SafeAreaProvider>
   );
 }
 
