@@ -34,7 +34,7 @@ export function Checkout({
   return (
     <>
       <CheckoutSizeModal
-        isOpen={shoes !== null}
+        isOpen={shoes !== null && selectedSize === null}
         sizes={shoes?.sizes || []}
         onClose={onCancel}
         onSelect={onSelectSize}
