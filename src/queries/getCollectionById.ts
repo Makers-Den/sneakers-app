@@ -8,13 +8,27 @@ export interface GetCollectionByIdVars {
   collectionId: string;
   maxImageWidth: number;
   maxImageHeight: number;
+  page?: number;
+  perPage?: number;
+  cursor?: string;
 }
 
-export function getCollectionByIdQuery(vars: GetCollectionByIdVars) {
+export function getCollectionByIdQuery({
+  page = 1,
+  perPage = 20,
+  cursor,
+  ...vars
+}: GetCollectionByIdVars) {
+  const cursorQuery = cursor ? `, after: "${cursor}"` : "";
+
   return `
   query GetCollectionByIdQuery {
     collection(id: "${vars.collectionId}") {
-      products(first: 20) {
+      products(first: ${perPage}${cursorQuery}) {
+        pageInfo {
+          hasNextPage,
+          endCursor
+        },
         edges {
           node {
             id,
@@ -59,6 +73,10 @@ export const getCollectionByIdSchema = z.object({
   data: z.object({
     collection: z.object({
       products: z.object({
+        pageInfo: z.object({
+          hasNextPage: z.boolean(),
+          endCursor: z.string().nullable(),
+        }),
         edges: z.array(
           z.object({
             node: z.object({
