@@ -1,8 +1,9 @@
 import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
 import * as SplashScreen from 'expo-splash-screen';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, { Easing, FadeOut, ZoomOut } from 'react-native-reanimated';
 
 export function AnimatedAppLoader({
   children,
@@ -37,19 +38,7 @@ function AnimatedSplashScreen({
   children: ReactNode;
   image: { uri: string };
 }) {
-  const animation = useMemo(() => new Animated.Value(1), []);
   const [isAppReady, setAppReady] = useState(false);
-  const [isSplashAnimationComplete, setAnimationComplete] = useState(false);
-
-  useEffect(() => {
-    if (isAppReady) {
-      Animated.timing(animation, {
-        toValue: 0,
-        duration: 3000,
-        useNativeDriver: true,
-      }).start(() => setAnimationComplete(true));
-    }
-  }, [isAppReady]);
 
   const onImageLoaded = useCallback(async () => {
     try {
@@ -66,17 +55,17 @@ function AnimatedSplashScreen({
   return (
     <View style={{ flex: 1 }}>
       {isAppReady && children}
-      {!isSplashAnimationComplete && (
+      {!isAppReady && (
         <Animated.View
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
             {
               backgroundColor:
-                Constants?.expoConfig?.splash?.backgroundColor || '#d4ef',
-              opacity: animation,
+                Constants?.expoConfig?.splash?.backgroundColor || '#fff',
             },
           ]}
+          exiting={FadeOut.delay(1000).duration(500).easing(Easing.ease)}
         >
           <Animated.Image
             style={{
@@ -84,15 +73,10 @@ function AnimatedSplashScreen({
               height: '100%',
               resizeMode:
                 Constants?.expoConfig?.splash?.resizeMode || 'contain',
-              transform: [
-                {
-                  scale: animation,
-                },
-              ],
             }}
             source={image}
             onLoadEnd={onImageLoaded}
-            fadeDuration={0}
+            exiting={ZoomOut.delay(1000).duration(500).easing(Easing.ease)}
           />
         </Animated.View>
       )}
