@@ -2,49 +2,100 @@ import {
   NavigationContainer,
   NavigationProp,
   useNavigation,
-} from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList, Screen } from "@/types/navigation";
-import { ShoesListScreen } from "@/screens/ShoesListScreen";
-import { ShoesDetailsScreen } from "@/screens/ShoesDetailsScreen";
-import { ShoesSearchScreen } from "@/screens/ShoesSearchScreen";
-import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
-import { createNamedLogger } from "./lib/log";
-import { notificationDataSchema } from "./lib/notification";
+} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  RootTabParamList,
+  Screen,
+  ShoppingScreen,
+  ShoppingStackParamList,
+} from '@/types/navigation';
+import { ShoesListScreen } from '@/screens/ShoesListScreen';
+import { ShoesDetailsScreen } from '@/screens/ShoesDetailsScreen';
+import { ShoesSearchScreen } from '@/screens/ShoesSearchScreen';
+import * as Notifications from 'expo-notifications';
+import { useEffect } from 'react';
+import { createNamedLogger } from './lib/log';
+import { notificationDataSchema } from './lib/notification';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { theme } from './lib/theme';
+import { DiscoverScreen } from './screens/DiscoverScreen';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const logger = createNamedLogger("Navigation");
+const logger = createNamedLogger('Navigation');
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<ShoppingStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export function Navigation() {
   return (
     <NavigationContainer>
       <NotificationNavigator />
-      <Stack.Navigator initialRouteName={Screen.ShoesList}>
-        <Stack.Screen
-          name={Screen.ShoesList}
-          component={ShoesListScreen}
+
+      <Tab.Navigator
+        initialRouteName={Screen.ShoppingScreens}
+        sceneContainerStyle={{ backgroundColor: theme.palette.gray[900] }}
+        screenOptions={({ route }) => ({
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: 'white',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            backgroundColor: theme.palette.gray[900],
+          },
+          tabBarIcon: ({ color, size }) => {
+            if (route.name === Screen.ShoppingScreens) {
+              return (
+                <Ionicons name={'home-outline'} size={size} color={color} />
+              );
+            } else if (route.name === Screen.DiscoverScreens) {
+              return (
+                <Ionicons name={'compass-outline'} size={size} color={color} />
+              );
+            }
+          },
+        })}
+      >
+        <Tab.Screen
+          name={Screen.ShoppingScreens}
           options={{ headerShown: false }}
+          component={ShoppingNavigation}
         />
-        <Stack.Screen
-          name={Screen.ShoesDetails}
-          component={ShoesDetailsScreen}
-          options={{ headerShown: false, animation: "slide_from_bottom" }}
+        <Tab.Screen
+          name={Screen.DiscoverScreens}
+          options={{ headerShown: false }}
+          component={DiscoverScreen}
         />
-        <Stack.Screen
-          name={Screen.ShoesSearch}
-          component={ShoesSearchScreen}
-          options={{ headerShown: false, animation: "slide_from_right" }}
-        />
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
+  );
+}
+
+function ShoppingNavigation() {
+  return (
+    <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
+      <Stack.Screen
+        component={ShoesListScreen}
+        name={ShoppingScreen.ShoesList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ShoppingScreen.ShoesDetails}
+        component={ShoesDetailsScreen}
+        options={{ headerShown: false, animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name={ShoppingScreen.ShoesSearch}
+        component={ShoesSearchScreen}
+        options={{ headerShown: false, animation: 'slide_from_right' }}
+      />
+    </Stack.Navigator>
   );
 }
 
 export function NotificationNavigator() {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NavigationProp<RootTabParamList & ShoppingStackParamList>>();
 
   useEffect(() => {
     if (!lastNotificationResponse) {
@@ -57,7 +108,7 @@ export function NotificationNavigator() {
 
     if (!parseNotificationDataResult.success) {
       logger.error(
-        "Parse notification data failed",
+        'Parse notification data failed',
         parseNotificationDataResult.error
       );
 
@@ -65,8 +116,8 @@ export function NotificationNavigator() {
     }
 
     switch (parseNotificationDataResult.data.type) {
-      case "ShoesDropped":
-        navigation.navigate(Screen.ShoesDetails, {
+      case 'ShoesDropped':
+        navigation.navigate(ShoppingScreen.ShoesDetails, {
           shoesId: parseNotificationDataResult.data.shoesId,
         });
         break;

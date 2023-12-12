@@ -1,23 +1,23 @@
-import { Dimensions, StyleSheet, View } from "react-native";
-import { useQuery } from "react-query";
-import { getShoesByCollectionId } from "@/lib/shopify";
-import { envVariables } from "@/lib/env";
-import { queryKeys } from "@/lib/query";
-import { Navigation, Screen } from "@/types/navigation";
-import { memo } from "react";
-import { FlashList } from "@shopify/flash-list";
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
+import { getShoesByCollectionId } from '@/lib/shopify';
+import { envVariables } from '@/lib/env';
+import { queryKeys } from '@/lib/query';
+import { Navigation, Screen, ShoppingScreen } from '@/types/navigation';
+import { memo } from 'react';
+import { FlashList } from '@shopify/flash-list';
 import {
   IN_STOCK_SHOES_CARD_HEIGHT,
   IN_STOCK_SHOES_IMAGE_HEIGHT,
   IN_STOCK_SHOES_IMAGE_WIDTH,
   InStockShoesCard,
-} from "./InStockShoesCard";
-import { InStockShoesCardPlaceholder } from "./InStockShoesCardPlaceholder";
-import { InStockShoesCardWrapper } from "./InStockShoesCardWrapper";
+} from './InStockShoesCard';
+import { InStockShoesCardPlaceholder } from './InStockShoesCardPlaceholder';
+import { InStockShoesCardWrapper } from './InStockShoesCardWrapper';
 import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
-} from "../ShoesListItemSeparator";
+} from '../ShoesListItemSeparator';
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 20;
 const SHOES_LIST_NUM_OF_COLUMNS = 2;
@@ -56,7 +56,7 @@ export function InStockShoesView({
     enabled: !isLazy,
   });
 
-  const dimensions = Dimensions.get("window");
+  const dimensions = Dimensions.get('window');
 
   return (
     <View style={styles.wrapper}>
@@ -90,7 +90,7 @@ export function InStockShoesView({
               <InStockShoesCard
                 image={shoes.previewImage}
                 onPress={() => {
-                  navigation.navigate(Screen.ShoesDetails, {
+                  navigation.navigate(ShoppingScreen.ShoesDetails, {
                     shoesId: shoes.id,
                   });
                 }}
