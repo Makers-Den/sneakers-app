@@ -1,30 +1,30 @@
-import { useMemo, useState } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Route, TabBarProps, TabView } from "react-native-tab-view";
-import { RootStackParamList, Screen } from "@/types/navigation";
-import { MemoFeedShoesView } from "@/components/store/feed/FeedShoesView";
-import { MemoInStockShoesView } from "@/components/store/in-stock/InStockShoesView";
-import { MemoUpcomingShoesView } from "@/components/store/upcoming/UpcomingShoesView";
-import { TabBar } from "@/components/store/TabBar";
-import { theme } from "@/lib/theme";
+import { useMemo, useState } from 'react';
+import { StyleSheet, useWindowDimensions } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Route, TabBarProps, TabView } from 'react-native-tab-view';
+import { ShoppingScreen, ShoppingStackParamList } from '@/types/navigation';
+import { MemoFeedShoesView } from '@/components/store/feed/FeedShoesView';
+import { MemoInStockShoesView } from '@/components/store/in-stock/InStockShoesView';
+import { MemoUpcomingShoesView } from '@/components/store/upcoming/UpcomingShoesView';
+import { TabBar } from '@/components/store/TabBar';
+import { theme } from '@/lib/theme';
 
 enum ShoesListScreenTab {
-  FEED = "Feed",
-  IN_STOCK = "InStock",
-  UPCOMING = "Upcoming",
+  FEED = 'Feed',
+  IN_STOCK = 'InStock',
+  UPCOMING = 'Upcoming',
 }
 
 const routes = [
-  { key: ShoesListScreenTab.FEED, title: "Feed" },
-  { key: ShoesListScreenTab.IN_STOCK, title: "In Stock" },
-  { key: ShoesListScreenTab.UPCOMING, title: "Upcoming" },
+  { key: ShoesListScreenTab.FEED, title: 'Feed' },
+  { key: ShoesListScreenTab.IN_STOCK, title: 'In Stock' },
+  { key: ShoesListScreenTab.UPCOMING, title: 'Upcoming' },
 ];
 
 export function ShoesListScreen({
   navigation,
-}: NativeStackScreenProps<RootStackParamList, Screen.ShoesList>) {
+}: NativeStackScreenProps<ShoppingStackParamList, ShoppingScreen.ShoesList>) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
@@ -63,7 +63,7 @@ export function ShoesListScreen({
   const renderTabBar = useMemo(() => {
     return (props: TabBarProps<Route>) => (
       <TabBar
-        onSearchPress={() => navigation.navigate(Screen.ShoesSearch)}
+        onSearchPress={() => navigation.navigate(ShoppingScreen.ShoesSearch)}
         {...props}
       />
     );

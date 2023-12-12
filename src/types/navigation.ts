@@ -1,19 +1,29 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-export type RootStackParamList = {
-  [Screen.ShoesList]: undefined;
-  [Screen.ShoesDetails]: { shoesId: string };
-  [Screen.ShoesSearch]: undefined;
-};
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export enum Screen {
-  ShoesList = "ShoesList",
-  ShoesDetails = "ShoesDetails",
-  ShoesSearch = "ShoesSearch",
+  DiscoverScreens = 'DiscoverScreens',
+  ShoppingScreens = 'ShoppingScreens',
 }
 
+export type RootTabParamList = {
+  [Screen.ShoppingScreens]: undefined;
+  [Screen.DiscoverScreens]: undefined;
+};
+
+export enum ShoppingScreen {
+  ShoesList = 'ShoesList',
+  ShoesDetails = 'ShoesDetails',
+  ShoesSearch = 'ShoesSearch',
+}
+
+export type ShoppingStackParamList = {
+  [ShoppingScreen.ShoesList]: undefined;
+  [ShoppingScreen.ShoesDetails]: { shoesId: string };
+  [ShoppingScreen.ShoesSearch]: undefined;
+};
+
 export type Navigation = NativeStackNavigationProp<
-  RootStackParamList,
-  Screen,
+  ShoppingStackParamList,
+  ShoppingScreen,
   undefined
 >;

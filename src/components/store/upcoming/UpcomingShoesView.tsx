@@ -1,28 +1,28 @@
-import { Dimensions, StyleSheet, View } from "react-native";
-import { useQuery } from "react-query";
-import { getShoesByCollectionId } from "@/lib/shopify";
-import { envVariables } from "@/lib/env";
-import { queryKeys } from "@/lib/query";
-import { Navigation, Screen } from "@/types/navigation";
-import { memo, useMemo, useState } from "react";
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
+import { getShoesByCollectionId } from '@/lib/shopify';
+import { envVariables } from '@/lib/env';
+import { queryKeys } from '@/lib/query';
+import { Navigation, Screen, ShoppingScreen } from '@/types/navigation';
+import { memo, useMemo, useState } from 'react';
 import {
   UPCOMING_SHOES_CARD_HEIGHT,
   UPCOMING_SHOES_IMAGE_HEIGHT,
   UPCOMING_SHOES_IMAGE_WIDTH,
   UpcomingShoesCard,
-} from "./UpcomingShoesCard";
-import { FlashList } from "@shopify/flash-list";
-import { UpcomingShoesCardPlaceholder } from "./UpcomingShoesCardPlaceholder";
+} from './UpcomingShoesCard';
+import { FlashList } from '@shopify/flash-list';
+import { UpcomingShoesCardPlaceholder } from './UpcomingShoesCardPlaceholder';
 import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
-} from "../ShoesListItemSeparator";
+} from '../ShoesListItemSeparator';
 import {
   UPCOMING_SHOES_HEADER_HEIGHT,
   UpcomingShoesHeader,
-} from "./UpcomingShoesHeader";
-import { NotificationModal } from "../notification/NotificationModal";
-import { useNotificationModal } from "@/hooks/useNotificationModal";
+} from './UpcomingShoesHeader';
+import { NotificationModal } from '../notification/NotificationModal';
+import { useNotificationModal } from '@/hooks/useNotificationModal';
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 10;
 
@@ -58,25 +58,25 @@ export function UpcomingShoesView({
         maxImageHeight: UPCOMING_SHOES_IMAGE_HEIGHT,
         maxImageWidth: UPCOMING_SHOES_IMAGE_WIDTH,
         signal,
-      }).then((shoes) => {
+      }).then(shoes => {
         if (!shoes) {
           return shoes;
         }
 
-        const shoesWithDropDates = shoes.filter((shoes) => shoes.dropsAt);
+        const shoesWithDropDates = shoes.filter(shoes => shoes.dropsAt);
         const rawShoesDropDates = new Set<number>(
           shoesWithDropDates
-            .map((shoes) => (shoes.dropsAt as Date).getTime())
+            .map(shoes => (shoes.dropsAt as Date).getTime())
             .sort((a, b) => a - b)
         );
 
         const listItems: ListItem[] = [];
-        rawShoesDropDates.forEach((rawShoesDropDate) => {
+        rawShoesDropDates.forEach(rawShoesDropDate => {
           const dropsAt = new Date(rawShoesDropDate);
           listItems.push({ type: ListItemType.Header, dropsAt });
 
           shoesWithDropDates
-            .filter((shoes) => shoes.dropsAt?.getTime() === rawShoesDropDate)
+            .filter(shoes => shoes.dropsAt?.getTime() === rawShoesDropDate)
             .forEach((shoes, index, all) =>
               listItems.push({
                 type: ListItemType.Card,
@@ -96,7 +96,7 @@ export function UpcomingShoesView({
     enabled: !isLazy,
   });
 
-  const dimensions = Dimensions.get("window");
+  const dimensions = Dimensions.get('window');
 
   const estimatedListHeight = useMemo(
     () =>
@@ -141,7 +141,7 @@ export function UpcomingShoesView({
             width: dimensions.width,
             height: estimatedListHeight,
           }}
-          getItemType={(item) => item.type}
+          getItemType={item => item.type}
           renderItem={({ item }) => {
             switch (item.type) {
               case ListItemType.Header:
@@ -163,7 +163,7 @@ export function UpcomingShoesView({
                           : null
                       }
                       onPress={() => {
-                        navigation.navigate(Screen.ShoesDetails, {
+                        navigation.navigate(ShoppingScreen.ShoesDetails, {
                           shoesId: item.shoes.id,
                         });
                       }}

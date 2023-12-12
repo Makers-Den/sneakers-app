@@ -1,27 +1,27 @@
-import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
-import { useInfiniteQuery, useQuery } from "react-query";
-import { Shoe, getShoesByCollectionId } from "@/lib/shopify";
-import { envVariables } from "@/lib/env";
-import { queryKeys } from "@/lib/query";
-import { Navigation, Screen } from "@/types/navigation";
-import { memo, useCallback, useMemo, useState } from "react";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
+import { useInfiniteQuery, useQuery } from 'react-query';
+import { Shoe, getShoesByCollectionId } from '@/lib/shopify';
+import { envVariables } from '@/lib/env';
+import { queryKeys } from '@/lib/query';
+import { Navigation, Screen, ShoppingScreen } from '@/types/navigation';
+import { memo, useCallback, useMemo, useState } from 'react';
 import {
   FEED_SHOES_CARD_HEIGHT,
   FEED_SHOES_IMAGE_HEIGHT,
   FEED_SHOES_IMAGE_WIDTH,
   FeedShoesCard,
-} from "./FeedShoesCard";
-import { FlashList } from "@shopify/flash-list";
-import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
+} from './FeedShoesCard';
+import { FlashList } from '@shopify/flash-list';
+import { FeedShoesCardPlaceholder } from './FeedShoesCardPlaceholder';
 import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
-} from "../ShoesListItemSeparator";
-import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
-import { Checkout } from "../checkout/Checkout";
-import { NotificationModal } from "../notification/NotificationModal";
-import { useNotificationModal } from "@/hooks/useNotificationModal";
-import { theme } from "@/lib/theme";
+} from '../ShoesListItemSeparator';
+import { useCheckoutProcess } from '@/hooks/useCheckoutProcess';
+import { Checkout } from '../checkout/Checkout';
+import { NotificationModal } from '../notification/NotificationModal';
+import { useNotificationModal } from '@/hooks/useNotificationModal';
+import { theme } from '@/lib/theme';
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 5;
 
@@ -67,7 +67,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         : undefined,
   });
 
-  const dimensions = Dimensions.get("window");
+  const dimensions = Dimensions.get('window');
 
   const handleEndReached = useCallback(() => {
     if (!feedShoesQuery.hasNextPage) {
@@ -103,7 +103,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
       return null;
     }
 
-    return feedShoesQuery.data.pages.flat().filter((page) => page) as Shoe[];
+    return feedShoesQuery.data.pages.flat().filter(page => page) as Shoe[];
   }, [feedShoesQuery.data?.pages]);
 
   return (
@@ -128,8 +128,8 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
             height: estimateListHeight(shoeList.length),
           }}
           renderItem={({ item: shoes }) => {
-            const currencyFormatter = new Intl.NumberFormat("en-US", {
-              style: "currency",
+            const currencyFormatter = new Intl.NumberFormat('en-US', {
+              style: 'currency',
               currency: shoes?.price?.currencyCode,
             });
 
@@ -140,12 +140,12 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
                 modelVariant={shoes.modelVariant}
                 buttonText={
                   shoes.isUpcoming
-                    ? "Notify Me"
+                    ? 'Notify Me'
                     : currencyFormatter.format(shoes.price.amount)
                 }
                 onButtonPress={() => handleButtonPress(shoes)}
                 onPress={() => {
-                  navigation.navigate(Screen.ShoesDetails, {
+                  navigation.navigate(ShoppingScreen.ShoesDetails, {
                     shoesId: shoes.id,
                   });
                 }}
