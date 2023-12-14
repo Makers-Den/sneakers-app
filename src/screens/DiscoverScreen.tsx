@@ -1,18 +1,20 @@
-import React from 'react';
-import { StyleSheet, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import { StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { theme } from '@/lib/theme';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { RootTabParamList, Screen } from '@/types/navigation';
+import { theme } from "@/lib/theme";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { RootTabParamList, Screen } from "@/types/navigation";
+import { CategoryListView } from "@/components/blog/category-list/CategoryListView";
+import { BlogHeader } from "@/components/blog/blog-header/BlogHeader";
 
-export function DiscoverScreen({}: BottomTabScreenProps<
-  RootTabParamList,
-  Screen.DiscoverScreens
->) {
+export function DiscoverScreen({
+  navigation,
+}: BottomTabScreenProps<RootTabParamList, Screen.DiscoverScreens>) {
   return (
     <SafeAreaView style={styles.wrapper}>
-      <Text>ShHHhYeahh</Text>
+      <BlogHeader />
+      <CategoryListView navigation={navigation} />
     </SafeAreaView>
   );
 }
