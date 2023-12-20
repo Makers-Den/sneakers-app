@@ -5,9 +5,9 @@ import Carousel from "react-native-reanimated-carousel";
 import { CarouselRenderItemInfo } from "react-native-reanimated-carousel/lib/typescript/types";
 import { ShoesCarouselPagination } from "./ShoesCarouselPagination";
 
-export const SHOES_CAROUSEL_HEIGHT = 330;
-export const SHOES_CAROUSEL_IMAGE_WIDTH = 325;
-export const SHOES_CAROUSEL_IMAGE_HEIGHT = 160;
+export const SHOES_CAROUSEL_HEIGHT = 370;
+export const SHOES_CAROUSEL_IMAGE_WIDTH = 352;
+export const SHOES_CAROUSEL_IMAGE_HEIGHT = 340;
 
 export interface ShoesCarouselProps {
   images: string[];
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     width: SHOES_CAROUSEL_IMAGE_WIDTH,
     height: SHOES_CAROUSEL_IMAGE_HEIGHT,
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
   },
   paginationWrapper: {
     pointerEvents: "none",
     position: "absolute",
-    bottom: theme.spacing(5),
+    bottom: theme.spacing(2),
     left: 0,
     right: 0,
   },

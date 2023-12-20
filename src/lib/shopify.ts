@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { map, z } from "zod";
 import dayjs from "dayjs";
 import { ShopifyMetaFieldKey } from "@/types/shopify";
 import { todayNoonUtc } from "./time";
@@ -21,6 +21,11 @@ import {
   createCheckoutMutation,
   createCheckoutSchema,
 } from "@/mutations/createCheckout";
+import { mapFieldsToObject } from "./objects";
+import {
+  getMetaObjectsQuery,
+  getMetaObjectsSchema,
+} from "@/queries/getMetaObjects";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -152,6 +157,109 @@ export async function getShoesByCollectionId(
   });
 
   return shoes;
+}
+
+export interface GetContentCategoriesQuery {
+  signal?: AbortSignal;
+  image?: { maxHeight: number; maxWidth: number };
+}
+
+export type ContentCategoryReferencesType = "stories" | "blog_posts";
+
+export async function getContentCategories({
+  signal,
+  image,
+}: GetContentCategoriesQuery) {
+  const contentCategoriesResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectsQuery({ type: "content_categories", image }),
+    schema: getMetaObjectsSchema,
+    signal: signal,
+  });
+
+  if (contentCategoriesResponse === null) {
+    return null;
+  }
+
+  const storiesResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectsQuery({
+      type: "stories",
+      image,
+    }),
+    schema: getMetaObjectsSchema,
+    signal: signal,
+  });
+
+  if (storiesResponse === null) {
+    return null;
+  }
+
+  const blogPostsResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectsQuery({
+      type: "blog_posts",
+      image,
+    }),
+    schema: getMetaObjectsSchema,
+    signal: signal,
+  });
+
+  if (blogPostsResponse === null) {
+    return null;
+  }
+
+  const stories = storiesResponse.data.metaobjects.nodes.map((storyNode) => {
+    const storyData = mapFieldsToObject<{
+      title: string;
+      thumbnail: string;
+      category: string;
+    }>(storyNode.fields);
+
+    return {
+      id: storyNode.id,
+      handle: storyNode.handle,
+      data: storyData,
+    };
+  });
+
+  const blogPosts = blogPostsResponse.data.metaobjects.nodes.map(
+    (blogPostNode) => {
+      const blogPostData = mapFieldsToObject<{
+        title: string;
+        thumbnail: string;
+        category: string;
+      }>(blogPostNode.fields);
+
+      return {
+        id: blogPostNode.id,
+        handle: blogPostNode.handle,
+        data: blogPostData,
+      };
+    }
+  );
+
+  const contentCategories =
+    contentCategoriesResponse.data.metaobjects.nodes.map((node) => {
+      const data = mapFieldsToObject<{
+        title: string;
+        description: string;
+      }>(node.fields);
+
+      const relatedStories = stories.filter(
+        (story) => story.data.category === node.id
+      );
+
+      const relatedBlogPosts = blogPosts.filter(
+        (blogPost) => blogPost.data.category === node.id
+      );
+
+      return {
+        id: node.id,
+        handle: node.handle,
+        data,
+        content: [...relatedBlogPosts, ...relatedStories],
+      };
+    });
+
+  return contentCategories;
 }
 
 export type Shoe = Exclude<

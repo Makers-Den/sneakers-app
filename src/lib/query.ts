@@ -24,4 +24,7 @@ export const queryKeys = {
     }) => [...queryKeys.shoes.all(), "search", params] as const,
     recentSearches: () => [...queryKeys.shoes.all(), "recentSearches"] as const,
   },
+  contentCategories: {
+    all: () => ["contentCategories"] as const,
+  },
 };
