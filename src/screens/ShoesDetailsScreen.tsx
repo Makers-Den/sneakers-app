@@ -1,25 +1,31 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ShoppingScreen, ShoppingStackParamList } from '@/types/navigation';
-import { useQuery } from 'react-query';
-import { getShoesById } from '@/lib/shopify';
-import { queryKeys } from '@/lib/query';
+import { View, ScrollView, StyleSheet } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ShoppingScreen, ShoppingStackParamList } from "@/types/navigation";
+import { useQuery } from "react-query";
+import { getShoesById } from "@/lib/shopify";
+import { queryKeys } from "@/lib/query";
 import {
   SHOES_CAROUSEL_IMAGE_HEIGHT,
   SHOES_CAROUSEL_IMAGE_WIDTH,
   ShoesCarousel,
-} from '@/components/store/details/ShoesCarousel';
-import { theme } from '@/lib/theme';
-import { ShoesActionBar } from '@/components/store/details/ShoesActionBar';
-import { ShoesHeader } from '@/components/store/details/ShoesHeader';
-import { ShoesDescription } from '@/components/store/details/ShoesDescription';
-import { Button } from '@/components/ui/Button';
-import { useMemo } from 'react';
-import { useCheckoutProcess } from '@/hooks/useCheckoutProcess';
-import { Checkout } from '@/components/store/checkout/Checkout';
-import { NotificationModal } from '@/components/store/notification/NotificationModal';
-import { useNotificationModal } from '@/hooks/useNotificationModal';
+} from "@/components/store/details/ShoesCarousel";
+import { theme } from "@/lib/theme";
+import { ShoesActionBar } from "@/components/store/details/ShoesActionBar";
+import { ShoesHeader } from "@/components/store/details/ShoesHeader";
+import { ShoesDescription } from "@/components/store/details/ShoesDescription";
+import { Button } from "@/components/ui/Button";
+import { useMemo } from "react";
+import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
+import { Checkout } from "@/components/store/checkout/Checkout";
+import { NotificationModal } from "@/components/store/notification/NotificationModal";
+import { useNotificationModal } from "@/hooks/useNotificationModal";
+import { getImageSize } from "@/lib/image";
+
+const shoesCarouselImage = getImageSize({
+  height: SHOES_CAROUSEL_IMAGE_HEIGHT,
+  width: SHOES_CAROUSEL_IMAGE_WIDTH,
+});
 
 export function ShoesDetailsScreen({
   navigation,
@@ -35,14 +41,14 @@ export function ShoesDetailsScreen({
     queryFn: ({ signal }) =>
       getShoesById({
         shoesId,
-        maxImageHeight: SHOES_CAROUSEL_IMAGE_HEIGHT,
-        maxImageWidth: SHOES_CAROUSEL_IMAGE_WIDTH,
+        maxImageHeight: shoesCarouselImage.height,
+        maxImageWidth: shoesCarouselImage.width,
         signal,
       }),
     queryKey: queryKeys.shoes.detail({
       shoesId,
-      maxImageHeight: SHOES_CAROUSEL_IMAGE_HEIGHT,
-      maxImageWidth: SHOES_CAROUSEL_IMAGE_WIDTH,
+      maxImageHeight: shoesCarouselImage.height,
+      maxImageWidth: shoesCarouselImage.width,
     }),
   });
 
@@ -71,15 +77,15 @@ export function ShoesDetailsScreen({
 
   const actionButtonText = useMemo(() => {
     if (!shoesQuery.data) {
-      return '';
+      return "";
     }
 
     if (shoesQuery.data.dropsAt) {
-      return 'Notify Me';
+      return "Notify Me";
     }
 
-    const currencyFormatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
+    const currencyFormatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
       currency: shoesQuery.data.price.currencyCode,
     });
 
@@ -146,19 +152,19 @@ const styles = StyleSheet.create({
     backgroundColor: theme.palette.gray[900],
   },
   wrapper: {
-    position: 'relative',
+    position: "relative",
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: theme.palette.gray[900],
     paddingBottom: theme.spacing(14),
   },
   contentWrapper: {
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
   actionButtonWrapper: {
-    position: 'absolute',
+    position: "absolute",
     bottom: theme.spacing(4),
     left: theme.spacing(2),
     right: theme.spacing(2),
