@@ -59,7 +59,10 @@ export function CategoryCard<T extends Blog>({
           >
             <View style={styles.blogImageWrapper}>
               {item.image && (
-                <Image style={styles.blogImage} source={{ uri: item.image }} />
+                <Image
+                  style={styles.blogImage}
+                  source={{ uri: item.image, scale: 1 }}
+                />
               )}
             </View>
             <View>
@@ -72,6 +75,10 @@ export function CategoryCard<T extends Blog>({
   );
 }
 
+export function CategoryCardPlaceholder() {
+  return <View style={styles.placeholder}></View>;
+}
+
 const styles = StyleSheet.create({
   wrapper: {
     display: "flex",
@@ -80,6 +87,11 @@ const styles = StyleSheet.create({
     height: CATEGORY_CARD_HEIGHT,
     position: "relative",
     paddingVertical: theme.spacing(4),
+  },
+  placeholder: {
+    width: "100%",
+    height: CATEGORY_CARD_HEIGHT,
+    backgroundColor: theme.palette.gray[400],
   },
   header: {
     display: "flex",
@@ -116,7 +128,7 @@ const styles = StyleSheet.create({
   },
 
   blogImage: {
-    resizeMode: "repeat",
+    resizeMode: "cover",
     width: CATEGORY_BLOG_IMAGE_WIDTH,
     height: CATEGORY_BLOG_IMAGE_HEIGHT,
     borderRadius: theme.spacing(1),
