@@ -93,7 +93,15 @@ export function ShoesDetailsScreen({
   }, [shoesQuery.data]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView
+      edges={{
+        bottom: "off",
+        top: "additive",
+        left: "additive",
+        right: "additive",
+      }}
+      style={styles.safeArea}
+    >
       <ScrollView style={styles.scrollView}>
         <View style={styles.wrapper}>
           <ShoesActionBar onClose={navigation.goBack} />
