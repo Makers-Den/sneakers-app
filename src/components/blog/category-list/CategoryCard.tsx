@@ -2,9 +2,9 @@ import { theme } from "@/lib/theme";
 import { FlashList } from "@shopify/flash-list";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-export const CATEGORY_CARD_HEIGHT = 400;
+export const CATEGORY_CARD_HEIGHT = 420;
 
-export const CATEGORY_BLOG_CARD_HEIGHT = 280;
+export const CATEGORY_BLOG_CARD_HEIGHT = 300;
 export const CATEGORY_BLOG_IMAGE_WIDTH = 200;
 export const CATEGORY_BLOG_IMAGE_HEIGHT = 260;
 
@@ -66,7 +66,13 @@ export function CategoryCard<T extends Blog>({
               )}
             </View>
             <View>
-              <Text style={styles.blogTitle}>{item.title}</Text>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                style={styles.blogTitle}
+              >
+                {item.title}
+              </Text>
             </View>
           </Pressable>
         )}
@@ -105,6 +111,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.lg,
     color: theme.palette.gray[100],
     textTransform: "uppercase",
+    fontWeight: theme.typography.fontWeight.bold,
   },
 
   viewMore: {
@@ -135,6 +142,7 @@ const styles = StyleSheet.create({
   },
 
   blogTitle: {
+    marginTop: theme.spacing(0.5),
     fontSize: theme.typography.fontSize.base,
     color: theme.palette.gray[100],
   },

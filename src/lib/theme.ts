@@ -16,6 +16,11 @@ export const theme = {
       normal: 1.41,
       loose: 2,
     },
+    fontWeight: {
+      normal: "400",
+      medium: "500",
+      bold: "600",
+    },
   },
   palette: {
     gray: {
