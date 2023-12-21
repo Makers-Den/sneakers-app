@@ -1,13 +1,30 @@
 import { theme } from "@/lib/theme";
-import React, { useCallback, useState } from "react";
-import { Image, StyleSheet, View, useWindowDimensions } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { CarouselRenderItemInfo } from "react-native-reanimated-carousel/lib/typescript/types";
 import { ShoesCarouselPagination } from "./ShoesCarouselPagination";
 
-export const SHOES_CAROUSEL_HEIGHT = 370;
-export const SHOES_CAROUSEL_IMAGE_WIDTH = 352;
-export const SHOES_CAROUSEL_IMAGE_HEIGHT = 340;
+export const SHOES_CAROUSEL_IMAGE_ASPECT_RATIO = 1.05;
+
+export function getShoesCarouselDimensions() {
+  const windowDimensions = Dimensions.get("window");
+  const imageWidth = windowDimensions.width - theme.spacing(2) * 2;
+  const imageHeight = imageWidth * SHOES_CAROUSEL_IMAGE_ASPECT_RATIO;
+  return {
+    height: imageHeight + 40,
+    image: {
+      width: imageWidth,
+      height: imageHeight,
+    },
+  };
+}
 
 export interface ShoesCarouselProps {
   images: string[];
@@ -16,6 +33,11 @@ export interface ShoesCarouselProps {
 export function ShoesCarousel({ images }: ShoesCarouselProps) {
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const windowDimensions = useWindowDimensions();
+
+  const shoeCarouselDimensions = useMemo(
+    () => getShoesCarouselDimensions(),
+    []
+  );
 
   const handleProgressChange = useCallback(
     (_: unknown, absoluteProgress: number) =>
@@ -29,7 +51,7 @@ export function ShoesCarousel({ images }: ShoesCarouselProps) {
         loop={false}
         width={windowDimensions.width}
         windowSize={windowDimensions.width}
-        height={SHOES_CAROUSEL_HEIGHT}
+        height={shoeCarouselDimensions.height}
         data={images}
         renderItem={ShoesCarouselItem}
         onProgressChange={handleProgressChange}
@@ -46,9 +68,22 @@ export function ShoesCarousel({ images }: ShoesCarouselProps) {
 }
 
 function ShoesCarouselItem({ item: image }: CarouselRenderItemInfo<string>) {
+  const shoeCarouselDimensions = useMemo(
+    () => getShoesCarouselDimensions(),
+    []
+  );
   return (
     <View style={styles.imageWrapper}>
-      <Image style={styles.image} source={{ uri: image }} />
+      <Image
+        style={[
+          styles.image,
+          {
+            width: shoeCarouselDimensions.image.width,
+            height: shoeCarouselDimensions.image.height,
+          },
+        ]}
+        source={{ uri: image }}
+      />
     </View>
   );
 }
@@ -62,12 +97,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "100%",
-    height: SHOES_CAROUSEL_HEIGHT,
   },
   image: {
     resizeMode: "contain",
-    width: SHOES_CAROUSEL_IMAGE_WIDTH,
-    height: SHOES_CAROUSEL_IMAGE_HEIGHT,
     marginTop: theme.spacing(2),
   },
   paginationWrapper: {

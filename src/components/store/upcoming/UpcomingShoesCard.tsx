@@ -1,12 +1,31 @@
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/lib/theme";
 import { format, isThisWeek, isToday, isTomorrow } from "date-fns";
-import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useMemo } from "react";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-export const UPCOMING_SHOES_CARD_HEIGHT = 270;
-export const UPCOMING_SHOES_IMAGE_WIDTH = 165;
-export const UPCOMING_SHOES_IMAGE_HEIGHT = 110;
+export const UPCOMING_SHOES_IMAGE_ASPECT_RATIO = 1;
+
+export function getUpcomingShoesCardDimensions() {
+  const windowDimensions = Dimensions.get("window");
+  const imageWidth = windowDimensions.width - theme.spacing(8) * 2;
+
+  const imageHeight = imageWidth * UPCOMING_SHOES_IMAGE_ASPECT_RATIO;
+  return {
+    height: imageHeight + 160,
+    image: {
+      width: imageWidth,
+      height: imageHeight,
+    },
+  };
+}
 
 const formatDropsAt = (date: Date) => {
   if (isToday(date)) {
@@ -43,8 +62,20 @@ export function UpcomingShoesCard({
   onPress,
   onButtonPress,
 }: UpcomingShoesCardProps) {
+  const upcomingShoesCardDimensions = useMemo(
+    () => getUpcomingShoesCardDimensions(),
+    []
+  );
   return (
-    <Pressable style={styles.wrapper} onPress={onPress}>
+    <Pressable
+      style={[
+        styles.wrapper,
+        {
+          minHeight: upcomingShoesCardDimensions.height,
+        },
+      ]}
+      onPress={onPress}
+    >
       <Text style={styles.model}>
         {model}
         {modelVariant && ` "${modelVariant}"`}
@@ -56,7 +87,18 @@ export function UpcomingShoesCard({
         {sizeRange ? `${sizeRange.min} - ${sizeRange.max}` : "Unknown"}
       </Text>
       <View style={styles.imageWrapper}>
-        {image && <Image style={[styles.image]} source={{ uri: image }} />}
+        {image && (
+          <Image
+            style={[
+              styles.image,
+              {
+                width: upcomingShoesCardDimensions.image.width,
+                height: upcomingShoesCardDimensions.image.height,
+              },
+            ]}
+            source={{ uri: image }}
+          />
+        )}
       </View>
       <View style={styles.bottomWrapper}>
         <Button variant="outlined" text="Notify Me" onPress={onButtonPress} />
@@ -69,7 +111,6 @@ export function UpcomingShoesCard({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    minHeight: UPCOMING_SHOES_CARD_HEIGHT,
     padding: theme.spacing(2),
     backgroundColor: theme.palette.gray[700],
   },
@@ -94,8 +135,6 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: UPCOMING_SHOES_IMAGE_WIDTH,
-    height: UPCOMING_SHOES_IMAGE_HEIGHT,
   },
   bottomWrapper: {
     display: "flex",

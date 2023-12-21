@@ -6,9 +6,8 @@ import { useQuery } from "react-query";
 import { getShoesById } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 import {
-  SHOES_CAROUSEL_IMAGE_HEIGHT,
-  SHOES_CAROUSEL_IMAGE_WIDTH,
   ShoesCarousel,
+  getShoesCarouselDimensions,
 } from "@/components/store/details/ShoesCarousel";
 import { theme } from "@/lib/theme";
 import { ShoesActionBar } from "@/components/store/details/ShoesActionBar";
@@ -22,11 +21,6 @@ import { NotificationModal } from "@/components/store/notification/NotificationM
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { getImageSize } from "@/lib/image";
 
-const shoesCarouselImage = getImageSize({
-  height: SHOES_CAROUSEL_IMAGE_HEIGHT,
-  width: SHOES_CAROUSEL_IMAGE_WIDTH,
-});
-
 export function ShoesDetailsScreen({
   navigation,
   route,
@@ -37,6 +31,11 @@ export function ShoesDetailsScreen({
   const { shoesId } = route.params;
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
+
+  const shoesCarouselImage = useMemo(
+    () => getImageSize(getShoesCarouselDimensions().image),
+    []
+  );
   const shoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesById({

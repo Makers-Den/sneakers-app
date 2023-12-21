@@ -1,11 +1,29 @@
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/lib/theme";
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-export const FEED_SHOES_CARD_HEIGHT = 500;
-export const FEED_SHOES_IMAGE_WIDTH = 352;
-export const FEED_SHOES_IMAGE_HEIGHT = 340;
+export const FEED_IMAGE_ASPECT_RATIO = 1.05;
+
+export function getFeedCardDimensions() {
+  const windowDimensions = Dimensions.get("window");
+  const imageWidth = windowDimensions.width - theme.spacing(2) * 2;
+  const imageHeight = imageWidth * FEED_IMAGE_ASPECT_RATIO;
+  return {
+    height: imageHeight + 160,
+    image: {
+      width: imageWidth,
+      height: imageHeight,
+    },
+  };
+}
 
 export interface FeedShoesCardProps {
   model: string;
@@ -24,16 +42,40 @@ export function FeedShoesCard({
   onPress,
   onButtonPress,
 }: FeedShoesCardProps) {
+  const cardDimensions = getFeedCardDimensions();
   return (
     <Pressable onPress={onPress}>
-      <View style={styles.wrapper}>
+      <View
+        style={[
+          styles.wrapper,
+          {
+            height: cardDimensions.height,
+          },
+        ]}
+      >
         <View>
           <Text style={styles.modelText}>{model}</Text>
           <Text style={styles.modelVariantText}>{modelVariant}</Text>
         </View>
 
-        <View style={styles.imageWrapper}>
-          {image && <Image style={styles.image} source={{ uri: image }} />}
+        <View
+          style={[
+            styles.imageWrapper,
+            { height: cardDimensions.image.height + 20 },
+          ]}
+        >
+          {image && (
+            <Image
+              style={[
+                styles.image,
+                {
+                  width: cardDimensions.image.width,
+                  height: cardDimensions.image.height,
+                },
+              ]}
+              source={{ uri: image }}
+            />
+          )}
         </View>
 
         <View style={styles.bottomWrapper}>
@@ -50,7 +92,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: FEED_SHOES_CARD_HEIGHT,
     position: "relative",
     padding: theme.spacing(2),
     backgroundColor: theme.palette.gray[700],
@@ -74,12 +115,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: theme.spacing(2),
-    height: 360,
   },
   image: {
     resizeMode: "contain",
-    width: FEED_SHOES_IMAGE_WIDTH,
-    height: FEED_SHOES_IMAGE_HEIGHT,
   },
   bottomWrapper: {
     display: "flex",

@@ -3,15 +3,10 @@ import { useQuery } from "react-query";
 import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
-import { memo } from "react";
+import { Navigation, ShoppingScreen } from "@/types/navigation";
+import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
-import {
-  IN_STOCK_SHOES_CARD_HEIGHT,
-  IN_STOCK_SHOES_IMAGE_HEIGHT,
-  IN_STOCK_SHOES_IMAGE_WIDTH,
-  InStockShoesCard,
-} from "./InStockShoesCard";
+import { InStockShoesCard, getInStockCardDimensions } from "./InStockShoesCard";
 import { InStockShoesCardPlaceholder } from "./InStockShoesCardPlaceholder";
 import { InStockShoesCardWrapper } from "./InStockShoesCardWrapper";
 import {
@@ -23,11 +18,11 @@ import { getImageSize } from "@/lib/image";
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 20;
 const SHOES_LIST_NUM_OF_COLUMNS = 2;
 
-function estimateListHeight(listItemCount: number) {
+function estimateListHeight(listItemCount: number, cardHeight: number) {
   const listRowCount = Math.floor(listItemCount / SHOES_LIST_NUM_OF_COLUMNS);
 
   return (
-    IN_STOCK_SHOES_CARD_HEIGHT * listRowCount +
+    cardHeight * listRowCount +
     Math.max(0, listRowCount - 1) * SHOES_LIST_ITEM_SEPARATOR_HEIGHT
   );
 }
@@ -37,15 +32,18 @@ export interface InStockShoesViewProps {
   isLazy: boolean;
 }
 
-const inStockShoeImage = getImageSize({
-  height: IN_STOCK_SHOES_IMAGE_HEIGHT,
-  width: IN_STOCK_SHOES_IMAGE_WIDTH,
-});
-
 export function InStockShoesView({
   navigation,
   isLazy,
 }: InStockShoesViewProps) {
+  const inStockShoesCardDimensions = useMemo(() => {
+    return getInStockCardDimensions();
+  }, []);
+
+  const inStockShoeImage = useMemo(() => {
+    return getImageSize(inStockShoesCardDimensions.image);
+  }, [inStockShoesCardDimensions.image]);
+
   const inStockShoesQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -70,10 +68,13 @@ export function InStockShoesView({
         <FlashList
           data={new Array(SHOES_PLACEHOLDERS_TO_DISPLAY).fill(null)}
           numColumns={SHOES_LIST_NUM_OF_COLUMNS}
-          estimatedItemSize={IN_STOCK_SHOES_CARD_HEIGHT}
+          estimatedItemSize={inStockShoesCardDimensions.height}
           estimatedListSize={{
             width: dimensions.width,
-            height: estimateListHeight(SHOES_PLACEHOLDERS_TO_DISPLAY),
+            height: estimateListHeight(
+              SHOES_PLACEHOLDERS_TO_DISPLAY,
+              inStockShoesCardDimensions.height
+            ),
           }}
           renderItem={({ index }) => (
             <InStockShoesCardWrapper isLeftColumn={index % 2 === 0}>
@@ -86,10 +87,13 @@ export function InStockShoesView({
         <FlashList
           data={inStockShoesQuery.data}
           numColumns={SHOES_LIST_NUM_OF_COLUMNS}
-          estimatedItemSize={IN_STOCK_SHOES_CARD_HEIGHT}
+          estimatedItemSize={inStockShoesCardDimensions.height}
           estimatedListSize={{
             width: dimensions.width,
-            height: estimateListHeight(inStockShoesQuery.data.length),
+            height: estimateListHeight(
+              inStockShoesQuery.data.length,
+              inStockShoesCardDimensions.height
+            ),
           }}
           renderItem={({ item: shoes, index }) => (
             <InStockShoesCardWrapper isLeftColumn={index % 2 === 0}>

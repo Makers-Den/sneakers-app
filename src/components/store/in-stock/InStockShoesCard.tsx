@@ -1,10 +1,25 @@
 import { theme } from "@/lib/theme";
 import React from "react";
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Dimensions, Image, Pressable, StyleSheet } from "react-native";
+import { SHOES_LIST_ITEM_SEPARATOR_HEIGHT } from "../ShoesListItemSeparator";
 
-export const IN_STOCK_SHOES_CARD_HEIGHT = 215;
-export const IN_STOCK_SHOES_IMAGE_WIDTH = 150;
-export const IN_STOCK_SHOES_IMAGE_HEIGHT = 85;
+export const IN_STOCK_SHOES_IMAGE_ASPECT_RATIO = 1;
+
+export function getInStockCardDimensions() {
+  const windowDimensions = Dimensions.get("window");
+  const imageWidth =
+    windowDimensions.width / 2 -
+    theme.spacing(5) * 2 -
+    SHOES_LIST_ITEM_SEPARATOR_HEIGHT;
+  const imageHeight = imageWidth * IN_STOCK_SHOES_IMAGE_ASPECT_RATIO;
+  return {
+    height: imageHeight + 100,
+    image: {
+      width: imageWidth,
+      height: imageHeight,
+    },
+  };
+}
 
 export interface InStockShoesCardProps {
   image: string | null;
@@ -12,9 +27,24 @@ export interface InStockShoesCardProps {
 }
 
 export function InStockShoesCard({ image, onPress }: InStockShoesCardProps) {
+  const inStockCardDimensions = getInStockCardDimensions();
   return (
-    <Pressable style={styles.wrapper} onPress={onPress}>
-      {image && <Image style={styles.image} source={{ uri: image }} />}
+    <Pressable
+      style={[styles.wrapper, { height: inStockCardDimensions.height }]}
+      onPress={onPress}
+    >
+      {image && (
+        <Image
+          style={[
+            styles.image,
+            {
+              width: inStockCardDimensions.image.width,
+              height: inStockCardDimensions.image.height,
+            },
+          ]}
+          source={{ uri: image }}
+        />
+      )}
     </Pressable>
   );
 }
@@ -25,14 +55,11 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: IN_STOCK_SHOES_CARD_HEIGHT,
     position: "relative",
     padding: theme.spacing(2),
     backgroundColor: theme.palette.gray[700],
   },
   image: {
     resizeMode: "contain",
-    width: IN_STOCK_SHOES_IMAGE_WIDTH,
-    height: IN_STOCK_SHOES_IMAGE_HEIGHT,
   },
 });

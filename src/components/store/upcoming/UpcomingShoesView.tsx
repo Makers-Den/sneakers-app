@@ -3,13 +3,11 @@ import { useQuery } from "react-query";
 import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
-import { memo, useMemo, useState } from "react";
+import { Navigation, ShoppingScreen } from "@/types/navigation";
+import { memo, useMemo } from "react";
 import {
-  UPCOMING_SHOES_CARD_HEIGHT,
-  UPCOMING_SHOES_IMAGE_HEIGHT,
-  UPCOMING_SHOES_IMAGE_WIDTH,
   UpcomingShoesCard,
+  getUpcomingShoesCardDimensions,
 } from "./UpcomingShoesCard";
 import { FlashList } from "@shopify/flash-list";
 import { UpcomingShoesCardPlaceholder } from "./UpcomingShoesCardPlaceholder";
@@ -47,16 +45,22 @@ export interface UpcomingShoesViewProps {
   isLazy: boolean;
 }
 
-const upcomingShoeImage = getImageSize({
-  height: UPCOMING_SHOES_IMAGE_HEIGHT,
-  width: UPCOMING_SHOES_IMAGE_WIDTH,
-});
-
 export function UpcomingShoesView({
   navigation,
   isLazy,
 }: UpcomingShoesViewProps) {
   const notificationModal = useNotificationModal();
+
+  const upcomingShoesCardDimensions = useMemo(
+    () => getUpcomingShoesCardDimensions(),
+    []
+  );
+
+  const upcomingShoeImage = useMemo(
+    () => getImageSize(upcomingShoesCardDimensions.image),
+    []
+  );
+
   const listItemsQuery = useQuery({
     queryFn: ({ signal }) =>
       getShoesByCollectionId({
@@ -96,8 +100,8 @@ export function UpcomingShoesView({
       }),
     queryKey: queryKeys.shoes.list({
       collectionId: envVariables.shopify.collectionId.upcoming,
-      maxImageHeight: UPCOMING_SHOES_IMAGE_HEIGHT,
-      maxImageWidth: UPCOMING_SHOES_IMAGE_WIDTH,
+      maxImageHeight: upcomingShoeImage.height,
+      maxImageWidth: upcomingShoeImage.width,
     }),
     enabled: !isLazy,
   });
@@ -109,7 +113,8 @@ export function UpcomingShoesView({
       (listItemsQuery.data || []).reduce(
         (sum, item) =>
           sum + item.type === ListItemType.Card
-            ? UPCOMING_SHOES_CARD_HEIGHT + SHOES_LIST_ITEM_SEPARATOR_HEIGHT
+            ? upcomingShoesCardDimensions.height +
+              SHOES_LIST_ITEM_SEPARATOR_HEIGHT
             : UPCOMING_SHOES_HEADER_HEIGHT,
         0
       ),
@@ -122,13 +127,15 @@ export function UpcomingShoesView({
         <FlashList
           data={new Array(SHOES_PLACEHOLDERS_TO_DISPLAY).fill(null)}
           estimatedItemSize={
-            UPCOMING_SHOES_CARD_HEIGHT + SHOES_LIST_ITEM_SEPARATOR_HEIGHT
+            upcomingShoesCardDimensions.height +
+            SHOES_LIST_ITEM_SEPARATOR_HEIGHT
           }
           estimatedListSize={{
             width: dimensions.width,
             height:
               SHOES_PLACEHOLDERS_TO_DISPLAY *
-              (UPCOMING_SHOES_CARD_HEIGHT + SHOES_LIST_ITEM_SEPARATOR_HEIGHT),
+              (upcomingShoesCardDimensions.height +
+                SHOES_LIST_ITEM_SEPARATOR_HEIGHT),
           }}
           renderItem={({ index }) => (
             <View>

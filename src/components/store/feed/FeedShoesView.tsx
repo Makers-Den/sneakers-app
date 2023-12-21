@@ -1,16 +1,17 @@
-import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
-import { useInfiniteQuery, useQuery } from "react-query";
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import { useInfiniteQuery } from "react-query";
 import { Shoe, getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
-import { memo, useCallback, useMemo, useState } from "react";
-import {
-  FEED_SHOES_CARD_HEIGHT,
-  FEED_SHOES_IMAGE_HEIGHT,
-  FEED_SHOES_IMAGE_WIDTH,
-  FeedShoesCard,
-} from "./FeedShoesCard";
+import { Navigation, ShoppingScreen } from "@/types/navigation";
+import { memo, useCallback, useMemo } from "react";
+import { FeedShoesCard, getFeedCardDimensions } from "./FeedShoesCard";
 import { FlashList } from "@shopify/flash-list";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
 import {
@@ -26,9 +27,9 @@ import { getImageSize } from "@/lib/image";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 5;
 
-function estimateListHeight(listItemCount: number) {
+function estimateListHeight(listItemCount: number, cardHeight: number) {
   return (
-    FEED_SHOES_CARD_HEIGHT * listItemCount +
+    cardHeight * listItemCount +
     Math.max(0, listItemCount - 1) * SHOES_LIST_ITEM_SEPARATOR_HEIGHT
   );
 }
@@ -41,14 +42,17 @@ export interface FeedShoesViewProps {
   navigation: Navigation;
 }
 
-const feedShoeImage = getImageSize({
-  height: FEED_SHOES_IMAGE_HEIGHT,
-  width: FEED_SHOES_IMAGE_WIDTH,
-});
-
 export function FeedShoesView({ navigation }: FeedShoesViewProps) {
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
+
+  const feedCardDimensions = useMemo(() => {
+    return getFeedCardDimensions();
+  }, []);
+
+  const feedShoeImage = useMemo(() => {
+    return getImageSize(feedCardDimensions.image);
+  }, [feedCardDimensions]);
 
   const feedShoesQuery = useInfiniteQuery({
     queryFn: ({ pageParam, signal }) => {
@@ -117,10 +121,13 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
       {feedShoesQuery.isLoading || !shoeList ? (
         <FlashList
           data={new Array(SHOES_PLACEHOLDERS_TO_DISPLAY).fill(null)}
-          estimatedItemSize={FEED_SHOES_CARD_HEIGHT}
+          estimatedItemSize={feedCardDimensions.height}
           estimatedListSize={{
             width: dimensions.width,
-            height: estimateListHeight(SHOES_PLACEHOLDERS_TO_DISPLAY),
+            height: estimateListHeight(
+              SHOES_PLACEHOLDERS_TO_DISPLAY,
+              feedCardDimensions.height
+            ),
           }}
           renderItem={FeedShoesCardPlaceholder}
           ItemSeparatorComponent={ShoesListItemSeparator}
@@ -128,10 +135,13 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
       ) : (
         <FlashList
           data={shoeList}
-          estimatedItemSize={FEED_SHOES_CARD_HEIGHT}
+          estimatedItemSize={feedCardDimensions.height}
           estimatedListSize={{
             width: dimensions.width,
-            height: estimateListHeight(shoeList.length),
+            height: estimateListHeight(
+              shoeList.length,
+              feedCardDimensions.height
+            ),
           }}
           renderItem={({ item: shoes }) => {
             const currencyFormatter = new Intl.NumberFormat("en-US", {

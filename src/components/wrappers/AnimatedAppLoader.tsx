@@ -1,21 +1,14 @@
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
-  FadeOut,
-  ZoomOut,
-  useAnimatedReaction,
-  useAnimatedRef,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import WhiteSneaker from "../svg/WhiteSneaker";
-import { te } from "date-fns/locale";
 import { theme } from "@/lib/theme";
-import { ScrollView } from "react-native-gesture-handler";
 
 export function AnimatedAppLoader({
   children,
