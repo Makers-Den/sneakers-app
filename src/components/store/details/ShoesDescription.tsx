@@ -1,7 +1,6 @@
-import { theme } from "@/lib/theme";
+import { HtmlRenderer } from "@/components/ui/HtmlRenderer";
 import React from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
-import RenderHtml from "react-native-render-html";
+import { useWindowDimensions } from "react-native";
 
 export interface ShoesDescriptionProps {
   htmlDescription: string;
@@ -10,32 +9,5 @@ export interface ShoesDescriptionProps {
 export function ShoesDescription({ htmlDescription }: ShoesDescriptionProps) {
   const { width } = useWindowDimensions();
 
-  return (
-    <RenderHtml
-      contentWidth={width}
-      source={{ html: htmlDescription }}
-      tagsStyles={styles}
-    />
-  );
+  return <HtmlRenderer html={htmlDescription} width={width} />;
 }
-
-const styles = StyleSheet.create({
-  p: {
-    fontSize: theme.typography.fontSize.base,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    color: theme.palette.gray[100],
-  },
-  span: {
-    fontSize: theme.typography.fontSize.base,
-    lineHeight:
-      theme.typography.fontSize.base * theme.typography.lineHeight.normal,
-    color: theme.palette.gray[100],
-  },
-  a: {
-    color: theme.palette.gray[100],
-  },
-  img: {
-    marginBottom: theme.spacing(1)
-  }
-});
