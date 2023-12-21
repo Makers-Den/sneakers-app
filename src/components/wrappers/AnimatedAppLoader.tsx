@@ -1,9 +1,21 @@
-import { Asset } from 'expo-asset';
-import Constants from 'expo-constants';
-import * as SplashScreen from 'expo-splash-screen';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, FadeOut, ZoomOut } from 'react-native-reanimated';
+import { Asset } from "expo-asset";
+import Constants from "expo-constants";
+import * as SplashScreen from "expo-splash-screen";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
+import Animated, {
+  Easing,
+  FadeOut,
+  ZoomOut,
+  useAnimatedReaction,
+  useAnimatedRef,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import WhiteSneaker from "../svg/WhiteSneaker";
+import { te } from "date-fns/locale";
+import { theme } from "@/lib/theme";
+import { ScrollView } from "react-native-gesture-handler";
 
 export function AnimatedAppLoader({
   children,
@@ -31,6 +43,10 @@ export function AnimatedAppLoader({
   return <AnimatedSplashScreen image={image}>{children}</AnimatedSplashScreen>;
 }
 
+const endScale = 6000;
+
+const endOpacity = 1;
+
 function AnimatedSplashScreen({
   children,
   image,
@@ -40,11 +56,30 @@ function AnimatedSplashScreen({
 }) {
   const [isAppReady, setAppReady] = useState(false);
 
+  const { width, height } = useWindowDimensions();
+
+  const scale = useSharedValue("100%");
+
+  const textOpacity = useSharedValue(0);
+
   const onImageLoaded = useCallback(async () => {
     try {
       await SplashScreen.hideAsync();
       // Load stuff
-      await Promise.all([]);
+
+      scale.value = withTiming("10000%", {
+        duration: 2000,
+        easing: Easing.cubic,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      textOpacity.value = withTiming(endOpacity, {
+        duration: 500,
+        easing: Easing.cubic,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 600));
     } catch (e) {
       // handle errors
     } finally {
@@ -61,25 +96,61 @@ function AnimatedSplashScreen({
           style={[
             StyleSheet.absoluteFill,
             {
+              width: "100%",
+              height: "100%",
               backgroundColor:
-                Constants?.expoConfig?.splash?.backgroundColor || '#fff',
+                Constants?.expoConfig?.splash?.backgroundColor || "#fff",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
             },
           ]}
-          exiting={FadeOut.delay(1000).duration(500).easing(Easing.ease)}
         >
           <Animated.Image
             style={{
-              width: '100%',
-              height: '100%',
+              width: scale,
+              height: scale,
               resizeMode:
-                Constants?.expoConfig?.splash?.resizeMode || 'contain',
+                Constants?.expoConfig?.splash?.resizeMode || "contain",
             }}
             source={image}
             onLoadEnd={onImageLoaded}
-            exiting={ZoomOut.delay(1000).duration(500).easing(Easing.ease)}
           />
+
+          <Animated.Text
+            style={{
+              opacity: textOpacity,
+              position: "absolute",
+              zIndex: 20,
+              fontSize: 40,
+              color: theme.palette.gray[900],
+              fontWeight: theme.typography.fontWeight.bold,
+            }}
+          >
+            Sneakers
+          </Animated.Text>
         </Animated.View>
       )}
     </View>
   );
 }
+
+// const styles = StyleSheet.create({
+//   wrapper: {
+//     width: "100%",
+//     height: "100%",
+//     backgroundColor: Constants?.expoConfig?.splash?.backgroundColor || "#fff",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     overflow: "hidden",
+//   },
+//   image: {
+//     width: "100%",
+//     height: "100%",
+//     resizeMode: Constants?.expoConfig?.splash?.resizeMode || "contain",
+//   },
+//   icon: {
+//     width: "100%",
+//     height: "100%",
+//   },
+// });
