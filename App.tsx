@@ -1,19 +1,20 @@
-import { QueryClientProvider } from "react-query";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Navigation } from "@/Navigation";
-import { queryClient } from "@/lib/query";
-import { StatusBar } from "expo-status-bar";
-import { theme } from "@/lib/theme";
-import * as Notifications from "expo-notifications";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { createNamedLogger } from "@/lib/log";
-import { StyleSheet } from "react-native";
-import { registerForPushNotificationsAsync } from "@/lib/notification";
-import ErrorBoundary from "react-native-error-boundary";
-import { FallbackView } from "@/components/ui/FallbackView";
+import { QueryClientProvider } from 'react-query';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Navigation } from '@/Navigation';
+import { queryClient } from '@/lib/query';
+import { StatusBar } from 'expo-status-bar';
+import { theme } from '@/lib/theme';
+import * as Notifications from 'expo-notifications';
+import { createNamedLogger } from '@/lib/log';
+import { registerForPushNotificationsAsync } from '@/lib/notification';
+import ErrorBoundary from 'react-native-error-boundary';
+import { FallbackView } from '@/components/ui/FallbackView';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { StyleSheet } from 'react-native';
+import { AnimatedAppLoader } from '@/components/wrappers/AnimatedAppLoader';
 
-const logger = createNamedLogger("App");
+const logger = createNamedLogger('App');
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,18 +24,34 @@ Notifications.setNotificationHandler({
   }),
 });
 
+SplashScreen.preventAutoHideAsync().catch(() => {
+  /* reloading the app might trigger some race conditions, ignore them */
+});
+
 export default function App() {
+  return (
+    <AnimatedAppLoader
+      image={{
+        uri: 'https://github.com/expo/expo/blob/master/templates/expo-template-blank/assets/splash.png?raw=true',
+      }}
+    >
+      <MainScreen />
+    </AnimatedAppLoader>
+  );
+}
+
+function MainScreen() {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().catch((error) =>
-      logger.error("Register push notifications failed", error)
+    registerForPushNotificationsAsync().catch(error =>
+      logger.error('Register push notifications failed', error)
     );
   }, []);
 
   useEffect(() => {
-    SplashScreen.hideAsync().catch((error) =>
-      logger.error("Hide splash screen failed", error)
+    SplashScreen.hideAsync().catch(error =>
+      logger.error('Hide splash screen failed', error)
     );
   }, [lastNotificationResponse]);
 
@@ -42,8 +59,8 @@ export default function App() {
     <SafeAreaProvider style={styles.safeAreaProvider}>
       <ErrorBoundary
         FallbackComponent={FallbackView}
-        onError={(e) => {
-          logger.error("Error Boundary ", e, "Stack ", e.stack);
+        onError={e => {
+          logger.error('Error Boundary ', e, 'Stack ', e.stack);
         }}
       >
         <QueryClientProvider client={queryClient}>
