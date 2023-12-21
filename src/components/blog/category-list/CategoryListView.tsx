@@ -1,18 +1,8 @@
-import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
-import { useInfiniteQuery, useQuery } from "react-query";
-import {
-  Shoe,
-  getContentCategories,
-  getShoesByCollectionId,
-} from "@/lib/shopify";
-import { envVariables } from "@/lib/env";
+import { Dimensions, StyleSheet, View } from "react-native";
+import { useQuery } from "react-query";
+import { getContentCategories } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
-import {
-  Navigation,
-  RootTabParamList,
-  Screen,
-  ShoppingScreen,
-} from "@/types/navigation";
+import { RootTabParamList, Screen } from "@/types/navigation";
 import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { theme } from "@/lib/theme";
@@ -24,7 +14,6 @@ import {
   CategoryCardPlaceholder,
 } from "./CategoryCard";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { ca } from "date-fns/locale";
 import { getImageSize } from "@/lib/image";
 
 export const CATEGORY_LIST_ITEM_SEPARATOR_HEIGHT = theme.spacing(0.5);
@@ -77,6 +66,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
           title: category.data.title,
           blogs: category.content.map((blog) => {
             return {
+              id: blog.id,
               title: blog.data.title,
               image: blog.data.thumbnail,
             };
@@ -86,6 +76,10 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
     }
     return [];
   }, [categoryContentQuery.data]);
+
+  const onBlogPress = ({ id }: { id: string }) => {
+    navigation.navigate(Screen.BlogPostScreens, { blogPostId: id });
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -113,7 +107,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
             return (
               <CategoryCard
                 {...category}
-                onBlogPress={() => {}}
+                onBlogPress={onBlogPress}
                 onMorePress={() => {}}
               />
             );

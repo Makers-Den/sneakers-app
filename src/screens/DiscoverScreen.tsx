@@ -33,3 +33,5 @@ const styles = StyleSheet.create({
     backgroundColor: theme.palette.gray[900],
   },
 });
+
+export const MemoDiscoverScreen = React.memo(DiscoverScreen);

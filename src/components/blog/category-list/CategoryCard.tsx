@@ -1,6 +1,14 @@
+import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
 import { theme } from "@/lib/theme";
 import { FlashList } from "@shopify/flash-list";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 export const CATEGORY_CARD_HEIGHT = 420;
 
@@ -16,6 +24,7 @@ function calculateListWidth(listItemCount: number) {
 }
 
 export type Blog = {
+  id: string;
   title: string;
   image: string;
 };
@@ -82,7 +91,7 @@ export function CategoryCard<T extends Blog>({
 }
 
 export function CategoryCardPlaceholder() {
-  return <View style={styles.placeholder}></View>;
+  return <PlaceholderLoading width={"100%"} height={CATEGORY_CARD_HEIGHT} />;
 }
 
 const styles = StyleSheet.create({

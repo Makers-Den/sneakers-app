@@ -26,6 +26,10 @@ import {
   getMetaObjectsQuery,
   getMetaObjectsSchema,
 } from "@/queries/getMetaObjects";
+import {
+  getMetaObjectQuery,
+  getMetaObjectSchema,
+} from "@/queries/getMetaObjectById";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -260,6 +264,45 @@ export async function getContentCategories({
     });
 
   return contentCategories;
+}
+
+export type GetBlogPostQuery = {
+  blogPostId: string;
+  signal?: AbortSignal;
+  image?: { maxHeight: number; maxWidth: number };
+};
+
+export async function getBlogPost({
+  blogPostId,
+  signal,
+  image,
+}: GetBlogPostQuery) {
+  const blogPostResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectQuery({ id: blogPostId, image }),
+    schema: getMetaObjectSchema,
+    signal: signal,
+  });
+
+  if (blogPostResponse === null) {
+    return null;
+  }
+
+  const blogPostNode = blogPostResponse.data.metaobject;
+
+  const blogPostData = mapFieldsToObject<{
+    title: string;
+    thumbnail: string;
+    category: string;
+    content: string;
+  }>(blogPostNode.fields);
+
+  const blogPost = {
+    id: blogPostNode.id,
+    handle: blogPostNode.handle,
+    data: blogPostData,
+  };
+
+  return blogPost;
 }
 
 export type Shoe = Exclude<
