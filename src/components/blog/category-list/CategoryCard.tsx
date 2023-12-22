@@ -1,27 +1,12 @@
+import {
+  BlogHorizontalList,
+  OnBlogPress,
+} from "@/components/ui/BlogHorizontalList";
 import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
 import { theme } from "@/lib/theme";
-import { FlashList } from "@shopify/flash-list";
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export const CATEGORY_CARD_HEIGHT = 420;
-
-export const CATEGORY_BLOG_CARD_HEIGHT = 300;
-export const CATEGORY_BLOG_IMAGE_WIDTH = 200;
-export const CATEGORY_BLOG_IMAGE_HEIGHT = 260;
-
-function calculateListWidth(listItemCount: number) {
-  return (
-    CATEGORY_BLOG_IMAGE_WIDTH * listItemCount +
-    Math.max(0, listItemCount - 1) * theme.spacing(2)
-  );
-}
 
 export type Blog = {
   id: string;
@@ -33,7 +18,7 @@ export type CategoryCardProps<T extends Blog> = {
   blogs: T[];
   title: string;
   onMorePress: () => void;
-  onBlogPress: (blog: T) => void;
+  onBlogPress: OnBlogPress<T>;
 };
 
 export function CategoryCard<T extends Blog>({
@@ -51,41 +36,7 @@ export function CategoryCard<T extends Blog>({
         </Pressable>
       </View>
 
-      <FlashList
-        horizontal
-        data={blogs}
-        showsHorizontalScrollIndicator={false}
-        estimatedItemSize={CATEGORY_BLOG_IMAGE_WIDTH}
-        estimatedListSize={{
-          width: calculateListWidth(blogs.length),
-          height: CATEGORY_BLOG_CARD_HEIGHT,
-        }}
-        keyExtractor={(item) => item.title}
-        renderItem={({ item }) => (
-          <Pressable
-            style={styles.blogWrapper}
-            onPress={() => onBlogPress(item)}
-          >
-            <View style={styles.blogImageWrapper}>
-              {item.image && (
-                <Image
-                  style={styles.blogImage}
-                  source={{ uri: item.image, scale: 1 }}
-                />
-              )}
-            </View>
-            <View>
-              <Text
-                numberOfLines={2}
-                ellipsizeMode="tail"
-                style={styles.blogTitle}
-              >
-                {item.title}
-              </Text>
-            </View>
-          </Pressable>
-        )}
-      />
+      <BlogHorizontalList blogs={blogs} onBlogPress={onBlogPress} />
     </View>
   );
 }
@@ -124,34 +75,6 @@ const styles = StyleSheet.create({
   },
 
   viewMore: {
-    fontSize: theme.typography.fontSize.base,
-    color: theme.palette.gray[100],
-  },
-
-  blogWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: CATEGORY_BLOG_IMAGE_WIDTH,
-    height: CATEGORY_BLOG_CARD_HEIGHT,
-    marginHorizontal: theme.spacing(2),
-  },
-
-  blogImageWrapper: {
-    position: "relative",
-    width: CATEGORY_BLOG_IMAGE_WIDTH,
-    height: CATEGORY_BLOG_IMAGE_HEIGHT,
-  },
-
-  blogImage: {
-    resizeMode: "cover",
-    width: CATEGORY_BLOG_IMAGE_WIDTH,
-    height: CATEGORY_BLOG_IMAGE_HEIGHT,
-    borderRadius: theme.spacing(1),
-  },
-
-  blogTitle: {
-    marginTop: theme.spacing(0.5),
     fontSize: theme.typography.fontSize.base,
     color: theme.palette.gray[100],
   },

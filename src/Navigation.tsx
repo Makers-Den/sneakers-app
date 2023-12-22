@@ -14,14 +14,18 @@ import { ShoesListScreen } from "@/screens/ShoesListScreen";
 import { ShoesDetailsScreen } from "@/screens/ShoesDetailsScreen";
 import { ShoesSearchScreen } from "@/screens/ShoesSearchScreen";
 import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
+import { createContext, useEffect } from "react";
 import { createNamedLogger } from "./lib/log";
 import { notificationDataSchema } from "./lib/notification";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import { theme } from "./lib/theme";
 import { MemoDiscoverScreen } from "./screens/DiscoverScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlogPostScreen } from "./screens/BlogPostScreen";
+import { de } from "date-fns/locale";
 
 const logger = createNamedLogger("Navigation");
 
@@ -78,25 +82,41 @@ export function Navigation() {
   );
 }
 
-function ShoppingNavigation() {
+const defaultContext = {} as Pick<
+  BottomTabScreenProps<RootTabParamList, Screen.ShoppingScreens>,
+  "navigation"
+>;
+
+export const ShoppingRootNavigationContext = createContext(defaultContext);
+
+function ShoppingNavigation({
+  navigation,
+}: {
+  navigation: BottomTabScreenProps<
+    RootTabParamList,
+    Screen.ShoppingScreens
+  >["navigation"];
+}) {
   return (
-    <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
-      <Stack.Screen
-        component={ShoesListScreen}
-        name={ShoppingScreen.ShoesList}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={ShoppingScreen.ShoesDetails}
-        component={ShoesDetailsScreen}
-        options={{ headerShown: false, animation: "slide_from_bottom" }}
-      />
-      <Stack.Screen
-        name={ShoppingScreen.ShoesSearch}
-        component={ShoesSearchScreen}
-        options={{ headerShown: false, animation: "slide_from_right" }}
-      />
-    </Stack.Navigator>
+    <ShoppingRootNavigationContext.Provider value={{ navigation }}>
+      <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
+        <Stack.Screen
+          component={ShoesListScreen}
+          name={ShoppingScreen.ShoesList}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={ShoppingScreen.ShoesDetails}
+          component={ShoesDetailsScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
+          name={ShoppingScreen.ShoesSearch}
+          component={ShoesSearchScreen}
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+      </Stack.Navigator>
+    </ShoppingRootNavigationContext.Provider>
   );
 }
 

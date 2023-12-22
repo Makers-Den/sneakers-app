@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ShoppingScreen, ShoppingStackParamList } from "@/types/navigation";
@@ -14,12 +14,15 @@ import { ShoesActionBar } from "@/components/store/details/ShoesActionBar";
 import { ShoesHeader } from "@/components/store/details/ShoesHeader";
 import { ShoesDescription } from "@/components/store/details/ShoesDescription";
 import { Button } from "@/components/ui/Button";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
 import { Checkout } from "@/components/store/checkout/Checkout";
 import { NotificationModal } from "@/components/store/notification/NotificationModal";
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { getImageSize } from "@/lib/image";
+import { BlogHorizontalList } from "@/components/ui/BlogHorizontalList";
+import { RootTabParamList, Screen } from "@/types/navigation";
+import { ShoppingRootNavigationContext } from "@/Navigation";
 
 export function ShoesDetailsScreen({
   navigation,
@@ -31,6 +34,8 @@ export function ShoesDetailsScreen({
   const { shoesId } = route.params;
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
+
+  const rootNavigation = useContext(ShoppingRootNavigationContext);
 
   const shoesCarouselImage = useMemo(
     () => getImageSize(getShoesCarouselDimensions().image),
@@ -91,6 +96,26 @@ export function ShoesDetailsScreen({
     return currencyFormatter.format(shoesQuery.data.price.amount);
   }, [shoesQuery.data]);
 
+  const onBlogPress = ({ id }: { id: string }) => {
+    rootNavigation.navigation.navigate(Screen.BlogPostScreens, {
+      blogPostId: id,
+    });
+  };
+
+  const blogs = useMemo(() => {
+    if (!shoesQuery.data) {
+      return null;
+    }
+
+    return shoesQuery.data.relatedContent?.map((blog) => {
+      return {
+        id: blog.id,
+        title: blog.data.title,
+        image: blog.data.thumbnail,
+      };
+    });
+  }, [shoesQuery.data]);
+
   return (
     <SafeAreaView
       edges={{
@@ -128,6 +153,12 @@ export function ShoesDetailsScreen({
                 <ShoesDescription
                   htmlDescription={shoesQuery.data.descriptionHtml}
                 />
+              </>
+            )}
+            {blogs && (
+              <>
+                <Text style={styles.relatedArticles}>Related Articles</Text>
+                <BlogHorizontalList blogs={blogs} onBlogPress={onBlogPress} />
               </>
             )}
           </View>
@@ -175,5 +206,13 @@ const styles = StyleSheet.create({
     bottom: theme.spacing(4),
     left: theme.spacing(2),
     right: theme.spacing(2),
+  },
+  relatedArticles: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(2),
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.palette.gray[100],
+    textTransform: "uppercase",
+    fontWeight: theme.typography.fontWeight.bold,
   },
 });

@@ -7,14 +7,16 @@ import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { theme } from "@/lib/theme";
 import {
-  CATEGORY_BLOG_IMAGE_HEIGHT,
-  CATEGORY_BLOG_IMAGE_WIDTH,
   CATEGORY_CARD_HEIGHT,
   CategoryCard,
   CategoryCardPlaceholder,
 } from "./CategoryCard";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { getImageSize } from "@/lib/image";
+import {
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/components/ui/BlogHorizontalList";
 
 export const CATEGORY_LIST_ITEM_SEPARATOR_HEIGHT = theme.spacing(0.5);
 
@@ -39,8 +41,8 @@ export interface CategoryListViewProps {
 }
 
 const categoryImage = getImageSize({
-  height: CATEGORY_BLOG_IMAGE_HEIGHT,
-  width: CATEGORY_BLOG_IMAGE_WIDTH,
+  height: BLOG_IMAGE_HEIGHT,
+  width: BLOG_IMAGE_WIDTH,
 });
 
 export function CategoryListView({ navigation }: CategoryListViewProps) {

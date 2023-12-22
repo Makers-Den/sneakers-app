@@ -23,6 +23,7 @@ import {
 } from "@/mutations/createCheckout";
 import { mapFieldsToObject } from "./objects";
 import {
+  MetaObjectTypes,
   getMetaObjectsQuery,
   getMetaObjectsSchema,
 } from "@/queries/getMetaObjects";
@@ -168,7 +169,10 @@ export interface GetContentCategoriesQuery {
   image?: { maxHeight: number; maxWidth: number };
 }
 
-export type ContentCategoryReferencesType = "stories" | "blog_posts";
+export type ContentCategoryReferencesType = Exclude<
+  MetaObjectTypes,
+  "content_categories"
+>;
 
 export async function getContentCategories({
   signal,
@@ -317,6 +321,11 @@ interface GetShoesByIdQuery {
   signal?: AbortSignal;
 }
 
+export type ShoesRelatedContentType = Exclude<
+  MetaObjectTypes,
+  "content_categories"
+>;
+
 export async function getShoesById(query: GetShoesByIdQuery) {
   const response = await makeShopifyGraphqlRequest({
     query: getProductByIdQuery({
@@ -362,6 +371,24 @@ export async function getShoesById(query: GetShoesByIdQuery) {
     ? add(todayNoonUtc(), { days: parseInt(modelDropOffsetDays.value, 10) })
     : null;
 
+  const relatedContent = product.metafields
+    .find((metafield) => {
+      return metafield && metafield.key === ShopifyMetaFieldKey.RelatedContent;
+    })
+    ?.references?.nodes.map((node) => {
+      const data = mapFieldsToObject<{
+        title: string;
+        thumbnail: string;
+        category: string;
+      }>(node.fields);
+
+      return {
+        id: node.id,
+        type: node.type,
+        data,
+      };
+    });
+
   return {
     id: product.id,
     model: product.title,
@@ -384,6 +411,7 @@ export async function getShoesById(query: GetShoesByIdQuery) {
       amount: parseFloat(product.priceRange.maxVariantPrice.amount),
       currencyCode: product.priceRange.maxVariantPrice.currencyCode,
     },
+    relatedContent,
   };
 }
 
