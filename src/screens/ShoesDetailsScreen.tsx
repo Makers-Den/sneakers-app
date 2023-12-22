@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
   relatedArticles: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(2),
+    paddingHorizontal: theme.spacing(2),
     fontSize: theme.typography.fontSize.lg,
     color: theme.palette.gray[100],
     textTransform: "uppercase",
