@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
-import { getFeedCardDimensions } from "./FeedShoesCard";
+import { getFeedShoeCardDimensions } from "./FeedShoesCard";
 import { theme } from "@/lib/theme";
 
 export function FeedShoesCardPlaceholder() {
-  const cardDimensions = getFeedCardDimensions();
+  const cardDimensions = getFeedShoeCardDimensions();
   return (
     <View
       style={[

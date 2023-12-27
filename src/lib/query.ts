@@ -36,4 +36,10 @@ export const queryKeys = {
       maxImageHeight: number;
     }) => [...queryKeys.blogPosts.details(), params] as const,
   },
+  feed: {
+    all: () => ["feed"] as const,
+    lists: () => [...queryKeys.feed.all(), "lists"] as const,
+    list: (params: { maxImageWidth: number; maxImageHeight: number }) =>
+      [...queryKeys.feed.lists(), params] as const,
+  },
 };

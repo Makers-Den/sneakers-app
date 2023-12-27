@@ -21,8 +21,8 @@ import { NotificationModal } from "@/components/store/notification/NotificationM
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { getImageSize } from "@/lib/image";
 import { BlogHorizontalList } from "@/components/ui/BlogHorizontalList";
-import { RootTabParamList, Screen } from "@/types/navigation";
-import { ShoppingRootNavigationContext } from "@/Navigation";
+import { Screen } from "@/types/navigation";
+import { ShoppingRootNavigationContext } from "@/ShoppingRootNavigationContext";
 
 export function ShoesDetailsScreen({
   navigation,

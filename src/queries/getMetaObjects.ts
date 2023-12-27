@@ -1,6 +1,10 @@
+import { ShopifyMetaObjectType } from "@/types/shopify";
 import { z } from "zod";
 
-export type MetaObjectTypes = "content_categories" | "stories" | "blog_posts";
+export type MetaObjectTypes =
+  | ShopifyMetaObjectType.contentCategories
+  | ShopifyMetaObjectType.blogPost
+  | ShopifyMetaObjectType.stories;
 
 export interface GetMetaObjectsVars {
   type: MetaObjectTypes;

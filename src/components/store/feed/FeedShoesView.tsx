@@ -1,17 +1,10 @@
-import {
-  ActivityIndicator,
-  Dimensions,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import { useInfiniteQuery } from "react-query";
-import { Shoe, getShoesByCollectionId } from "@/lib/shopify";
-import { envVariables } from "@/lib/env";
+import { Feed, getFeed, getShoesByCollectionId } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
-import { Navigation, ShoppingScreen } from "@/types/navigation";
-import { memo, useCallback, useMemo } from "react";
-import { FeedShoesCard, getFeedCardDimensions } from "./FeedShoesCard";
+import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
+import { memo, useCallback, useContext, useMemo } from "react";
+import { getFeedShoeCardDimensions } from "./FeedShoesCard";
 import { FlashList } from "@shopify/flash-list";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
 import {
@@ -24,6 +17,8 @@ import { NotificationModal } from "../notification/NotificationModal";
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { theme } from "@/lib/theme";
 import { getImageSize } from "@/lib/image";
+import { FeedCard } from "./FeedCard";
+import { ShoppingRootNavigationContext } from "@/ShoppingRootNavigationContext";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 5;
 
@@ -46,8 +41,10 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
 
+  const rootNavigation = useContext(ShoppingRootNavigationContext);
+
   const feedCardDimensions = useMemo(() => {
-    return getFeedCardDimensions();
+    return getFeedShoeCardDimensions();
   }, []);
 
   const feedShoeImage = useMemo(() => {
@@ -56,8 +53,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
 
   const feedShoesQuery = useInfiniteQuery({
     queryFn: ({ pageParam, signal }) => {
-      return getShoesByCollectionId({
-        collectionId: envVariables.shopify.collectionId.feed,
+      return getFeed({
         maxImageHeight: feedShoeImage.height,
         maxImageWidth: feedShoeImage.width,
         perPage: SHOES_PLACEHOLDERS_TO_DISPLAY,
@@ -65,8 +61,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         signal,
       });
     },
-    queryKey: queryKeys.shoes.list({
-      collectionId: envVariables.shopify.collectionId.feed,
+    queryKey: queryKeys.feed.list({
       maxImageHeight: feedShoeImage.height,
       maxImageWidth: feedShoeImage.width,
     }),
@@ -108,17 +103,17 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
     [checkoutProcess]
   );
 
-  const shoeList: Shoe[] | null = useMemo(() => {
+  const feedContent: Feed[] | null = useMemo(() => {
     if (!feedShoesQuery.data?.pages) {
       return null;
     }
 
-    return feedShoesQuery.data.pages.flat().filter((page) => page) as Shoe[];
+    return feedShoesQuery.data.pages.flat().filter((page) => page) as Feed[];
   }, [feedShoesQuery.data?.pages]);
 
   return (
     <View style={styles.wrapper}>
-      {feedShoesQuery.isLoading || !shoeList ? (
+      {feedShoesQuery.isLoading || !feedContent ? (
         <FlashList
           data={new Array(SHOES_PLACEHOLDERS_TO_DISPLAY).fill(null)}
           estimatedItemSize={feedCardDimensions.height}
@@ -134,35 +129,28 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         />
       ) : (
         <FlashList
-          data={shoeList}
+          data={feedContent}
           estimatedItemSize={feedCardDimensions.height}
           estimatedListSize={{
             width: dimensions.width,
             height: estimateListHeight(
-              shoeList.length,
+              feedContent.length,
               feedCardDimensions.height
             ),
           }}
-          renderItem={({ item: shoes }) => {
-            const currencyFormatter = new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: shoes?.price?.currencyCode,
-            });
-
+          renderItem={({ item }) => {
             return (
-              <FeedShoesCard
-                image={shoes.previewImage}
-                model={shoes.model}
-                modelVariant={shoes.modelVariant}
-                buttonText={
-                  shoes.isUpcoming
-                    ? "Notify Me"
-                    : currencyFormatter.format(shoes.price.amount)
-                }
-                onButtonPress={() => handleButtonPress(shoes)}
-                onPress={() => {
+              <FeedCard
+                feed={item}
+                onBlogCardPress={(blogPost) => {
+                  rootNavigation.navigation.navigate(Screen.BlogPostScreens, {
+                    blogPostId: blogPost.id,
+                  });
+                }}
+                onShoeCardButtonPress={handleButtonPress}
+                onShoeCardPress={(shoe) => {
                   navigation.navigate(ShoppingScreen.ShoesDetails, {
-                    shoesId: shoes.id,
+                    shoesId: shoe.id,
                   });
                 }}
               />

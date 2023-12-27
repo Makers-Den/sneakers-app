@@ -26,6 +26,7 @@ import { MemoDiscoverScreen } from "./screens/DiscoverScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlogPostScreen } from "./screens/BlogPostScreen";
 import { de } from "date-fns/locale";
+import { ShoppingRootNavigationContext } from "./ShoppingRootNavigationContext";
 
 const logger = createNamedLogger("Navigation");
 
@@ -81,13 +82,6 @@ export function Navigation() {
     </NavigationContainer>
   );
 }
-
-const defaultContext = {} as Pick<
-  BottomTabScreenProps<RootTabParamList, Screen.ShoppingScreens>,
-  "navigation"
->;
-
-export const ShoppingRootNavigationContext = createContext(defaultContext);
 
 function ShoppingNavigation({
   navigation,

@@ -10,6 +10,8 @@ export function mapFieldsToObject<T = Record<string, string>>(fields: Field[]) {
       ...acc,
       [field.key]: field.reference?.image
         ? field.reference.image?.url
+        : field.reference
+        ? field.reference
         : field.value,
     };
   }, {}) as T;

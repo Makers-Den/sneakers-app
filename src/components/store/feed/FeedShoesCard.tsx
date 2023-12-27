@@ -12,7 +12,7 @@ import {
 
 export const FEED_IMAGE_ASPECT_RATIO = 1.05;
 
-export function getFeedCardDimensions() {
+export function getFeedShoeCardDimensions() {
   const windowDimensions = Dimensions.get("window");
   const imageWidth = windowDimensions.width - theme.spacing(2) * 2;
   const imageHeight = imageWidth * FEED_IMAGE_ASPECT_RATIO;
@@ -42,7 +42,7 @@ export function FeedShoesCard({
   onPress,
   onButtonPress,
 }: FeedShoesCardProps) {
-  const cardDimensions = getFeedCardDimensions();
+  const cardDimensions = getFeedShoeCardDimensions();
   return (
     <Pressable onPress={onPress}>
       <View

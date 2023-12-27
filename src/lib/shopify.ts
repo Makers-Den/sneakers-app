@@ -1,6 +1,10 @@
 import { map, z } from "zod";
 import dayjs from "dayjs";
-import { ShopifyMetaFieldKey } from "@/types/shopify";
+import {
+  ShopifyFieldKey,
+  ShopifyMetaFieldKey,
+  ShopifyMetaObjectType,
+} from "@/types/shopify";
 import { todayNoonUtc } from "./time";
 import { envVariables } from "./env";
 import { createNamedLogger } from "./log";
@@ -31,6 +35,7 @@ import {
   getMetaObjectQuery,
   getMetaObjectSchema,
 } from "@/queries/getMetaObjectById";
+import { ProductQuery, getFeedQuery, getFeedSchema } from "@/queries/getFeed";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -75,6 +80,61 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
   }
 }
 
+export function mapProduct(product: ProductQuery) {
+  const modelVariant = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
+  );
+
+  const modelIsForMen = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelIsForMen
+  );
+
+  const modelDropOffsetDays = product.metafields.find(
+    (metafield) =>
+      metafield && metafield.key === ShopifyMetaFieldKey.ModelDropOffsetDays
+  );
+
+  const images = product.media.nodes.map(
+    (node) => node.previewImage.resizedUrl
+  );
+
+  const sizes = product.variants.nodes.map((node) => ({
+    id: node.id,
+    label: node.title,
+  }));
+
+  const dropsAt = modelDropOffsetDays
+    ? add(todayNoonUtc(), { days: parseInt(modelDropOffsetDays.value, 10) })
+    : null;
+
+  return {
+    id: product.id,
+    model: product.title,
+    modelVariant: modelVariant?.value || null,
+    isInStock: product.availableForSale,
+    isUpcoming: !product.availableForSale,
+    isForMen: modelIsForMen?.value ? modelIsForMen.value === "true" : null,
+    sizes,
+    sizeRange:
+      sizes.length === 0
+        ? null
+        : {
+            min: sizes[0],
+            max: sizes[sizes.length - 1],
+          },
+    dropsAt,
+    previewImage: images.length === 0 ? null : images[0],
+    price: {
+      amount: parseFloat(product.priceRange.maxVariantPrice.amount),
+      currencyCode: product.priceRange.maxVariantPrice.currencyCode,
+    },
+  };
+}
+
+export type Product = ReturnType<typeof mapProduct>;
+
 interface GetShoesByCollectionIdQuery {
   collectionId: string;
   maxImageHeight: number;
@@ -108,55 +168,8 @@ export async function getShoesByCollectionId(
   const pageInfo = response.data.collection.products.pageInfo;
 
   const shoes = response.data.collection.products.edges.map((edge) => {
-    const modelVariant = edge.node.metafields.find(
-      (metafield) =>
-        metafield && metafield.key === ShopifyMetaFieldKey.ModelVariant
-    );
-
-    const modelIsForMen = edge.node.metafields.find(
-      (metafield) =>
-        metafield && metafield.key === ShopifyMetaFieldKey.ModelIsForMen
-    );
-
-    const modelDropOffsetDays = edge.node.metafields.find(
-      (metafield) =>
-        metafield && metafield.key === ShopifyMetaFieldKey.ModelDropOffsetDays
-    );
-
-    const images = edge.node.media.nodes.map(
-      (node) => node.previewImage.resizedUrl
-    );
-
-    const sizes = edge.node.variants.nodes.map((node) => ({
-      id: node.id,
-      label: node.title,
-    }));
-
-    const dropsAt = modelDropOffsetDays
-      ? add(todayNoonUtc(), { days: parseInt(modelDropOffsetDays.value, 10) })
-      : null;
-
     return {
-      id: edge.node.id,
-      model: edge.node.title,
-      modelVariant: modelVariant?.value || null,
-      isInStock: edge.node.availableForSale,
-      isUpcoming: !edge.node.availableForSale,
-      isForMen: modelIsForMen?.value ? modelIsForMen.value === "true" : null,
-      sizes,
-      sizeRange:
-        sizes.length === 0
-          ? null
-          : {
-              min: sizes[0],
-              max: sizes[sizes.length - 1],
-            },
-      dropsAt,
-      previewImage: images.length === 0 ? null : images[0],
-      price: {
-        amount: parseFloat(edge.node.priceRange.maxVariantPrice.amount),
-        currencyCode: edge.node.priceRange.maxVariantPrice.currencyCode,
-      },
+      ...mapProduct(edge.node),
       pageInfo,
     };
   });
@@ -171,7 +184,7 @@ export interface GetContentCategoriesQuery {
 
 export type ContentCategoryReferencesType = Exclude<
   MetaObjectTypes,
-  "content_categories"
+  ShopifyMetaObjectType.contentCategories
 >;
 
 export async function getContentCategories({
@@ -179,7 +192,10 @@ export async function getContentCategories({
   image,
 }: GetContentCategoriesQuery) {
   const contentCategoriesResponse = await makeShopifyGraphqlRequest({
-    query: getMetaObjectsQuery({ type: "content_categories", image }),
+    query: getMetaObjectsQuery({
+      type: ShopifyMetaObjectType.contentCategories,
+      image,
+    }),
     schema: getMetaObjectsSchema,
     signal: signal,
   });
@@ -190,7 +206,7 @@ export async function getContentCategories({
 
   const storiesResponse = await makeShopifyGraphqlRequest({
     query: getMetaObjectsQuery({
-      type: "stories",
+      type: ShopifyMetaObjectType.stories,
       image,
     }),
     schema: getMetaObjectsSchema,
@@ -203,7 +219,7 @@ export async function getContentCategories({
 
   const blogPostsResponse = await makeShopifyGraphqlRequest({
     query: getMetaObjectsQuery({
-      type: "blog_posts",
+      type: ShopifyMetaObjectType.blogPost,
       image,
     }),
     schema: getMetaObjectsSchema,
@@ -474,3 +490,94 @@ export async function createCheckout(command: CreateCheckoutCommand) {
     webUrl: response.data.checkoutCreate.checkout.webUrl,
   };
 }
+
+interface GetFeedQuery {
+  maxImageHeight: number;
+  maxImageWidth: number;
+  page?: number;
+  perPage?: number;
+  cursor?: string;
+  signal?: AbortSignal;
+}
+
+export type FeedBlog = {
+  id: string;
+  handle: string;
+  type: ShopifyMetaObjectType.blogPost;
+  data: {
+    title: string;
+    thumbnail: string;
+  };
+  pageInfo: { hasNextPage: boolean; endCursor: string | null };
+};
+
+export type FeedProduct = Product & {
+  pageInfo: { hasNextPage: boolean; endCursor: string | null };
+  type: ShopifyMetaObjectType.product;
+};
+
+export async function getFeed(query: GetFeedQuery) {
+  const response = await makeShopifyGraphqlRequest({
+    query: getFeedQuery({
+      maxImageHeight: query.maxImageHeight,
+      maxImageWidth: query.maxImageWidth,
+      page: query.page,
+      cursor: query.cursor,
+      perPage: query.perPage,
+    }),
+    schema: getFeedSchema,
+    signal: query.signal,
+  });
+
+  if (response === null) {
+    return null;
+  }
+
+  const itemsField = response.data.metaobject.fields?.find(({ key }) => {
+    return key === ShopifyFieldKey.items;
+  });
+
+  if (!itemsField) {
+    return null;
+  }
+
+  const pageInfo = itemsField.references.pageInfo;
+
+  const items = itemsField.references.edges
+    .map(({ node }) => {
+      if (node.type === ShopifyMetaObjectType.blogPost) {
+        const blogPostData = mapFieldsToObject<{
+          title: string;
+          thumbnail: string;
+          //@ts-ignore
+        }>(node.fields);
+
+        return {
+          id: node.id,
+          type: node.type,
+          data: blogPostData,
+          pageInfo,
+        };
+      }
+
+      if (node.type === ShopifyMetaObjectType.product) {
+        const productData = mapFieldsToObject<{
+          product: ProductQuery;
+          //@ts-ignore
+        }>(node.fields);
+
+        console.log("product", productData);
+
+        return {
+          ...mapProduct(productData.product),
+          pageInfo,
+          type: node.type,
+        };
+      }
+    })
+    .filter((item) => Boolean(item)) as (FeedProduct | FeedBlog)[];
+
+  return items;
+}
+
+export type Feed = Exclude<Awaited<ReturnType<typeof getFeed>>, null>[number];

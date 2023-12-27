@@ -9,3 +9,15 @@ export enum ShopifyMetaFieldKey {
   ModelDropOffsetDays = "model_drop_offset_days",
   RelatedContent = "relatedcontent",
 }
+
+export enum ShopifyFieldKey {
+  items = "items",
+}
+
+export enum ShopifyMetaObjectType {
+  blogPost = "blog_posts",
+  feed = "feed",
+  contentCategories = "content_categories",
+  stories = "stories",
+  product = "product",
+}
