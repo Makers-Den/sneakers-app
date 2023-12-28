@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { getFeedShoeCardDimensions } from "./FeedShoesCard";
 import { theme } from "@/lib/theme";
 

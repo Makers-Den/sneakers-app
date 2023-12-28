@@ -4,7 +4,6 @@ import { Feed, getFeed, getShoesByCollectionId } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
 import { memo, useCallback, useContext, useMemo } from "react";
-import { getFeedShoeCardDimensions } from "./FeedShoesCard";
 import { FlashList } from "@shopify/flash-list";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
 import {
@@ -17,7 +16,11 @@ import { NotificationModal } from "../notification/NotificationModal";
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { theme } from "@/lib/theme";
 import { getImageSize } from "@/lib/image";
-import { FeedCard } from "./FeedCard";
+import {
+  FeedCard,
+  getFeedCardDimension,
+  getFeedCardImageDimensions,
+} from "./FeedCard";
 import { ShoppingRootNavigationContext } from "@/ShoppingRootNavigationContext";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 5;
@@ -43,13 +46,9 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
 
   const rootNavigation = useContext(ShoppingRootNavigationContext);
 
-  const feedCardDimensions = useMemo(() => {
-    return getFeedShoeCardDimensions();
-  }, []);
-
   const feedShoeImage = useMemo(() => {
-    return getImageSize(feedCardDimensions.image);
-  }, [feedCardDimensions]);
+    return getImageSize(getFeedCardImageDimensions());
+  }, []);
 
   const feedShoesQuery = useInfiniteQuery({
     queryFn: ({ pageParam, signal }) => {
@@ -71,6 +70,18 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
         ? lastPage[0].pageInfo.endCursor
         : undefined,
   });
+
+  const feedContent: Feed[] | null = useMemo(() => {
+    if (!feedShoesQuery.data?.pages) {
+      return null;
+    }
+
+    return feedShoesQuery.data.pages.flat().filter((page) => page) as Feed[];
+  }, [feedShoesQuery.data?.pages]);
+
+  const feedCardDimensions = useMemo(() => {
+    return getFeedCardDimension(feedContent || []);
+  }, [feedContent]);
 
   const dimensions = Dimensions.get("window");
 
@@ -103,14 +114,6 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
     [checkoutProcess]
   );
 
-  const feedContent: Feed[] | null = useMemo(() => {
-    if (!feedShoesQuery.data?.pages) {
-      return null;
-    }
-
-    return feedShoesQuery.data.pages.flat().filter((page) => page) as Feed[];
-  }, [feedShoesQuery.data?.pages]);
-
   return (
     <View style={styles.wrapper}>
       {feedShoesQuery.isLoading || !feedContent ? (
@@ -121,7 +124,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
             width: dimensions.width,
             height: estimateListHeight(
               SHOES_PLACEHOLDERS_TO_DISPLAY,
-              feedCardDimensions.height
+              dimensions.width
             ),
           }}
           renderItem={FeedShoesCardPlaceholder}

@@ -1,6 +1,9 @@
 import { Feed, FeedBlog, FeedProduct } from "@/lib/shopify";
-import { FeedBlogPostCard } from "./FeedBlogPostCard";
-import { FeedShoesCard } from "./FeedShoesCard";
+import {
+  FeedBlogPostCard,
+  getFeedBlogPostCardDimensions,
+} from "./FeedBlogPostCard";
+import { FeedShoesCard, getFeedShoeCardDimensions } from "./FeedShoesCard";
 import { ShopifyMetaObjectType } from "@/types/shopify";
 
 export type FeedCardProps = {
@@ -12,6 +15,39 @@ export type FeedCardProps = {
 
 function isBlogPost(feed: Feed): feed is FeedBlog {
   return "type" in feed && feed.type === ShopifyMetaObjectType.blogPost;
+}
+
+export function getFeedCardImageDimensions() {
+  const blogPostDimensions = getFeedBlogPostCardDimensions();
+
+  return blogPostDimensions.image;
+}
+
+export function getFeedCardDimension(feed: Feed[]) {
+  let blogPostCount = 0;
+  let shoesCount = 0;
+
+  for (const item of feed) {
+    if (isBlogPost(item)) {
+      blogPostCount++;
+    } else {
+      shoesCount++;
+    }
+  }
+
+  const blogPostDimensions = getFeedBlogPostCardDimensions();
+  const shoeDimensions = getFeedShoeCardDimensions();
+
+  return {
+    height:
+      Math.round(
+        (blogPostCount * blogPostDimensions.height +
+          shoesCount * shoeDimensions.height) /
+          (feed.length || 1)
+      ) || shoeDimensions.height,
+
+    image: blogPostDimensions.image,
+  };
 }
 
 export function FeedCard({
