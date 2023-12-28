@@ -82,7 +82,7 @@ query GetFeed {
                   ... on MediaImage {
                     id
                     image {
-                      url
+                      url(transform: { maxHeight: ${vars.maxImageHeight}, maxWidth: ${vars.maxImageWidth} })
                     }
                   }
                 }
@@ -146,7 +146,18 @@ const metaObject = z.object({
     z.object({
       key: z.string(),
       value: z.string(),
-      reference: z.any(),
+      reference: z.union([
+        product,
+        z.null(),
+        z.object({
+          id: z.string().optional(),
+          image: z
+            .object({
+              url: z.string(),
+            })
+            .optional(),
+        }),
+      ]),
     })
   ),
 });
