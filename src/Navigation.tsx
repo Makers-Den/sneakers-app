@@ -27,6 +27,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlogPostScreen } from "./screens/BlogPostScreen";
 import { de } from "date-fns/locale";
 import { ShoppingRootNavigationContext } from "./ShoppingRootNavigationContext";
+import { CategoryScreen } from "./screens/CategoryScreen";
 
 const logger = createNamedLogger("Navigation");
 
@@ -77,6 +78,11 @@ export function Navigation() {
           name={Screen.BlogPostScreens}
           options={{ headerShown: false }}
           component={BlogPostScreen}
+        />
+        <Tab.Screen
+          name={Screen.CategoryScreens}
+          options={{ headerShown: false }}
+          component={CategoryScreen}
         />
       </Tab.Navigator>
     </NavigationContainer>

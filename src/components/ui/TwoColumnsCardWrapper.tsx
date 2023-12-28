@@ -1,29 +1,27 @@
 import React, { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { SHOES_LIST_ITEM_SEPARATOR_HEIGHT } from "../ShoesListItemSeparator";
 
-const IN_STOCK_SHOES_CARD_WRAPPER_PADDING =
-  SHOES_LIST_ITEM_SEPARATOR_HEIGHT / 2;
-
-export interface InStockShoesCardWrapperProps {
+export interface TwoColumnCardWrapperProps {
   isLeftColumn: boolean;
   children: ReactNode;
+  padding: number;
 }
 
-export function InStockShoesCardWrapper({
+export function TwoColumnCardWrapper({
   isLeftColumn,
   children,
-}: InStockShoesCardWrapperProps) {
+  padding,
+}: TwoColumnCardWrapperProps) {
   return (
     <View
       style={[
         styles.wrapper,
         isLeftColumn
           ? {
-              paddingRight: IN_STOCK_SHOES_CARD_WRAPPER_PADDING,
+              paddingRight: padding,
             }
           : {
-              paddingLeft: IN_STOCK_SHOES_CARD_WRAPPER_PADDING,
+              paddingLeft: padding,
             },
       ]}
     >

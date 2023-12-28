@@ -8,12 +8,12 @@ import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { InStockShoesCard, getInStockCardDimensions } from "./InStockShoesCard";
 import { InStockShoesCardPlaceholder } from "./InStockShoesCardPlaceholder";
-import { InStockShoesCardWrapper } from "./InStockShoesCardWrapper";
 import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
 } from "../ShoesListItemSeparator";
 import { getImageSize } from "@/lib/image";
+import { TwoColumnCardWrapper } from "@/components/ui/TwoColumnsCardWrapper";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 20;
 const SHOES_LIST_NUM_OF_COLUMNS = 2;
@@ -77,9 +77,12 @@ export function InStockShoesView({
             ),
           }}
           renderItem={({ index }) => (
-            <InStockShoesCardWrapper isLeftColumn={index % 2 === 0}>
+            <TwoColumnCardWrapper
+              padding={SHOES_LIST_ITEM_SEPARATOR_HEIGHT / 2}
+              isLeftColumn={index % 2 === 0}
+            >
               <InStockShoesCardPlaceholder />
-            </InStockShoesCardWrapper>
+            </TwoColumnCardWrapper>
           )}
           ItemSeparatorComponent={ShoesListItemSeparator}
         />
@@ -96,7 +99,10 @@ export function InStockShoesView({
             ),
           }}
           renderItem={({ item: shoes, index }) => (
-            <InStockShoesCardWrapper isLeftColumn={index % 2 === 0}>
+            <TwoColumnCardWrapper
+              padding={SHOES_LIST_ITEM_SEPARATOR_HEIGHT / 2}
+              isLeftColumn={index % 2 === 0}
+            >
               <InStockShoesCard
                 image={shoes.previewImage}
                 onPress={() => {
@@ -105,7 +111,7 @@ export function InStockShoesView({
                   });
                 }}
               />
-            </InStockShoesCardWrapper>
+            </TwoColumnCardWrapper>
           )}
           ItemSeparatorComponent={ShoesListItemSeparator}
         />

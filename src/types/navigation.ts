@@ -4,12 +4,14 @@ export enum Screen {
   DiscoverScreens = "DiscoverScreens",
   ShoppingScreens = "ShoppingScreens",
   BlogPostScreens = "BlogPostScreens",
+  CategoryScreens = "CategoryScreens",
 }
 
 export type RootTabParamList = {
   [Screen.ShoppingScreens]: undefined;
   [Screen.DiscoverScreens]: undefined;
   [Screen.BlogPostScreens]: { blogPostId: string };
+  [Screen.CategoryScreens]: { categoryId: string };
 };
 
 export enum ShoppingScreen {

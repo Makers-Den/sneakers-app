@@ -13,10 +13,7 @@ import {
 } from "./CategoryCard";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { getImageSize } from "@/lib/image";
-import {
-  BLOG_IMAGE_HEIGHT,
-  BLOG_IMAGE_WIDTH,
-} from "@/components/ui/BlogHorizontalList";
+import { BLOG_IMAGE_HEIGHT, BLOG_IMAGE_WIDTH } from "@/components/ui/BlogCard";
 
 export const CATEGORY_LIST_ITEM_SEPARATOR_HEIGHT = theme.spacing(0.5);
 
@@ -65,12 +62,13 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
     if (categoryContentQuery.data) {
       return categoryContentQuery.data.map((category) => {
         return {
+          id: category.id,
           title: category.data.title,
           blogs: category.content.map((blog) => {
             return {
               id: blog.id,
               title: blog.data.title,
-              image: blog.data.thumbnail,
+              image: blog.data.thumbnail || "",
             };
           }),
         };
@@ -110,7 +108,11 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
               <CategoryCard
                 {...category}
                 onBlogPress={onBlogPress}
-                onMorePress={() => {}}
+                onMorePress={() => {
+                  navigation.navigate(Screen.CategoryScreens, {
+                    categoryId: category.id,
+                  });
+                }}
               />
             );
           }}

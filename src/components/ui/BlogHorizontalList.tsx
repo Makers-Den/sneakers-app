@@ -1,10 +1,6 @@
 import { theme } from "@/lib/theme";
 import { FlashList } from "@shopify/flash-list";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-
-export const BLOG_CARD_HEIGHT = 300;
-export const BLOG_IMAGE_WIDTH = 200;
-export const BLOG_IMAGE_HEIGHT = 260;
+import { BLOG_CARD_HEIGHT, BLOG_IMAGE_WIDTH, BlogCard } from "./BlogCard";
 
 function calculateListWidth(listItemCount: number) {
   return (
@@ -42,53 +38,13 @@ export function BlogHorizontalList<T extends Blog>({
       }}
       keyExtractor={(item) => item.title}
       renderItem={({ item }) => (
-        <Pressable style={styles.blogWrapper} onPress={() => onBlogPress(item)}>
-          <View style={styles.blogImageWrapper}>
-            {item.image && (
-              <Image style={styles.blogImage} source={{ uri: item.image }} />
-            )}
-          </View>
-          <View>
-            <Text
-              numberOfLines={2}
-              ellipsizeMode="tail"
-              style={styles.blogTitle}
-            >
-              {item.title}
-            </Text>
-          </View>
-        </Pressable>
+        <BlogCard
+          title={item.title}
+          key={item.id}
+          image={item.image}
+          onPress={() => onBlogPress(item)}
+        />
       )}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  blogWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_CARD_HEIGHT,
-    marginHorizontal: theme.spacing(2),
-  },
-
-  blogImageWrapper: {
-    position: "relative",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_IMAGE_HEIGHT,
-  },
-
-  blogImage: {
-    resizeMode: "cover",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_IMAGE_HEIGHT,
-    borderRadius: theme.spacing(1),
-  },
-
-  blogTitle: {
-    marginTop: theme.spacing(0.5),
-    fontSize: theme.typography.fontSize.base,
-    color: theme.palette.gray[100],
-  },
-});

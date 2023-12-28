@@ -233,14 +233,17 @@ export async function getContentCategories({
   const stories = storiesResponse.data.metaobjects.nodes.map((storyNode) => {
     const storyData = mapFieldsToObject<{
       title: string;
-      thumbnail: string;
+      thumbnail?: { image?: { url: string } };
       category: string;
     }>(storyNode.fields);
 
     return {
       id: storyNode.id,
       handle: storyNode.handle,
-      data: storyData,
+      data: {
+        ...storyData,
+        thumbnail: storyData.thumbnail?.image?.url,
+      },
     };
   });
 
@@ -248,14 +251,17 @@ export async function getContentCategories({
     (blogPostNode) => {
       const blogPostData = mapFieldsToObject<{
         title: string;
-        thumbnail: string;
+        thumbnail: { image: { url: string } };
         category: string;
       }>(blogPostNode.fields);
 
       return {
         id: blogPostNode.id,
         handle: blogPostNode.handle,
-        data: blogPostData,
+        data: {
+          ...blogPostData,
+          thumbnail: blogPostData.thumbnail.image.url,
+        },
       };
     }
   );
@@ -286,6 +292,121 @@ export async function getContentCategories({
   return contentCategories;
 }
 
+export interface GetContentCategoryQuery {
+  signal?: AbortSignal;
+  image?: { maxHeight: number; maxWidth: number };
+  blogImage?: { maxHeight: number; maxWidth: number };
+  id: string;
+}
+
+export async function getContentCategoryById({
+  signal,
+  image,
+  id,
+  blogImage,
+}: GetContentCategoryQuery) {
+  const contentCategoriesResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectQuery({
+      id,
+      image,
+    }),
+    schema: getMetaObjectSchema,
+    signal: signal,
+  });
+
+  if (contentCategoriesResponse === null) {
+    return null;
+  }
+
+  const storiesResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectsQuery({
+      type: ShopifyMetaObjectType.stories,
+      image: blogImage,
+    }),
+    schema: getMetaObjectsSchema,
+    signal: signal,
+  });
+
+  if (storiesResponse === null) {
+    return null;
+  }
+
+  const blogPostsResponse = await makeShopifyGraphqlRequest({
+    query: getMetaObjectsQuery({
+      type: ShopifyMetaObjectType.blogPost,
+      image: blogImage,
+    }),
+    schema: getMetaObjectsSchema,
+    signal: signal,
+  });
+
+  if (blogPostsResponse === null) {
+    return null;
+  }
+
+  const stories = storiesResponse.data.metaobjects.nodes.map((storyNode) => {
+    const storyData = mapFieldsToObject<{
+      title: string;
+      thumbnail: { image: { url: string } };
+      category: string;
+    }>(storyNode.fields);
+
+    return {
+      id: storyNode.id,
+      handle: storyNode.handle,
+      data: {
+        ...storyData,
+        thumbnail: storyData.thumbnail.image.url,
+      },
+    };
+  });
+
+  const blogPosts = blogPostsResponse.data.metaobjects.nodes.map(
+    (blogPostNode) => {
+      const blogPostData = mapFieldsToObject<{
+        title: string;
+        thumbnail: { image: { url: string } };
+        category: string;
+      }>(blogPostNode.fields);
+
+      return {
+        id: blogPostNode.id,
+        handle: blogPostNode.handle,
+        data: {
+          ...blogPostData,
+          thumbnail: blogPostData.thumbnail.image.url,
+        },
+      };
+    }
+  );
+
+  const data = mapFieldsToObject<{
+    title: string;
+    description: string;
+    thumbnail?: { image?: { url: string } };
+  }>(contentCategoriesResponse.data.metaobject.fields);
+
+  const relatedStories = stories.filter(
+    (story) =>
+      story.data.category === contentCategoriesResponse.data.metaobject.id
+  );
+
+  const relatedBlogPosts = blogPosts.filter(
+    (blogPost) =>
+      blogPost.data.category === contentCategoriesResponse.data.metaobject.id
+  );
+
+  return {
+    id: contentCategoriesResponse.data.metaobject.id,
+    handle: contentCategoriesResponse.data.metaobject.handle,
+    data: {
+      ...data,
+      thumbnail: data.thumbnail?.image?.url,
+    },
+    content: [...relatedBlogPosts, ...relatedStories],
+  };
+}
+
 export type GetBlogPostQuery = {
   blogPostId: string;
   signal?: AbortSignal;
@@ -311,7 +432,7 @@ export async function getBlogPost({
 
   const blogPostData = mapFieldsToObject<{
     title: string;
-    thumbnail: string;
+    thumbnail: { image: { url: string } };
     category: string;
     content: string;
   }>(blogPostNode.fields);
@@ -319,7 +440,10 @@ export async function getBlogPost({
   const blogPost = {
     id: blogPostNode.id,
     handle: blogPostNode.handle,
-    data: blogPostData,
+    data: {
+      ...blogPostData,
+      thumbnail: blogPostData.thumbnail.image.url,
+    },
   };
 
   return blogPost;
@@ -394,14 +518,17 @@ export async function getShoesById(query: GetShoesByIdQuery) {
     ?.references?.nodes.map((node) => {
       const data = mapFieldsToObject<{
         title: string;
-        thumbnail: string;
+        thumbnail: { image: { url: string } };
         category: string;
       }>(node.fields);
 
       return {
         id: node.id,
         type: node.type,
-        data,
+        data: {
+          ...data,
+          thumbnail: data.thumbnail.image.url,
+        },
       };
     });
 
@@ -548,14 +675,17 @@ export async function getFeed(query: GetFeedQuery) {
       if (node.type === ShopifyMetaObjectType.blogPost) {
         const blogPostData = mapFieldsToObject<{
           title: string;
-          thumbnail: string;
+          thumbnail: { image: { url: string } };
           //@ts-ignore
         }>(node.fields);
 
         return {
           id: node.id,
           type: node.type,
-          data: blogPostData,
+          data: {
+            ...blogPostData,
+            thumbnail: blogPostData.thumbnail.image.url,
+          },
           pageInfo,
         };
       }

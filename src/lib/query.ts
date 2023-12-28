@@ -26,6 +26,12 @@ export const queryKeys = {
   },
   contentCategories: {
     all: () => ["contentCategories"] as const,
+    details: () => [...queryKeys.contentCategories.all(), "detail"] as const,
+    detail: (params: {
+      id: string;
+      maxImageWidth: number;
+      maxImageHeight: number;
+    }) => [...queryKeys.contentCategories.details(), params] as const,
   },
   blogPosts: {
     all: () => ["blogPosts"] as const,
