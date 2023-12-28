@@ -566,8 +566,6 @@ export async function getFeed(query: GetFeedQuery) {
           //@ts-ignore
         }>(node.fields);
 
-        console.log("product", productData);
-
         return {
           ...mapProduct(productData.product),
           pageInfo,
