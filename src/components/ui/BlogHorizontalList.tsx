@@ -45,10 +45,7 @@ export function BlogHorizontalList<T extends Blog>({
         <Pressable style={styles.blogWrapper} onPress={() => onBlogPress(item)}>
           <View style={styles.blogImageWrapper}>
             {item.image && (
-              <Image
-                style={styles.blogImage}
-                source={{ uri: item.image, scale: 1 }}
-              />
+              <Image style={styles.blogImage} source={{ uri: item.image }} />
             )}
           </View>
           <View>
