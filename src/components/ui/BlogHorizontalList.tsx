@@ -5,7 +5,7 @@ import { BLOG_CARD_HEIGHT, BLOG_IMAGE_WIDTH, BlogCard } from "./BlogCard";
 function calculateListWidth(listItemCount: number) {
   return (
     BLOG_IMAGE_WIDTH * listItemCount +
-    Math.max(0, listItemCount - 1) * theme.spacing(2)
+    Math.max(0, listItemCount - 1) * theme.spacing(1)
   );
 }
 

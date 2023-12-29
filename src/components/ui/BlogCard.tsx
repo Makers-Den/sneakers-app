@@ -2,9 +2,9 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "@/lib/theme";
 import { PlaceholderLoading } from "./PlaceholderLoading";
 
-export const BLOG_CARD_HEIGHT = 300;
-export const BLOG_IMAGE_WIDTH = 180;
-export const BLOG_IMAGE_HEIGHT = 240;
+export const BLOG_CARD_HEIGHT = 280;
+export const BLOG_IMAGE_WIDTH = 160;
+export const BLOG_IMAGE_HEIGHT = 220;
 
 export type BlogCardProps = {
   onPress: () => void;
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: BLOG_IMAGE_WIDTH,
     height: BLOG_CARD_HEIGHT,
-    marginHorizontal: theme.spacing(2),
+    marginHorizontal: theme.spacing(1),
   },
 
   blogImageWrapper: {
