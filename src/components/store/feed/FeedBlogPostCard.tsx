@@ -1,18 +1,18 @@
 import { theme } from "@/lib/theme";
 import React from "react";
 import { Dimensions, Image, Pressable, StyleSheet, View } from "react-native";
+import { getFeedShoeCardDimensions } from "./FeedShoesCard";
 
 export const FEED_IMAGE_ASPECT_RATIO = 1;
 
 export function getFeedBlogPostCardDimensions() {
   const windowDimensions = Dimensions.get("window");
-  const imageWidth = windowDimensions.width;
-  const imageHeight = imageWidth * FEED_IMAGE_ASPECT_RATIO;
+  const shoeCard = getFeedShoeCardDimensions();
   return {
-    height: imageHeight,
+    height: shoeCard.height,
     image: {
-      width: imageWidth,
-      height: imageHeight,
+      width: windowDimensions.width,
+      height: shoeCard.height,
     },
   };
 }
@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.palette.gray[700],
   },
   image: {
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
 });

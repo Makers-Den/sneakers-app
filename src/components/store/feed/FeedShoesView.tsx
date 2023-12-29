@@ -80,7 +80,7 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
   }, [feedShoesQuery.data?.pages]);
 
   const feedCardDimensions = useMemo(() => {
-    return getFeedCardDimension(feedContent || []);
+    return getFeedCardDimension();
   }, [feedContent]);
 
   const dimensions = Dimensions.get("window");

@@ -23,29 +23,12 @@ export function getFeedCardImageDimensions() {
   return blogPostDimensions.image;
 }
 
-export function getFeedCardDimension(feed: Feed[]) {
-  let blogPostCount = 0;
-  let shoesCount = 0;
-
-  for (const item of feed) {
-    if (isBlogPost(item)) {
-      blogPostCount++;
-    } else {
-      shoesCount++;
-    }
-  }
-
+export function getFeedCardDimension() {
   const blogPostDimensions = getFeedBlogPostCardDimensions();
   const shoeDimensions = getFeedShoeCardDimensions();
 
   return {
-    height:
-      Math.round(
-        (blogPostCount * blogPostDimensions.height +
-          shoesCount * shoeDimensions.height) /
-          (feed.length || 1)
-      ) || shoeDimensions.height,
-
+    height: shoeDimensions.height,
     image: blogPostDimensions.image,
   };
 }

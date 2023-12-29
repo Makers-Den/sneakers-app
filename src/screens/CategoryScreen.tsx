@@ -1,4 +1,3 @@
-import { BlogHeader } from "@/components/blog/blog-header/BlogHeader";
 import { BlogActionBar } from "@/components/blog/details/BlogActionBar";
 import {
   BLOG_CARD_HEIGHT,
