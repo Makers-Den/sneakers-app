@@ -1,6 +1,6 @@
 import { QueryClientProvider } from "react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Navigation } from "@/Navigation";
+import { RootNavigation } from "@/Navigation";
 import { queryClient } from "@/lib/query";
 import { StatusBar } from "expo-status-bar";
 import { theme } from "@/lib/theme";
@@ -64,7 +64,7 @@ function MainScreen() {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <Navigation />
+          <RootNavigation />
           <StatusBar style="light" backgroundColor={theme.palette.gray[800]} />
         </QueryClientProvider>
       </ErrorBoundary>

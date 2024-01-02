@@ -1,7 +1,12 @@
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ShoppingScreen, ShoppingStackParamList } from "@/types/navigation";
+import {
+  MainScreen,
+  ShoppingScreen,
+  ShoppingScreensProps,
+  ShoppingStackParamList,
+} from "@/types/navigation";
 import { useQuery } from "react-query";
 import { getShoesById } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
@@ -21,21 +26,15 @@ import { NotificationModal } from "@/components/store/notification/NotificationM
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { getImageSize } from "@/lib/image";
 import { BlogHorizontalList } from "@/components/ui/BlogHorizontalList";
-import { Screen } from "@/types/navigation";
-import { ShoppingRootNavigationContext } from "@/ShoppingRootNavigationContext";
+import { ShopifyMetaObjectType } from "@/types/shopify";
 
 export function ShoesDetailsScreen({
   navigation,
   route,
-}: NativeStackScreenProps<
-  ShoppingStackParamList,
-  ShoppingScreen.ShoesDetails
->) {
-  const { shoesId } = route.params;
+}: ShoppingScreensProps<ShoppingScreen.ShoesDetails>) {
+  const shoesId = route.params.shoesId;
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
-
-  const rootNavigation = useContext(ShoppingRootNavigationContext);
 
   const shoesCarouselImage = useMemo(
     () => getImageSize(getShoesCarouselDimensions().image),
@@ -97,9 +96,7 @@ export function ShoesDetailsScreen({
   }, [shoesQuery.data]);
 
   const onBlogPress = ({ id }: { id: string }) => {
-    rootNavigation.navigation.navigate(Screen.BlogPostScreens, {
-      blogPostId: id,
-    });
+    navigation.navigate(MainScreen.BlogPostScreen, { blogPostId: id });
   };
 
   const blogs = useMemo(() => {
@@ -112,6 +109,9 @@ export function ShoesDetailsScreen({
         id: blog.id,
         title: blog.data.title,
         image: blog.data.thumbnail,
+        type: blog.type as
+          | ShopifyMetaObjectType.blogPost
+          | ShopifyMetaObjectType.stories,
       };
     });
   }, [shoesQuery.data]);

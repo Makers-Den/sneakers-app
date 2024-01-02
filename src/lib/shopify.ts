@@ -1,5 +1,4 @@
-import { map, z } from "zod";
-import dayjs from "dayjs";
+import { z } from "zod";
 import {
   ShopifyFieldKey,
   ShopifyMetaFieldKey,
@@ -234,12 +233,13 @@ export async function getContentCategories({
     const storyData = mapFieldsToObject<{
       title: string;
       thumbnail?: { image?: { url: string } };
-      category: string;
+      category?: string[];
     }>(storyNode.fields);
 
     return {
       id: storyNode.id,
       handle: storyNode.handle,
+      type: ShopifyMetaObjectType.stories,
       data: {
         ...storyData,
         thumbnail: storyData.thumbnail?.image?.url,
@@ -258,6 +258,7 @@ export async function getContentCategories({
       return {
         id: blogPostNode.id,
         handle: blogPostNode.handle,
+        type: ShopifyMetaObjectType.blogPost,
         data: {
           ...blogPostData,
           thumbnail: blogPostData.thumbnail.image.url,
@@ -273,8 +274,8 @@ export async function getContentCategories({
         description: string;
       }>(node.fields);
 
-      const relatedStories = stories.filter(
-        (story) => story.data.category === node.id
+      const relatedStories = stories.filter((story) =>
+        story.data.category?.includes(node.id)
       );
 
       const relatedBlogPosts = blogPosts.filter(
@@ -348,12 +349,13 @@ export async function getContentCategoryById({
     const storyData = mapFieldsToObject<{
       title: string;
       thumbnail: { image: { url: string } };
-      category: string;
+      category?: string[];
     }>(storyNode.fields);
 
     return {
       id: storyNode.id,
       handle: storyNode.handle,
+      type: ShopifyMetaObjectType.stories,
       data: {
         ...storyData,
         thumbnail: storyData.thumbnail.image.url,
@@ -372,6 +374,7 @@ export async function getContentCategoryById({
       return {
         id: blogPostNode.id,
         handle: blogPostNode.handle,
+        type: ShopifyMetaObjectType.blogPost,
         data: {
           ...blogPostData,
           thumbnail: blogPostData.thumbnail.image.url,
@@ -386,9 +389,8 @@ export async function getContentCategoryById({
     thumbnail?: { image?: { url: string } };
   }>(contentCategoriesResponse.data.metaobject.fields);
 
-  const relatedStories = stories.filter(
-    (story) =>
-      story.data.category === contentCategoriesResponse.data.metaobject.id
+  const relatedStories = stories.filter((story) =>
+    story.data.category?.includes(contentCategoriesResponse.data.metaobject.id)
   );
 
   const relatedBlogPosts = blogPosts.filter(
@@ -630,7 +632,7 @@ interface GetFeedQuery {
 export type FeedBlog = {
   id: string;
   handle: string;
-  type: ShopifyMetaObjectType.blogPost;
+  type: ShopifyMetaObjectType.blogPost | ShopifyMetaObjectType.stories;
   data: {
     title: string;
     thumbnail: string;
@@ -673,6 +675,24 @@ export async function getFeed(query: GetFeedQuery) {
   const items = itemsField.references.edges
     .map(({ node }) => {
       if (node.type === ShopifyMetaObjectType.blogPost) {
+        const blogPostData = mapFieldsToObject<{
+          title: string;
+          thumbnail: { image: { url: string } };
+          //@ts-ignore
+        }>(node.fields);
+
+        return {
+          id: node.id,
+          type: node.type,
+          data: {
+            ...blogPostData,
+            thumbnail: blogPostData.thumbnail.image.url,
+          },
+          pageInfo,
+        };
+      }
+
+      if (node.type === ShopifyMetaObjectType.stories) {
         const blogPostData = mapFieldsToObject<{
           title: string;
           thumbnail: { image: { url: string } };

@@ -4,13 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { theme } from "@/lib/theme";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { RootTabParamList, Screen } from "@/types/navigation";
+import { MainTabParamList, Screen } from "@/types/navigation";
 import { CategoryListView } from "@/components/blog/category-list/CategoryListView";
 import { BlogHeader } from "@/components/blog/blog-header/BlogHeader";
 
 export function DiscoverScreen({
   navigation,
-}: BottomTabScreenProps<RootTabParamList, Screen.DiscoverScreens>) {
+}: BottomTabScreenProps<MainTabParamList, MainScreen.DiscoverScreen>) {
   return (
     <SafeAreaView
       edges={{

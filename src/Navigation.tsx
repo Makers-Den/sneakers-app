@@ -5,42 +5,60 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
-  RootTabParamList,
-  Screen,
+  MainTabParamList,
+  MainScreen,
   ShoppingScreen,
   ShoppingStackParamList,
+  RootStackParamList,
+  RootScreen,
 } from "@/types/navigation";
 import { ShoesListScreen } from "@/screens/ShoesListScreen";
 import { ShoesDetailsScreen } from "@/screens/ShoesDetailsScreen";
 import { ShoesSearchScreen } from "@/screens/ShoesSearchScreen";
 import * as Notifications from "expo-notifications";
-import { createContext, useEffect } from "react";
+import { useEffect } from "react";
 import { createNamedLogger } from "./lib/log";
 import { notificationDataSchema } from "./lib/notification";
-import {
-  BottomTabScreenProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { theme } from "./lib/theme";
 import { MemoDiscoverScreen } from "./screens/DiscoverScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlogPostScreen } from "./screens/BlogPostScreen";
-import { de } from "date-fns/locale";
-import { ShoppingRootNavigationContext } from "./ShoppingRootNavigationContext";
 import { CategoryScreen } from "./screens/CategoryScreen";
+import { StoriesScreen } from "./screens/StoriesScreen";
 
 const logger = createNamedLogger("Navigation");
 
-const Stack = createNativeStackNavigator<ShoppingStackParamList>();
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-export function Navigation() {
+export function RootNavigation() {
   return (
     <NavigationContainer>
+      <RootStack.Navigator initialRouteName={RootScreen.Main}>
+        <RootStack.Screen
+          name={RootScreen.Main}
+          component={MainNavigation}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name={RootScreen.Story}
+          component={StoriesScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+        />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const Tab = createBottomTabNavigator<MainTabParamList>();
+
+export function MainNavigation() {
+  return (
+    <>
       <NotificationNavigator />
 
       <Tab.Navigator
-        initialRouteName={Screen.ShoppingScreens}
+        initialRouteName={MainScreen.ShoppingScreens}
         sceneContainerStyle={{ backgroundColor: theme.palette.gray[900] }}
         backBehavior="history"
         screenOptions={({ route }) => ({
@@ -49,14 +67,15 @@ export function Navigation() {
           tabBarInactiveTintColor: "gray",
           tabBarStyle: {
             backgroundColor: theme.palette.gray[900],
+            zIndex: 100,
           },
 
           tabBarIcon: ({ color, size }) => {
-            if (route.name === Screen.ShoppingScreens) {
+            if (route.name === MainScreen.ShoppingScreens) {
               return (
                 <Ionicons name={"home-outline"} size={size} color={color} />
               );
-            } else if (route.name === Screen.DiscoverScreens) {
+            } else if (route.name === MainScreen.DiscoverScreen) {
               return (
                 <Ionicons name={"compass-outline"} size={size} color={color} />
               );
@@ -65,65 +84,58 @@ export function Navigation() {
         })}
       >
         <Tab.Screen
-          name={Screen.ShoppingScreens}
+          name={MainScreen.ShoppingScreens}
           options={{ headerShown: false }}
           component={ShoppingNavigation}
         />
         <Tab.Screen
-          name={Screen.DiscoverScreens}
+          name={MainScreen.DiscoverScreen}
           options={{ headerShown: false }}
           component={MemoDiscoverScreen}
         />
         <Tab.Screen
-          name={Screen.BlogPostScreens}
+          name={MainScreen.BlogPostScreen}
           options={{ headerShown: false }}
           component={BlogPostScreen}
         />
         <Tab.Screen
-          name={Screen.CategoryScreens}
+          name={MainScreen.CategoryScreen}
           options={{ headerShown: false }}
           component={CategoryScreen}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    </>
   );
 }
 
-function ShoppingNavigation({
-  navigation,
-}: {
-  navigation: BottomTabScreenProps<
-    RootTabParamList,
-    Screen.ShoppingScreens
-  >["navigation"];
-}) {
+const Stack = createNativeStackNavigator<ShoppingStackParamList>();
+
+function ShoppingNavigation() {
   return (
-    <ShoppingRootNavigationContext.Provider value={{ navigation }}>
-      <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
-        <Stack.Screen
-          component={ShoesListScreen}
-          name={ShoppingScreen.ShoesList}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name={ShoppingScreen.ShoesDetails}
-          component={ShoesDetailsScreen}
-          options={{ headerShown: false, animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
-          name={ShoppingScreen.ShoesSearch}
-          component={ShoesSearchScreen}
-          options={{ headerShown: false, animation: "slide_from_right" }}
-        />
-      </Stack.Navigator>
-    </ShoppingRootNavigationContext.Provider>
+    <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
+      <Stack.Screen
+        component={ShoesListScreen}
+        name={ShoppingScreen.ShoesList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ShoppingScreen.ShoesDetails}
+        component={ShoesDetailsScreen}
+        options={{ headerShown: false, animation: "slide_from_bottom" }}
+      />
+      <Stack.Screen
+        name={ShoppingScreen.ShoesSearch}
+        component={ShoesSearchScreen}
+        options={{ headerShown: false, animation: "slide_from_right" }}
+      />
+    </Stack.Navigator>
   );
 }
 
 export function NotificationNavigator() {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   const navigation =
-    useNavigation<NavigationProp<RootTabParamList & ShoppingStackParamList>>();
+    useNavigation<NavigationProp<MainTabParamList & ShoppingStackParamList>>();
 
   useEffect(() => {
     if (!lastNotificationResponse) {

@@ -10,8 +10,7 @@ import { TwoColumnCardWrapper } from "@/components/ui/TwoColumnsCardWrapper";
 import { getImageSize } from "@/lib/image";
 import { queryKeys } from "@/lib/query";
 import { getContentCategoryById } from "@/lib/shopify";
-import { RootTabParamList, Screen } from "@/types/navigation";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { MainScreen, MainScreensProps, RootScreen } from "@/types/navigation";
 import { FlashList } from "@shopify/flash-list";
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { View, StyleSheet, Dimensions, ScrollView, Text } from "react-native";
@@ -24,6 +23,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
 import { theme } from "@/lib/theme";
+import { ShopifyMetaObjectType } from "@/types/shopify";
 
 const BLOG_PLACEHOLDERS_TO_DISPLAY = 4;
 const NUM_OF_COLUMNS = 2;
@@ -45,7 +45,7 @@ export function ItemSeparatorComponent() {
 export function CategoryScreen({
   navigation,
   route,
-}: BottomTabScreenProps<RootTabParamList, Screen.CategoryScreens>) {
+}: MainScreensProps<MainScreen.CategoryScreen>) {
   const { categoryId } = route.params;
   const dimensions = Dimensions.get("window");
 
@@ -171,9 +171,17 @@ export function CategoryScreen({
                     >
                       <BlogCard
                         onPress={() => {
-                          navigation.navigate(Screen.BlogPostScreens, {
-                            blogPostId: item.id,
-                          });
+                          if (item.type === ShopifyMetaObjectType.blogPost) {
+                            navigation.navigate(MainScreen.BlogPostScreen, {
+                              blogPostId: item.id,
+                            });
+                          }
+
+                          if (item.type === ShopifyMetaObjectType.stories) {
+                            navigation.navigate(RootScreen.Story, {
+                              id: item.id,
+                            });
+                          }
                         }}
                         image={item.data.thumbnail || ""}
                         title={item.data.title}

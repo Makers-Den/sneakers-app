@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RootTabParamList, Screen } from "@/types/navigation";
+import { MainScreen, MainScreensProps } from "@/types/navigation";
 import { useQuery } from "react-query";
 import { getBlogPost } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
@@ -13,7 +13,6 @@ import { theme } from "@/lib/theme";
 import { getImageSize } from "@/lib/image";
 import { BlogActionBar } from "@/components/blog/details/BlogActionBar";
 import { HtmlRenderer } from "@/components/ui/HtmlRenderer";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { convertRichTextToHtml } from "@/lib/convertRichTextToHtml";
 import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
@@ -28,7 +27,7 @@ const BLOG_IMAGE_ASPECT_RATIO = 1;
 export function BlogPostScreen({
   navigation,
   route,
-}: BottomTabScreenProps<RootTabParamList, Screen.BlogPostScreens>) {
+}: MainScreensProps<MainScreen.BlogPostScreen>) {
   const { blogPostId } = route.params;
 
   const opacity = useSharedValue(0);

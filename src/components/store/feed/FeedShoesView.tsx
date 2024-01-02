@@ -2,7 +2,13 @@ import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import { useInfiniteQuery } from "react-query";
 import { Feed, getFeed, getShoesByCollectionId } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
-import { Navigation, Screen, ShoppingScreen } from "@/types/navigation";
+import {
+  Navigation,
+  MainScreen,
+  ShoppingScreen,
+  ShoppingScreensProps,
+  RootScreen,
+} from "@/types/navigation";
 import { memo, useCallback, useContext, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { FeedShoesCardPlaceholder } from "./FeedShoesCardPlaceholder";
@@ -21,7 +27,7 @@ import {
   getFeedCardDimension,
   getFeedCardImageDimensions,
 } from "./FeedCard";
-import { ShoppingRootNavigationContext } from "@/ShoppingRootNavigationContext";
+import { ShopifyMetaObjectType } from "@/types/shopify";
 
 const SHOES_PLACEHOLDERS_TO_DISPLAY = 5;
 
@@ -36,15 +42,11 @@ type FeedShoes = NonNullable<
   Awaited<ReturnType<typeof getShoesByCollectionId>>
 >[number];
 
-export interface FeedShoesViewProps {
-  navigation: Navigation;
-}
-
-export function FeedShoesView({ navigation }: FeedShoesViewProps) {
+export function FeedShoesView({
+  navigation,
+}: Pick<ShoppingScreensProps<ShoppingScreen.ShoesList>, "navigation">) {
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
-
-  const rootNavigation = useContext(ShoppingRootNavigationContext);
 
   const feedShoeImage = useMemo(() => {
     return getImageSize(getFeedCardImageDimensions());
@@ -145,10 +147,16 @@ export function FeedShoesView({ navigation }: FeedShoesViewProps) {
             return (
               <FeedCard
                 feed={item}
-                onBlogCardPress={(blogPost) => {
-                  rootNavigation.navigation.navigate(Screen.BlogPostScreens, {
-                    blogPostId: blogPost.id,
-                  });
+                onBlogCardPress={(content) => {
+                  if (content.type === ShopifyMetaObjectType.blogPost) {
+                    navigation.navigate(MainScreen.BlogPostScreen, {
+                      blogPostId: content.id,
+                    });
+                  }
+
+                  if (content.type === ShopifyMetaObjectType.stories) {
+                    navigation.navigate(RootScreen.Story, { id: item.id });
+                  }
                 }}
                 onShoeCardButtonPress={handleButtonPress}
                 onShoeCardPress={(shoe) => {
