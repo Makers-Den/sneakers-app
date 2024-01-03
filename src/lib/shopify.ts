@@ -35,6 +35,11 @@ import {
   getMetaObjectSchema,
 } from "@/queries/getMetaObjectById";
 import { ProductQuery, getFeedQuery, getFeedSchema } from "@/queries/getFeed";
+import {
+  StoryNode,
+  getStoryById,
+  getStoryByIdSchema,
+} from "@/queries/getStoryById";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -65,6 +70,7 @@ async function makeShopifyGraphqlRequest<T extends z.ZodTypeAny>(
     });
 
     const jsonResponse = await response.json();
+
     const parsedResponse = command.schema.parse(jsonResponse);
 
     return parsedResponse;
@@ -420,17 +426,17 @@ export async function getBlogPost({
   signal,
   image,
 }: GetBlogPostQuery) {
-  const blogPostResponse = await makeShopifyGraphqlRequest({
+  const storyResponse = await makeShopifyGraphqlRequest({
     query: getMetaObjectQuery({ id: blogPostId, image }),
     schema: getMetaObjectSchema,
     signal: signal,
   });
 
-  if (blogPostResponse === null) {
+  if (storyResponse === null) {
     return null;
   }
 
-  const blogPostNode = blogPostResponse.data.metaobject;
+  const blogPostNode = storyResponse.data.metaobject;
 
   const blogPostData = mapFieldsToObject<{
     title: string;
@@ -449,6 +455,52 @@ export async function getBlogPost({
   };
 
   return blogPost;
+}
+
+export type GetStoryQuery = {
+  id: string;
+  signal?: AbortSignal;
+};
+
+export async function getStoryQuery({ id, signal }: GetStoryQuery) {
+  const storyResponse = await makeShopifyGraphqlRequest({
+    query: getStoryById({ id }),
+    schema: getStoryByIdSchema,
+    signal: signal,
+  });
+
+  if (storyResponse === null) {
+    return null;
+  }
+
+  const storyNode = storyResponse.data.metaobject;
+
+  const storyData = mapFieldsToObject<{
+    title: string;
+    videos: { edges: { node: StoryNode }[] };
+  }>(storyNode.fields);
+
+  const videos = storyData.videos.edges
+    .map(({ node }) => {
+      const data = mapFieldsToObject<{
+        text: string;
+        video: {
+          id?: string | undefined;
+          sources?: {
+            url: string;
+          }[];
+        };
+      }>(node.fields);
+
+      return {
+        text: data.text,
+        src:
+          data.video.sources?.find(({ url }) => url.includes("mp4"))?.url || "",
+      };
+    })
+    .filter(({ src }) => Boolean(src));
+
+  return { videos, title: storyData.title };
 }
 
 export type Shoe = Exclude<

@@ -2,7 +2,12 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import { useQuery } from "react-query";
 import { getContentCategories } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
-import { MainTabParamList, MainScreen } from "@/types/navigation";
+import {
+  MainTabParamList,
+  MainScreen,
+  RootScreen,
+  MainScreensProps,
+} from "@/types/navigation";
 import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { theme } from "@/lib/theme";
@@ -11,7 +16,6 @@ import {
   CategoryCard,
   CategoryCardPlaceholder,
 } from "./CategoryCard";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { getImageSize } from "@/lib/image";
 import { BLOG_IMAGE_HEIGHT, BLOG_IMAGE_WIDTH } from "@/components/ui/BlogCard";
 import { ShopifyMetaObjectType } from "@/types/shopify";
@@ -33,10 +37,7 @@ function estimateListHeight(listItemCount: number) {
 }
 
 export interface CategoryListViewProps {
-  navigation: BottomTabScreenProps<
-    MainTabParamList,
-    MainScreen.DiscoverScreen
-  >["navigation"];
+  navigation: MainScreensProps<MainScreen.CategoryScreen>["navigation"];
 }
 
 const categoryImage = getImageSize({
@@ -88,6 +89,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
     }
 
     if (type === ShopifyMetaObjectType.stories) {
+      navigation.navigate(RootScreen.Story, { id });
     }
   };
 

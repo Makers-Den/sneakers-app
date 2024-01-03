@@ -1,31 +1,47 @@
 import { Stories } from "@/components/blog/stories/Stories";
-import { theme } from "@/lib/theme";
-import {
-  RootStackParamList,
-  RootScreen,
-  RootScreensProps,
-} from "@/types/navigation";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { StyleSheet } from "react-native";
+import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
+import { queryKeys } from "@/lib/query";
+import { getStoryQuery } from "@/lib/shopify";
+import { RootScreen, RootScreensProps } from "@/types/navigation";
+import { useMemo } from "react";
+import { Dimensions } from "react-native";
+import { useQuery } from "react-query";
+
+const windowDimensions = Dimensions.get("window");
 
 export function StoriesScreen({
   route,
   navigation,
 }: RootScreensProps<RootScreen.Story>) {
+  const storiesQuery = useQuery({
+    queryFn: ({ signal }) =>
+      getStoryQuery({
+        id: route.params.id,
+        signal,
+      }),
+    queryKey: queryKeys.stories.detail({
+      id: route.params.id,
+    }),
+  });
+
+  const stories = useMemo(() => {
+    if (!storiesQuery.data) {
+      return [];
+    }
+
+    return storiesQuery.data.videos;
+  }, [storiesQuery.data]);
+
   return (
-    <Stories
-      videoSources={[
-        "https://cdn.shopify.com/videos/c/o/v/0ebbf24d8e71437388c34129cecb8fea.mp4",
-        "https://cdn.shopify.com/videos/c/o/v/ac3fe107502f49cc8709c2f8621b8c85.mp4",
-        "https://cdn.shopify.com/videos/c/o/v/65ab7aab0fbe4ae093f4e39af63d3cb8.mp4",
-      ]}
-    />
+    <>
+      {storiesQuery.isLoading ? (
+        <PlaceholderLoading
+          height={windowDimensions.height}
+          width={windowDimensions.width}
+        />
+      ) : (
+        <Stories stories={stories} navigation={navigation} />
+      )}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    backgroundColor: theme.palette.gray[900],
-  },
-});
