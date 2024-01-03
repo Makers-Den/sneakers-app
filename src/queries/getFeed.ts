@@ -141,7 +141,11 @@ const product = z.object({
 const metaObject = z.object({
   handle: z.string(),
   id: z.string(),
-  type: z.enum([ShopifyMetaObjectType.blogPost, ShopifyMetaObjectType.product]),
+  type: z.enum([
+    ShopifyMetaObjectType.blogPost,
+    ShopifyMetaObjectType.product,
+    ShopifyMetaObjectType.stories,
+  ]),
   fields: z.array(
     z.object({
       key: z.string(),

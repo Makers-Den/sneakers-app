@@ -2,7 +2,12 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import { useQuery } from "react-query";
 import { getContentCategories } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
-import { RootTabParamList, Screen } from "@/types/navigation";
+import {
+  MainTabParamList,
+  MainScreen,
+  RootScreen,
+  MainScreensProps,
+} from "@/types/navigation";
 import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { theme } from "@/lib/theme";
@@ -11,9 +16,10 @@ import {
   CategoryCard,
   CategoryCardPlaceholder,
 } from "./CategoryCard";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { getImageSize } from "@/lib/image";
 import { BLOG_IMAGE_HEIGHT, BLOG_IMAGE_WIDTH } from "@/components/ui/BlogCard";
+import { ShopifyMetaObjectType } from "@/types/shopify";
+import { Blog } from "@/components/ui/BlogHorizontalList";
 
 export const CATEGORY_LIST_ITEM_SEPARATOR_HEIGHT = theme.spacing(0.5);
 
@@ -31,10 +37,7 @@ function estimateListHeight(listItemCount: number) {
 }
 
 export interface CategoryListViewProps {
-  navigation: BottomTabScreenProps<
-    RootTabParamList,
-    Screen.DiscoverScreens
-  >["navigation"];
+  navigation: MainScreensProps<MainScreen.CategoryScreen>["navigation"];
 }
 
 const categoryImage = getImageSize({
@@ -69,6 +72,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
               id: blog.id,
               title: blog.data.title,
               image: blog.data.thumbnail || "",
+              type: blog.type as Blog["type"],
             };
           }),
         };
@@ -77,8 +81,16 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
     return [];
   }, [categoryContentQuery.data]);
 
-  const onBlogPress = ({ id }: { id: string }) => {
-    navigation.navigate(Screen.BlogPostScreens, { blogPostId: id });
+  const onBlogPress = ({ id, type }: Blog) => {
+    if (type === ShopifyMetaObjectType.blogPost) {
+      navigation.navigate(MainScreen.BlogPostScreen, {
+        blogPostId: id,
+      });
+    }
+
+    if (type === ShopifyMetaObjectType.stories) {
+      navigation.navigate(RootScreen.Story, { id });
+    }
   };
 
   return (
@@ -109,7 +121,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
                 {...category}
                 onBlogPress={onBlogPress}
                 onMorePress={() => {
-                  navigation.navigate(Screen.CategoryScreens, {
+                  navigation.navigate(MainScreen.CategoryScreen, {
                     categoryId: category.id,
                   });
                 }}

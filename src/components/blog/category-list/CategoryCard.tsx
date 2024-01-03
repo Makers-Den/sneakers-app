@@ -1,4 +1,5 @@
 import {
+  Blog,
   BlogHorizontalList,
   OnBlogPress,
 } from "@/components/ui/BlogHorizontalList";
@@ -7,12 +8,6 @@ import { theme } from "@/lib/theme";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export const CATEGORY_CARD_HEIGHT = 420;
-
-export type Blog = {
-  id: string;
-  title: string;
-  image: string;
-};
 
 export type CategoryCardProps<T extends Blog> = {
   blogs: T[];

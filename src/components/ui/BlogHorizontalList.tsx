@@ -1,6 +1,7 @@
 import { theme } from "@/lib/theme";
 import { FlashList } from "@shopify/flash-list";
 import { BLOG_CARD_HEIGHT, BLOG_IMAGE_WIDTH, BlogCard } from "./BlogCard";
+import { ShopifyMetaObjectType } from "@/types/shopify";
 
 function calculateListWidth(listItemCount: number) {
   return (
@@ -13,6 +14,7 @@ export type Blog = {
   id: string;
   title: string;
   image: string;
+  type: ShopifyMetaObjectType.blogPost | ShopifyMetaObjectType.stories;
 };
 
 export type OnBlogPress<T extends Blog> = (blog: T) => void;

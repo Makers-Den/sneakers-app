@@ -3,7 +3,11 @@ import { useQuery } from "react-query";
 import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { Navigation, ShoppingScreen } from "@/types/navigation";
+import {
+  Navigation,
+  ShoppingScreen,
+  ShoppingScreensProps,
+} from "@/types/navigation";
 import { memo, useMemo } from "react";
 import {
   UpcomingShoesCard,
@@ -40,10 +44,9 @@ type ListItem =
       >[number];
     };
 
-export interface UpcomingShoesViewProps {
-  navigation: Navigation;
+export type UpcomingShoesViewProps = {
   isLazy: boolean;
-}
+} & Pick<ShoppingScreensProps<ShoppingScreen.ShoesList>, "navigation">;
 
 export function UpcomingShoesView({
   navigation,

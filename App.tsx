@@ -1,6 +1,6 @@
 import { QueryClientProvider } from "react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Navigation } from "@/Navigation";
+import { RootNavigation } from "@/Navigation";
 import { queryClient } from "@/lib/query";
 import { StatusBar } from "expo-status-bar";
 import { theme } from "@/lib/theme";
@@ -13,6 +13,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { AnimatedAppLoader } from "@/components/wrappers/AnimatedAppLoader";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const logger = createNamedLogger("App");
 
@@ -64,8 +65,13 @@ function MainScreen() {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <Navigation />
-          <StatusBar style="light" backgroundColor={theme.palette.gray[800]} />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <RootNavigation />
+            <StatusBar
+              style="light"
+              backgroundColor={theme.palette.gray[800]}
+            />
+          </GestureHandlerRootView>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>

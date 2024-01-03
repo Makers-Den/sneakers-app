@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { Navigation, ShoppingScreen } from "@/types/navigation";
+import { ShoppingScreen, ShoppingScreensProps } from "@/types/navigation";
 import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { InStockShoesCard, getInStockCardDimensions } from "./InStockShoesCard";
@@ -27,10 +27,9 @@ function estimateListHeight(listItemCount: number, cardHeight: number) {
   );
 }
 
-export interface InStockShoesViewProps {
-  navigation: Navigation;
+export type InStockShoesViewProps = {
   isLazy: boolean;
-}
+} & Pick<ShoppingScreensProps<ShoppingScreen.ShoesList>, "navigation">;
 
 export function InStockShoesView({
   navigation,

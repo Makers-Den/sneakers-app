@@ -48,4 +48,10 @@ export const queryKeys = {
     list: (params: { maxImageWidth: number; maxImageHeight: number }) =>
       [...queryKeys.feed.lists(), params] as const,
   },
+  stories: {
+    all: () => ["stories"] as const,
+    details: () => [...queryKeys.stories.all(), "detail"] as const,
+    detail: (params: { id: string }) =>
+      [...queryKeys.stories.details(), params] as const,
+  },
 };

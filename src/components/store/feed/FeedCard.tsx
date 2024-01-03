@@ -14,7 +14,11 @@ export type FeedCardProps = {
 };
 
 function isBlogPost(feed: Feed): feed is FeedBlog {
-  return "type" in feed && feed.type === ShopifyMetaObjectType.blogPost;
+  return (
+    "type" in feed &&
+    (feed.type === ShopifyMetaObjectType.blogPost ||
+      feed.type === ShopifyMetaObjectType.stories)
+  );
 }
 
 export function getFeedCardImageDimensions() {

@@ -3,7 +3,11 @@ import { StyleSheet, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Route, TabBarProps, TabView } from "react-native-tab-view";
-import { ShoppingScreen, ShoppingStackParamList } from "@/types/navigation";
+import {
+  ShoppingScreen,
+  ShoppingScreensProps,
+  ShoppingStackParamList,
+} from "@/types/navigation";
 import { MemoFeedShoesView } from "@/components/store/feed/FeedShoesView";
 import { MemoInStockShoesView } from "@/components/store/in-stock/InStockShoesView";
 import { MemoUpcomingShoesView } from "@/components/store/upcoming/UpcomingShoesView";
@@ -24,7 +28,8 @@ const routes = [
 
 export function ShoesListScreen({
   navigation,
-}: NativeStackScreenProps<ShoppingStackParamList, ShoppingScreen.ShoesList>) {
+  route,
+}: ShoppingScreensProps<ShoppingScreen.ShoesList>) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 

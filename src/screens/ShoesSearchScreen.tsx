@@ -3,35 +3,39 @@ import {
   StyleSheet,
   useWindowDimensions,
   ActivityIndicator,
-} from 'react-native';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ShoppingScreen, ShoppingStackParamList } from '@/types/navigation';
-import { searchShoes } from '@/lib/shopify';
-import { queryKeys } from '@/lib/query';
-import { theme } from '@/lib/theme';
-import { SearchHeader } from '@/components/store/search/SearchHeader';
-import { FlashList } from '@shopify/flash-list';
-import { useDebounce } from '@/hooks/useDebounce';
+} from "react-native";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useEffect, useMemo, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  ShoppingScreen,
+  ShoppingScreensProps,
+  ShoppingStackParamList,
+} from "@/types/navigation";
+import { searchShoes } from "@/lib/shopify";
+import { queryKeys } from "@/lib/query";
+import { theme } from "@/lib/theme";
+import { SearchHeader } from "@/components/store/search/SearchHeader";
+import { FlashList } from "@shopify/flash-list";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   SEARCH_SHOES_CARD_HEIGHT,
   SEARCH_SHOES_IMAGE_HEIGHT,
   SEARCH_SHOES_IMAGE_WIDTH,
   SearchShoesCard,
-} from '@/components/store/search/SearchShoesCard';
+} from "@/components/store/search/SearchShoesCard";
 import {
   SHOES_LIST_ITEM_SEPARATOR_HEIGHT,
   ShoesListItemSeparator,
-} from '@/components/store/ShoesListItemSeparator';
-import { SearchNoResults } from '@/components/store/search/SearchNoResults';
-import { SearchRecent } from '@/components/store/search/SearchRecent';
+} from "@/components/store/ShoesListItemSeparator";
+import { SearchNoResults } from "@/components/store/search/SearchNoResults";
+import { SearchRecent } from "@/components/store/search/SearchRecent";
 import {
   appendRecentSearch,
   clearRecentSearches,
   getRecentSearches,
-} from '@/lib/storage';
+} from "@/lib/storage";
 
 function estimateListHeight(listItemCount: number) {
   return (
@@ -42,12 +46,12 @@ function estimateListHeight(listItemCount: number) {
 
 export function ShoesSearchScreen({
   navigation,
-}: NativeStackScreenProps<ShoppingStackParamList, ShoppingScreen.ShoesSearch>) {
+}: ShoppingScreensProps<ShoppingScreen.ShoesSearch>) {
   const queryClient = useQueryClient();
   const windowDimensions = useWindowDimensions();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query);
-  const isDebouncedQueryEmpty = debouncedQuery.trim() === '';
+  const isDebouncedQueryEmpty = debouncedQuery.trim() === "";
 
   const searchShoesQuery = useQuery({
     queryFn: ({ signal }) =>
@@ -105,8 +109,8 @@ export function ShoesSearchScreen({
       <SearchHeader
         query={query}
         onCancel={navigation.goBack}
-        onClear={() => setQuery('')}
-        onQueryChange={query => setQuery(query)}
+        onClear={() => setQuery("")}
+        onQueryChange={(query) => setQuery(query)}
       />
 
       {searchShoesQuery.isLoading && (
@@ -127,7 +131,7 @@ export function ShoesSearchScreen({
         <SearchRecent
           recentSearches={reversedRecentSearches}
           onClear={clearRecentSearchesMutation.mutate}
-          onRecentSearchPress={recentSearch => setQuery(recentSearch)}
+          onRecentSearchPress={(recentSearch) => setQuery(recentSearch)}
         />
       )}
 
@@ -165,10 +169,10 @@ const styles = StyleSheet.create({
   },
   activityIndicatorWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   noResultsWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
 });
