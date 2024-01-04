@@ -1,11 +1,13 @@
 import { theme } from "@/lib/theme";
 import { FlashList } from "@shopify/flash-list";
-import { BLOG_CARD_HEIGHT, BLOG_IMAGE_WIDTH, BlogCard } from "./BlogCard";
+import { BlogCard, getBlogCardDimensions } from "./BlogCard";
 import { ShopifyMetaObjectType } from "@/types/shopify";
+
+const blogCardDimensions = getBlogCardDimensions();
 
 function calculateListWidth(listItemCount: number) {
   return (
-    BLOG_IMAGE_WIDTH * listItemCount +
+    blogCardDimensions.width * listItemCount +
     Math.max(0, listItemCount - 1) * theme.spacing(1)
   );
 }
@@ -33,10 +35,10 @@ export function BlogHorizontalList<T extends Blog>({
       horizontal
       data={blogs}
       showsHorizontalScrollIndicator={false}
-      estimatedItemSize={BLOG_IMAGE_WIDTH}
+      estimatedItemSize={blogCardDimensions.width}
       estimatedListSize={{
         width: calculateListWidth(blogs.length),
-        height: BLOG_CARD_HEIGHT,
+        height: blogCardDimensions.height,
       }}
       keyExtractor={(item) => item.title}
       renderItem={({ item }) => (

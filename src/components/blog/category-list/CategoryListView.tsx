@@ -17,7 +17,7 @@ import {
   CategoryCardPlaceholder,
 } from "./CategoryCard";
 import { getImageSize } from "@/lib/image";
-import { BLOG_IMAGE_HEIGHT, BLOG_IMAGE_WIDTH } from "@/components/ui/BlogCard";
+import { getBlogCardDimensions } from "@/components/ui/BlogCard";
 import { ShopifyMetaObjectType } from "@/types/shopify";
 import { Blog } from "@/components/ui/BlogHorizontalList";
 
@@ -40,9 +40,11 @@ export interface CategoryListViewProps {
   navigation: MainScreensProps<MainScreen.CategoryScreen>["navigation"];
 }
 
+const blogCardDimensions = getBlogCardDimensions();
+
 const categoryImage = getImageSize({
-  height: BLOG_IMAGE_HEIGHT,
-  width: BLOG_IMAGE_WIDTH,
+  height: blogCardDimensions.image.height,
+  width: blogCardDimensions.image.width,
 });
 
 export function CategoryListView({ navigation }: CategoryListViewProps) {

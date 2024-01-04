@@ -1,10 +1,34 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { theme } from "@/lib/theme";
 import { PlaceholderLoading } from "./PlaceholderLoading";
 
-export const BLOG_CARD_HEIGHT = 280;
-export const BLOG_IMAGE_WIDTH = 160;
-export const BLOG_IMAGE_HEIGHT = 220;
+export const BLOG_CARD_IMAGE_ASPECT_RATIO = 0.75;
+
+export function getBlogCardDimensions() {
+  const windowDimensions = Dimensions.get("window");
+
+  const imageWidth = (windowDimensions.width - theme.spacing(6)) / 2;
+
+  const imageHeight = imageWidth / BLOG_CARD_IMAGE_ASPECT_RATIO;
+
+  return {
+    height: imageHeight + 60,
+    width: imageWidth,
+    image: {
+      width: imageWidth,
+      height: imageHeight,
+    },
+  };
+}
+
+const blogCardDimensions = getBlogCardDimensions();
 
 export type BlogCardProps = {
   onPress: () => void;
@@ -29,7 +53,10 @@ export function BlogCard({ onPress, image, title }: BlogCardProps) {
 
 export function BlogCardPlaceholder() {
   return (
-    <PlaceholderLoading width={BLOG_IMAGE_WIDTH} height={BLOG_IMAGE_HEIGHT} />
+    <PlaceholderLoading
+      width={blogCardDimensions.height}
+      height={blogCardDimensions.width}
+    />
   );
 }
 
@@ -37,21 +64,21 @@ const styles = StyleSheet.create({
   blogWrapper: {
     display: "flex",
     flexDirection: "column",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_CARD_HEIGHT,
+    width: blogCardDimensions.width,
+    height: blogCardDimensions.height,
     marginHorizontal: theme.spacing(1),
   },
 
   blogImageWrapper: {
     position: "relative",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_IMAGE_HEIGHT,
+    width: blogCardDimensions.image.width,
+    height: blogCardDimensions.image.height,
   },
 
   blogImage: {
     resizeMode: "cover",
-    width: BLOG_IMAGE_WIDTH,
-    height: BLOG_IMAGE_HEIGHT,
+    width: blogCardDimensions.image.width,
+    height: blogCardDimensions.image.height,
     borderRadius: theme.spacing(1),
   },
 

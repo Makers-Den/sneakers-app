@@ -1,10 +1,8 @@
 import { BlogActionBar } from "@/components/blog/details/BlogActionBar";
 import {
-  BLOG_CARD_HEIGHT,
-  BLOG_IMAGE_HEIGHT,
-  BLOG_IMAGE_WIDTH,
   BlogCard,
   BlogCardPlaceholder,
+  getBlogCardDimensions,
 } from "@/components/ui/BlogCard";
 import { TwoColumnCardWrapper } from "@/components/ui/TwoColumnsCardWrapper";
 import { getImageSize } from "@/lib/image";
@@ -42,6 +40,8 @@ export function ItemSeparatorComponent() {
   return <View style={styles.separator} />;
 }
 
+export const blogCardDimensions = getBlogCardDimensions();
+
 export function CategoryScreen({
   navigation,
   route,
@@ -52,7 +52,10 @@ export function CategoryScreen({
   const opacity = useSharedValue(0);
 
   const blogImage = useMemo(() => {
-    return getImageSize({ height: BLOG_IMAGE_HEIGHT, width: BLOG_IMAGE_WIDTH });
+    return getImageSize({
+      height: blogCardDimensions.height,
+      width: blogCardDimensions.width,
+    });
   }, []);
 
   const categoryQuery = useQuery({
@@ -113,12 +116,12 @@ export function CategoryScreen({
                 <FlashList
                   data={new Array(BLOG_PLACEHOLDERS_TO_DISPLAY).fill(null)}
                   numColumns={NUM_OF_COLUMNS}
-                  estimatedItemSize={BLOG_CARD_HEIGHT}
+                  estimatedItemSize={blogCardDimensions.height}
                   estimatedListSize={{
                     width: dimensions.width,
                     height: estimateListHeight(
                       BLOG_PLACEHOLDERS_TO_DISPLAY,
-                      BLOG_CARD_HEIGHT
+                      blogCardDimensions.height
                     ),
                   }}
                   renderItem={({ index }) => (
@@ -155,12 +158,12 @@ export function CategoryScreen({
                 <FlashList
                   data={categoryQuery.data.content}
                   numColumns={NUM_OF_COLUMNS}
-                  estimatedItemSize={BLOG_CARD_HEIGHT}
+                  estimatedItemSize={blogCardDimensions.height}
                   estimatedListSize={{
                     width: dimensions.width,
                     height: estimateListHeight(
                       BLOG_PLACEHOLDERS_TO_DISPLAY,
-                      BLOG_CARD_HEIGHT
+                      blogCardDimensions.height
                     ),
                   }}
                   renderItem={({ item, index }) => (
