@@ -186,7 +186,7 @@ export function Stories({ stories, navigation }: StoriesProps) {
           dispatch({ action: "updateProgress", progress });
 
           if (
-            (playbackStatus.didJustFinish || progress >= 1) &&
+            (playbackStatus.didJustFinish || progress >= 0.99) &&
             !playbackStatus.isLooping
           ) {
             dispatch({ action: "playNext", stories });
