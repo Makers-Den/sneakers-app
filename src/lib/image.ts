@@ -8,7 +8,7 @@ export function getImageSize({
   width: number;
 }) {
   return {
-    height: PixelRatio.getPixelSizeForLayoutSize(height),
-    width: PixelRatio.getPixelSizeForLayoutSize(width),
+    height: Math.round(PixelRatio.getPixelSizeForLayoutSize(height)),
+    width: Math.round(PixelRatio.getPixelSizeForLayoutSize(width)),
   };
 }
