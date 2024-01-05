@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
   progressBarsContainer: {
     width: "100%",
     paddingHorizontal: theme.spacing(2),
+    paddingVertical: theme.spacing(1),
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
