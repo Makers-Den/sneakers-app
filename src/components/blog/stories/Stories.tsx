@@ -2,7 +2,7 @@ import { View, StyleSheet, Dimensions, Text } from "react-native";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { theme } from "@/lib/theme";
-import Animated, { runOnJS, useDerivedValue } from "react-native-reanimated";
+import Animated, { useDerivedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   GestureDetector,
@@ -185,7 +185,10 @@ export function Stories({ stories, navigation }: StoriesProps) {
 
           dispatch({ action: "updateProgress", progress });
 
-          if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+          if (
+            (playbackStatus.didJustFinish || progress >= 1) &&
+            !playbackStatus.isLooping
+          ) {
             dispatch({ action: "playNext", stories });
           }
         }
