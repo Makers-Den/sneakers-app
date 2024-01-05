@@ -58,13 +58,17 @@ export function CategoryScreen({
     });
   }, []);
 
+  const image = useMemo(() => {
+    return getImageSize(dimensions);
+  }, [dimensions]);
+
   const categoryQuery = useQuery({
     queryFn: ({ signal }) =>
       getContentCategoryById({
         id: categoryId,
         image: {
-          maxHeight: dimensions.width,
-          maxWidth: dimensions.width,
+          maxHeight: image.width,
+          maxWidth: image.width,
         },
         blogImage: {
           maxHeight: blogImage.height,
@@ -74,8 +78,8 @@ export function CategoryScreen({
       }),
     queryKey: queryKeys.contentCategories.detail({
       id: categoryId,
-      maxImageHeight: dimensions.height,
-      maxImageWidth: dimensions.width,
+      maxImageHeight: image.height,
+      maxImageWidth: image.width,
     }),
   });
 
