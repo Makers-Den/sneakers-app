@@ -252,6 +252,7 @@ export function Stories({ stories, navigation }: StoriesProps) {
         <Video
           ref={video}
           style={styles.video}
+          isLooping={false}
           resizeMode={ResizeMode.COVER}
           progressUpdateIntervalMillis={UPDATE_INTERVAL}
           onLoad={onLoad}

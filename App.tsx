@@ -42,19 +42,11 @@ export default function App() {
 }
 
 function MainScreen() {
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-
   useEffect(() => {
     registerForPushNotificationsAsync().catch((error) =>
       logger.error("Register push notifications failed", error)
     );
   }, []);
-
-  useEffect(() => {
-    SplashScreen.hideAsync().catch((error) =>
-      logger.error("Hide splash screen failed", error)
-    );
-  }, [lastNotificationResponse]);
 
   return (
     <SafeAreaProvider style={styles.safeAreaProvider}>

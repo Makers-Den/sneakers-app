@@ -51,7 +51,8 @@ function AnimatedSplashScreen({
 
   const { width, height } = useWindowDimensions();
 
-  const scale = useSharedValue("100%");
+  const scaleWidth = useSharedValue(width);
+  const scaleHeight = useSharedValue(height);
 
   const textOpacity = useSharedValue(0);
 
@@ -60,7 +61,11 @@ function AnimatedSplashScreen({
       await SplashScreen.hideAsync();
       // Load stuff
 
-      scale.value = withTiming("10000%", {
+      scaleWidth.value = withTiming(30000, {
+        duration: 2000,
+        easing: Easing.cubic,
+      });
+      scaleHeight.value = withTiming(30000, {
         duration: 2000,
         easing: Easing.cubic,
       });
@@ -101,8 +106,8 @@ function AnimatedSplashScreen({
         >
           <Animated.Image
             style={{
-              width: scale,
-              height: scale,
+              width: scaleWidth,
+              height: scaleHeight,
               resizeMode:
                 Constants?.expoConfig?.splash?.resizeMode || "contain",
             }}
