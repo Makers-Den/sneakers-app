@@ -22,6 +22,7 @@ import Animated, {
 import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
 import { theme } from "@/lib/theme";
 import { ShopifyMetaObjectType } from "@/types/shopify";
+import { SlideInAnimation } from "@/components/wrappers/SlideInAnimation";
 
 const BLOG_PLACEHOLDERS_TO_DISPLAY = 4;
 const NUM_OF_COLUMNS = 2;
@@ -98,111 +99,113 @@ export function CategoryScreen({
   }, [categoryId]);
 
   return (
-    <SafeAreaView
-      edges={{
-        bottom: "off",
-        top: "additive",
-        left: "additive",
-        right: "additive",
-      }}
-      style={styles.wrapper}
-    >
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.wrapper}>
-          <BlogActionBar onClose={navigation.goBack} />
-          {categoryQuery.isLoading || !categoryQuery.data ? (
-            <>
-              <PlaceholderLoading
-                width={dimensions.width}
-                height={dimensions.height}
-              />
-              <View style={styles.list}>
-                <FlashList
-                  data={new Array(BLOG_PLACEHOLDERS_TO_DISPLAY).fill(null)}
-                  numColumns={NUM_OF_COLUMNS}
-                  estimatedItemSize={blogCardDimensions.height}
-                  estimatedListSize={{
-                    width: dimensions.width,
-                    height: estimateListHeight(
-                      BLOG_PLACEHOLDERS_TO_DISPLAY,
-                      blogCardDimensions.height
-                    ),
-                  }}
-                  renderItem={({ index }) => (
-                    <TwoColumnCardWrapper
-                      padding={ITEM_SEPARATOR_HEIGHT / 2}
-                      isLeftColumn={index % 2 === 0}
-                      key={index}
-                    >
-                      <BlogCardPlaceholder />
-                    </TwoColumnCardWrapper>
-                  )}
-                  ItemSeparatorComponent={ItemSeparatorComponent}
+    <SlideInAnimation>
+      <SafeAreaView
+        edges={{
+          bottom: "off",
+          top: "additive",
+          left: "additive",
+          right: "additive",
+        }}
+        style={styles.wrapper}
+      >
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.wrapper}>
+            <BlogActionBar onClose={navigation.goBack} />
+            {categoryQuery.isLoading || !categoryQuery.data ? (
+              <>
+                <PlaceholderLoading
+                  width={dimensions.width}
+                  height={dimensions.height}
                 />
-              </View>
-            </>
-          ) : (
-            <>
-              <Animated.Image
-                source={{ uri: categoryQuery.data?.data.thumbnail }}
-                style={{
-                  width: "100%",
-                  aspectRatio: 1,
-                  opacity,
-                }}
-                onLoadEnd={onImageLoadEnd}
-              />
-              <View style={styles.list}>
-                <Text style={styles.title}>
-                  {categoryQuery.data.data.title}
-                </Text>
-                <Text style={styles.description}>
-                  {categoryQuery.data.data.description}
-                </Text>
-                <FlashList
-                  data={categoryQuery.data.content}
-                  numColumns={NUM_OF_COLUMNS}
-                  estimatedItemSize={blogCardDimensions.height}
-                  estimatedListSize={{
-                    width: dimensions.width,
-                    height: estimateListHeight(
-                      BLOG_PLACEHOLDERS_TO_DISPLAY,
-                      blogCardDimensions.height
-                    ),
+                <View style={styles.list}>
+                  <FlashList
+                    data={new Array(BLOG_PLACEHOLDERS_TO_DISPLAY).fill(null)}
+                    numColumns={NUM_OF_COLUMNS}
+                    estimatedItemSize={blogCardDimensions.height}
+                    estimatedListSize={{
+                      width: dimensions.width,
+                      height: estimateListHeight(
+                        BLOG_PLACEHOLDERS_TO_DISPLAY,
+                        blogCardDimensions.height
+                      ),
+                    }}
+                    renderItem={({ index }) => (
+                      <TwoColumnCardWrapper
+                        padding={ITEM_SEPARATOR_HEIGHT / 2}
+                        isLeftColumn={index % 2 === 0}
+                        key={index}
+                      >
+                        <BlogCardPlaceholder />
+                      </TwoColumnCardWrapper>
+                    )}
+                    ItemSeparatorComponent={ItemSeparatorComponent}
+                  />
+                </View>
+              </>
+            ) : (
+              <>
+                <Animated.Image
+                  source={{ uri: categoryQuery.data?.data.thumbnail }}
+                  style={{
+                    width: "100%",
+                    aspectRatio: 1,
+                    opacity,
                   }}
-                  renderItem={({ item, index }) => (
-                    <TwoColumnCardWrapper
-                      padding={ITEM_SEPARATOR_HEIGHT / 2}
-                      isLeftColumn={index % 2 === 0}
-                      key={item.id}
-                    >
-                      <BlogCard
-                        onPress={() => {
-                          if (item.type === ShopifyMetaObjectType.blogPost) {
-                            navigation.navigate(MainScreen.BlogPostScreen, {
-                              blogPostId: item.id,
-                            });
-                          }
+                  onLoadEnd={onImageLoadEnd}
+                />
+                <View style={styles.list}>
+                  <Text style={styles.title}>
+                    {categoryQuery.data.data.title}
+                  </Text>
+                  <Text style={styles.description}>
+                    {categoryQuery.data.data.description}
+                  </Text>
+                  <FlashList
+                    data={categoryQuery.data.content}
+                    numColumns={NUM_OF_COLUMNS}
+                    estimatedItemSize={blogCardDimensions.height}
+                    estimatedListSize={{
+                      width: dimensions.width,
+                      height: estimateListHeight(
+                        BLOG_PLACEHOLDERS_TO_DISPLAY,
+                        blogCardDimensions.height
+                      ),
+                    }}
+                    renderItem={({ item, index }) => (
+                      <TwoColumnCardWrapper
+                        padding={ITEM_SEPARATOR_HEIGHT / 2}
+                        isLeftColumn={index % 2 === 0}
+                        key={item.id}
+                      >
+                        <BlogCard
+                          onPress={() => {
+                            if (item.type === ShopifyMetaObjectType.blogPost) {
+                              navigation.navigate(MainScreen.BlogPostScreen, {
+                                blogPostId: item.id,
+                              });
+                            }
 
-                          if (item.type === ShopifyMetaObjectType.stories) {
-                            navigation.navigate(RootScreen.Story, {
-                              id: item.id,
-                            });
-                          }
-                        }}
-                        image={item.data.thumbnail || ""}
-                        title={item.data.title}
-                      />
-                    </TwoColumnCardWrapper>
-                  )}
-                  ItemSeparatorComponent={ItemSeparatorComponent}
-                />
-              </View>
-            </>
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+                            if (item.type === ShopifyMetaObjectType.stories) {
+                              navigation.navigate(RootScreen.Story, {
+                                id: item.id,
+                              });
+                            }
+                          }}
+                          image={item.data.thumbnail || ""}
+                          title={item.data.title}
+                        />
+                      </TwoColumnCardWrapper>
+                    )}
+                    ItemSeparatorComponent={ItemSeparatorComponent}
+                  />
+                </View>
+              </>
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </SlideInAnimation>
   );
 }
 

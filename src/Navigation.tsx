@@ -2,8 +2,8 @@ import {
   NavigationContainer,
   NavigationProp,
   useNavigation,
-} from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+} from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   MainTabParamList,
   MainScreen,
@@ -11,23 +11,24 @@ import {
   ShoppingStackParamList,
   RootStackParamList,
   RootScreen,
-} from '@/types/navigation';
-import { ShoesListScreen } from '@/screens/ShoesListScreen';
-import { ShoesDetailsScreen } from '@/screens/ShoesDetailsScreen';
-import { ShoesSearchScreen } from '@/screens/ShoesSearchScreen';
-import * as Notifications from 'expo-notifications';
-import { useEffect } from 'react';
-import { createNamedLogger } from './lib/log';
-import { notificationDataSchema } from './lib/notification';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { theme } from './lib/theme';
-import { MemoDiscoverScreen } from './screens/DiscoverScreen';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { BlogPostScreen } from './screens/BlogPostScreen';
-import { CategoryScreen } from './screens/CategoryScreen';
-import { StoriesScreen } from './screens/StoriesScreen';
+} from "@/types/navigation";
+import { ShoesListScreen } from "@/screens/ShoesListScreen";
+import { ShoesDetailsScreen } from "@/screens/ShoesDetailsScreen";
+import { ShoesSearchScreen } from "@/screens/ShoesSearchScreen";
+import * as Notifications from "expo-notifications";
+import { useEffect } from "react";
+import { createNamedLogger } from "./lib/log";
+import { notificationDataSchema } from "./lib/notification";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { theme } from "./lib/theme";
+import { MemoDiscoverScreen } from "./screens/DiscoverScreen";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { BlogPostScreen } from "./screens/BlogPostScreen";
+import { CategoryScreen } from "./screens/CategoryScreen";
+import { StoriesScreen } from "./screens/StoriesScreen";
+import { FadeInAnimation } from "./components/wrappers/FadeInAnimation";
 
-const logger = createNamedLogger('Navigation');
+const logger = createNamedLogger("Navigation");
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -43,7 +44,7 @@ export function RootNavigation() {
         <RootStack.Screen
           name={RootScreen.Story}
           component={StoriesScreen}
-          options={{ headerShown: false, animation: 'slide_from_bottom' }}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
         />
       </RootStack.Navigator>
     </NavigationContainer>
@@ -67,25 +68,25 @@ export function MainNavigation() {
         backBehavior="history"
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
-          tabBarActiveTintColor: 'white',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: "white",
+          tabBarInactiveTintColor: "gray",
           tabBarStyle: {
             backgroundColor: theme.palette.gray[900],
             zIndex: 100,
           },
           tabBarItemStyle: {
             display: ScreensWithoutNavigation.includes(route.name)
-              ? 'none'
-              : 'flex',
+              ? "none"
+              : "flex",
           },
           tabBarIcon: ({ color, size }) => {
             if (route.name === MainScreen.ShoppingScreens) {
               return (
-                <Ionicons name={'home-outline'} size={size} color={color} />
+                <Ionicons name={"home-outline"} size={size} color={color} />
               );
             } else if (route.name === MainScreen.DiscoverScreen) {
               return (
-                <Ionicons name={'compass-outline'} size={size} color={color} />
+                <Ionicons name={"compass-outline"} size={size} color={color} />
               );
             }
           },
@@ -103,12 +104,12 @@ export function MainNavigation() {
         />
         <Tab.Screen
           name={MainScreen.BlogPostScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, unmountOnBlur: true }}
           component={BlogPostScreen}
         />
         <Tab.Screen
           name={MainScreen.CategoryScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, unmountOnBlur: true }}
           component={CategoryScreen}
         />
       </Tab.Navigator>
@@ -120,23 +121,25 @@ const Stack = createNativeStackNavigator<ShoppingStackParamList>();
 
 function ShoppingNavigation() {
   return (
-    <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
-      <Stack.Screen
-        component={ShoesListScreen}
-        name={ShoppingScreen.ShoesList}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={ShoppingScreen.ShoesDetails}
-        component={ShoesDetailsScreen}
-        options={{ headerShown: false, animation: 'slide_from_bottom' }}
-      />
-      <Stack.Screen
-        name={ShoppingScreen.ShoesSearch}
-        component={ShoesSearchScreen}
-        options={{ headerShown: false, animation: 'slide_from_right' }}
-      />
-    </Stack.Navigator>
+    <FadeInAnimation>
+      <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
+        <Stack.Screen
+          component={ShoesListScreen}
+          name={ShoppingScreen.ShoesList}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={ShoppingScreen.ShoesDetails}
+          component={ShoesDetailsScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
+          name={ShoppingScreen.ShoesSearch}
+          component={ShoesSearchScreen}
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+      </Stack.Navigator>
+    </FadeInAnimation>
   );
 }
 
@@ -156,7 +159,7 @@ export function NotificationNavigator() {
 
     if (!parseNotificationDataResult.success) {
       logger.error(
-        'Parse notification data failed',
+        "Parse notification data failed",
         parseNotificationDataResult.error
       );
 
@@ -164,7 +167,7 @@ export function NotificationNavigator() {
     }
 
     switch (parseNotificationDataResult.data.type) {
-      case 'ShoesDropped':
+      case "ShoesDropped":
         navigation.navigate(ShoppingScreen.ShoesDetails, {
           shoesId: parseNotificationDataResult.data.shoesId,
         });

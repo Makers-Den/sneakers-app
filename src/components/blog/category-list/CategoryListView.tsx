@@ -37,7 +37,7 @@ function estimateListHeight(listItemCount: number) {
 }
 
 export interface CategoryListViewProps {
-  navigation: MainScreensProps<MainScreen.CategoryScreen>["navigation"];
+  navigation: MainScreensProps<MainScreen.DiscoverScreen>["navigation"];
 }
 
 const blogCardDimensions = getBlogCardDimensions();
