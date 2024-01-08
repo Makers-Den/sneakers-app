@@ -180,11 +180,18 @@ export const getFeedSchema = z.object({
   data: z.object({
     metaobject: z.object({
       fields: z.array(
-        z.object({
-          key: z.nativeEnum(ShopifyFieldKey),
-          value: z.string(),
-          references,
-        })
+        z.union([
+          z.object({
+            key: z.literal(ShopifyFieldKey.name),
+            value: z.string(),
+            references: z.null(),
+          }),
+          z.object({
+            key: z.literal(ShopifyFieldKey.items),
+            value: z.string(),
+            references: references,
+          }),
+        ])
       ),
     }),
   }),

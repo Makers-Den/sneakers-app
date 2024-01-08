@@ -12,6 +12,7 @@ export enum ShopifyMetaFieldKey {
 
 export enum ShopifyFieldKey {
   items = "items",
+  name = "name",
 }
 
 export enum ShopifyMetaObjectType {

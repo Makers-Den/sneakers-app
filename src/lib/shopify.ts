@@ -722,10 +722,10 @@ export async function getFeed(query: GetFeedQuery) {
     return null;
   }
 
-  const pageInfo = itemsField.references.pageInfo;
+  const pageInfo = itemsField.references!.pageInfo;
 
-  const items = itemsField.references.edges
-    .map(({ node }) => {
+  const items = itemsField
+    .references!.edges.map(({ node }) => {
       if (node.type === ShopifyMetaObjectType.blogPost) {
         const blogPostData = mapFieldsToObject<{
           title: string;
