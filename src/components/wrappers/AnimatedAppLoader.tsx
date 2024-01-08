@@ -1,14 +1,17 @@
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
+  FadeOut,
+  useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { theme } from "@/lib/theme";
+import WhiteSneaker from "../svg/WhiteSneaker";
 
 export function AnimatedAppLoader({
   children,
@@ -36,8 +39,6 @@ export function AnimatedAppLoader({
   return <AnimatedSplashScreen image={image}>{children}</AnimatedSplashScreen>;
 }
 
-const endScale = 6000;
-
 const endOpacity = 1;
 
 function AnimatedSplashScreen({
@@ -51,21 +52,16 @@ function AnimatedSplashScreen({
 
   const { width, height } = useWindowDimensions();
 
-  const scaleWidth = useSharedValue(width);
-  const scaleHeight = useSharedValue(height);
-
   const textOpacity = useSharedValue(0);
+
+  const scale = useSharedValue(0);
 
   const onImageLoaded = useCallback(async () => {
     try {
       await SplashScreen.hideAsync();
       // Load stuff
 
-      scaleWidth.value = withTiming(30000, {
-        duration: 2000,
-        easing: Easing.cubic,
-      });
-      scaleHeight.value = withTiming(30000, {
+      scale.value = withTiming(100, {
         duration: 2000,
         easing: Easing.cubic,
       });
@@ -85,11 +81,25 @@ function AnimatedSplashScreen({
     }
   }, []);
 
+  const wrapperStyles = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      zIndex: 10,
+      width,
+      height,
+      transform: [{ scale: scale.value }],
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    };
+  });
+
   return (
     <View style={{ flex: 1 }}>
-      {isAppReady && children}
+      {children}
       {!isAppReady && (
         <Animated.View
+          exiting={FadeOut}
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
@@ -101,13 +111,20 @@ function AnimatedSplashScreen({
               justifyContent: "center",
               alignItems: "center",
               overflow: "hidden",
+              zIndex: 10,
             },
           ]}
         >
+          <Animated.View style={[wrapperStyles]}>
+            <WhiteSneaker
+              width={"100%"}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Animated.View>
           <Animated.Image
             style={{
-              width: scaleWidth,
-              height: scaleHeight,
+              width,
+              height,
               resizeMode:
                 Constants?.expoConfig?.splash?.resizeMode || "contain",
             }}
