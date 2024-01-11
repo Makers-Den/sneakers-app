@@ -85,7 +85,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
 
   const onBlogPress = ({ id, type }: Blog) => {
     if (type === ShopifyMetaObjectType.blogPost) {
-      navigation.navigate(MainScreen.BlogPostScreen, {
+      navigation.navigate(RootScreen.BlogPostScreen, {
         blogPostId: id,
       });
     }
@@ -123,7 +123,7 @@ export function CategoryListView({ navigation }: CategoryListViewProps) {
                 {...category}
                 onBlogPress={onBlogPress}
                 onMorePress={() => {
-                  navigation.navigate(MainScreen.CategoryScreen, {
+                  navigation.navigate(RootScreen.CategoryScreen, {
                     categoryId: category.id,
                   });
                 }}

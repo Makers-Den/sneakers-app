@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MainScreen, MainScreensProps } from "@/types/navigation";
+import { RootScreen, RootScreensProps } from "@/types/navigation";
 import { useQuery } from "react-query";
 import { getBlogPost } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
@@ -21,14 +21,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { SlideInAnimation } from "@/components/wrappers/SlideInAnimation";
 
 const BLOG_IMAGE_ASPECT_RATIO = 1;
 
 export function BlogPostScreen({
   navigation,
   route,
-}: MainScreensProps<MainScreen.BlogPostScreen>) {
+}: RootScreensProps<RootScreen.BlogPostScreen>) {
   const { blogPostId } = route.params;
 
   const opacity = useSharedValue(0);
@@ -82,48 +81,46 @@ export function BlogPostScreen({
   }, []);
 
   return (
-    <SlideInAnimation>
-      <SafeAreaView
-        edges={{
-          bottom: "off",
-          top: "additive",
-          left: "additive",
-          right: "additive",
-        }}
-        style={styles.safeArea}
-      >
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.wrapper}>
-            <BlogActionBar onClose={navigation.goBack} />
-            {blogPostQuery.isFetching ? (
-              <PlaceholderLoading
-                width={dimensions.width}
-                height={dimensions.height}
+    <SafeAreaView
+      edges={{
+        bottom: "off",
+        top: "additive",
+        left: "additive",
+        right: "additive",
+      }}
+      style={styles.safeArea}
+    >
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.wrapper}>
+          <BlogActionBar onClose={navigation.goBack} />
+          {blogPostQuery.isFetching ? (
+            <PlaceholderLoading
+              width={dimensions.width}
+              height={dimensions.height}
+            />
+          ) : (
+            <>
+              <Animated.Image
+                source={{ uri: blogPostQuery.data?.data.thumbnail }}
+                style={{
+                  width: "100%",
+                  aspectRatio: BLOG_IMAGE_ASPECT_RATIO,
+                  opacity,
+                }}
+                onLoadEnd={onImageLoadEnd}
               />
-            ) : (
-              <>
-                <Animated.Image
-                  source={{ uri: blogPostQuery.data?.data.thumbnail }}
-                  style={{
-                    width: "100%",
-                    aspectRatio: BLOG_IMAGE_ASPECT_RATIO,
-                    opacity,
-                  }}
-                  onLoadEnd={onImageLoadEnd}
-                />
-                <View style={styles.contentWrapper}>
-                  {blogPostQuery.data && (
-                    <>
-                      <HtmlRenderer html={html} width={dimensions.width} />
-                    </>
-                  )}
-                </View>
-              </>
-            )}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </SlideInAnimation>
+              <View style={styles.contentWrapper}>
+                {blogPostQuery.data && (
+                  <>
+                    <HtmlRenderer html={html} width={dimensions.width} />
+                  </>
+                )}
+              </View>
+            </>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

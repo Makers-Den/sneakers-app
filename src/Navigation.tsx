@@ -46,6 +46,16 @@ export function RootNavigation() {
           component={StoriesScreen}
           options={{ headerShown: false, animation: "slide_from_bottom" }}
         />
+        <RootStack.Screen
+          name={RootScreen.BlogPostScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={BlogPostScreen}
+        />
+        <RootStack.Screen
+          name={RootScreen.CategoryScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={CategoryScreen}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );
@@ -54,10 +64,6 @@ export function RootNavigation() {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export function MainNavigation() {
-  const ScreensWithoutNavigation = [
-    MainScreen.BlogPostScreen,
-    MainScreen.CategoryScreen,
-  ];
   return (
     <>
       <NotificationNavigator />
@@ -75,9 +81,7 @@ export function MainNavigation() {
             zIndex: 100,
           },
           tabBarItemStyle: {
-            display: ScreensWithoutNavigation.includes(route.name)
-              ? "none"
-              : "flex",
+            display: "flex",
           },
           tabBarIcon: ({ color, size }) => {
             if (route.name === MainScreen.ShoppingScreens) {
@@ -101,16 +105,6 @@ export function MainNavigation() {
           name={MainScreen.DiscoverScreen}
           options={{ headerShown: false }}
           component={MemoDiscoverScreen}
-        />
-        <Tab.Screen
-          name={MainScreen.BlogPostScreen}
-          options={{ headerShown: false, unmountOnBlur: true }}
-          component={BlogPostScreen}
-        />
-        <Tab.Screen
-          name={MainScreen.CategoryScreen}
-          options={{ headerShown: false, unmountOnBlur: true }}
-          component={CategoryScreen}
         />
       </Tab.Navigator>
     </>
