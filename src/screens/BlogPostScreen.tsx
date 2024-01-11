@@ -138,16 +138,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: theme.palette.gray[900],
-    paddingBottom: theme.spacing(14),
+    paddingBottom: theme.spacing(5),
   },
   contentWrapper: {
     flex: 1,
     width: "100%",
-  },
-  actionButtonWrapper: {
-    position: "absolute",
-    bottom: theme.spacing(4),
-    left: theme.spacing(2),
-    right: theme.spacing(2),
   },
 });
