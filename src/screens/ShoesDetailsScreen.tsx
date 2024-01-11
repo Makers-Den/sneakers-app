@@ -96,7 +96,7 @@ export function ShoesDetailsScreen({
   }, [shoesQuery.data]);
 
   const onBlogPress = ({ id }: { id: string }) => {
-    navigation.navigate(MainScreen.BlogPostScreen, { blogPostId: id });
+    navigation.navigate(RootScreen.BlogPostScreen, { blogPostId: id });
   };
 
   const blogs = useMemo(() => {

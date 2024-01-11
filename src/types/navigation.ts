@@ -29,25 +29,25 @@ export type Navigation = NativeStackNavigationProp<
 export enum MainScreen {
   DiscoverScreen = "DiscoverScreen",
   ShoppingScreens = "ShoppingScreens",
-  BlogPostScreen = "BlogPostScreen",
-  CategoryScreen = "CategoryScreen",
 }
 
 export type MainTabParamList = {
   [MainScreen.ShoppingScreens]: NavigatorScreenParams<ShoppingStackParamList>;
   [MainScreen.DiscoverScreen]: undefined;
-  [MainScreen.BlogPostScreen]: { blogPostId: string };
-  [MainScreen.CategoryScreen]: { categoryId: string };
 };
 
 export enum RootScreen {
   Main = "Main",
   Story = "Story",
+  BlogPostScreen = "BlogPostScreen",
+  CategoryScreen = "CategoryScreen",
 }
 
 export type RootStackParamList = {
   [RootScreen.Main]: NavigatorScreenParams<MainTabParamList>;
   [RootScreen.Story]: { id: string };
+  [RootScreen.BlogPostScreen]: { blogPostId: string };
+  [RootScreen.CategoryScreen]: { categoryId: string };
 };
 
 export type RootScreensProps<RouteName extends RootScreen> =

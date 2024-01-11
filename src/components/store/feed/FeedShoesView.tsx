@@ -149,7 +149,7 @@ export function FeedShoesView({
                 feed={item}
                 onBlogCardPress={(content) => {
                   if (content.type === ShopifyMetaObjectType.blogPost) {
-                    navigation.navigate(MainScreen.BlogPostScreen, {
+                    navigation.navigate(RootScreen.BlogPostScreen, {
                       blogPostId: content.id,
                     });
                   }
