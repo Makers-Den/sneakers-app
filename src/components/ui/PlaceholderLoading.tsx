@@ -15,7 +15,7 @@ export type PlaceholderLoadingProps = {
 export function PlaceholderLoading({ height, width }: PlaceholderLoadingProps) {
   const time = useSharedValue(0);
   useFrameCallback((frameInfo) => {
-    time.value = Math.sin(frameInfo.timestamp / 300);
+    time.value = Math.sin(frameInfo.timestamp / 200);
   });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -23,7 +23,7 @@ export function PlaceholderLoading({ height, width }: PlaceholderLoadingProps) {
       backgroundColor: interpolateColor(
         time.value,
         [0, 1],
-        [theme.palette.gray[700], theme.palette.gray[900]]
+        [theme.palette.gray[500], theme.palette.gray[900]]
       ),
     };
   });
