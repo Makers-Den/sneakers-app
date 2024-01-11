@@ -3,10 +3,10 @@
     "experiments": {
       "tsconfigPaths": true
     },
-    "name": "sneakers-app",
+    "name": "Sneakers App",
     "slug": "sneakers-app",
     "scheme": "sneakers-app",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
