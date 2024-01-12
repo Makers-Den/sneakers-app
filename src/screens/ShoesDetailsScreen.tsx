@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   MainScreen,
+  RootScreen,
   ShoppingScreen,
   ShoppingScreensProps,
   ShoppingStackParamList,
