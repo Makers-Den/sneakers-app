@@ -1,4 +1,4 @@
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions, Text, Platform } from "react-native";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { theme } from "@/lib/theme";
@@ -11,6 +11,8 @@ import {
 } from "react-native-gesture-handler";
 import { RootScreensProps, RootScreen } from "@/types/navigation";
 import { BlogActionBar } from "../details/BlogActionBar";
+import { createNamedLogger } from "@/lib/log";
+import { delay } from "@/lib/async";
 
 export type ProgressBarProps = {
   width: number;
@@ -113,6 +115,8 @@ function reducer(state: StoriesState, action: Action): StoriesState {
   }
 }
 
+const logger = createNamedLogger("Stories");
+
 export function Stories({ stories, navigation }: StoriesProps) {
   const [state, dispatch] = useReducer(reducer, {
     currentStoryIndex: 0,
@@ -130,12 +134,65 @@ export function Stories({ stories, navigation }: StoriesProps) {
   }, [stories.length]);
 
   useEffect(() => {
-    video.current?.unloadAsync().then(async () => {
-      await video.current?.loadAsync({
-        uri: stories[state.currentStoryIndex]?.src,
-      });
-      await video.current?.playAsync();
-    });
+    const currentStory = stories[state.currentStoryIndex];
+    if (!currentStory) {
+      return;
+    }
+
+    let callbackFnCalled = false;
+    const shouldContinue = () => video.current !== null && !callbackFnCalled;
+
+    const changeVideo = async () => {
+      /**
+       * On Android, using methods on the Video object sometimes throws an error with
+       * the message "Invalid view returned from registry.". It's probably thrown when
+       * a native module can't access the video instance. This delay fixes the issue.
+       *
+       * https://github.com/expo/expo/blob/ab91257ace9c5a8196eacf6f7e2391f659538c15/packages/expo-av/android/src/main/java/expo/modules/av/ViewUtils.kt#L57
+       */
+      if (Platform.OS === "android") {
+        await delay(1);
+      }
+
+      if (!shouldContinue() || !video.current) {
+        return;
+      }
+
+      try {
+        await video.current.unloadAsync();
+      } catch (error) {
+        logger.error("Unload video failed", error);
+        return;
+      }
+
+      if (!shouldContinue()) {
+        return;
+      }
+
+      try {
+        await video.current.loadAsync({ uri: currentStory.src });
+      } catch (error) {
+        logger.error("Load video failed", error);
+        return;
+      }
+
+      if (!shouldContinue()) {
+        return;
+      }
+
+      try {
+        await video.current.playAsync();
+      } catch (error) {
+        logger.error("Play video failed", error);
+        return;
+      }
+    };
+
+    changeVideo();
+
+    return () => {
+      callbackFnCalled = true;
+    };
   }, [state.currentStoryIndex]);
 
   const composed = useMemo(() => {
