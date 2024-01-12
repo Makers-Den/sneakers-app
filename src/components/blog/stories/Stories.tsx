@@ -3,7 +3,7 @@ import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { theme } from "@/lib/theme";
 import Animated, { useDerivedValue } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   GestureDetector,
   Gesture,
@@ -44,8 +44,6 @@ export type StoriesProps = {
 const UPDATE_INTERVAL = 100;
 
 const windowDimensions = Dimensions.get("window");
-
-const screen = Dimensions.get("screen");
 
 export type StoryStates = "loading" | "loaded";
 
@@ -123,6 +121,8 @@ export function Stories({ stories, navigation }: StoriesProps) {
     state: "loading",
     progress: 0,
   });
+
+  const insets = useSafeAreaInsets();
 
   const video = useRef<Video>(null);
 
@@ -265,18 +265,16 @@ export function Stories({ stories, navigation }: StoriesProps) {
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.container}>
-        <SafeAreaView
+        <View
           style={{
             flex: 1,
             position: "relative",
             zIndex: 120,
             flexDirection: "column",
-          }}
-          edges={{
-            bottom: "additive",
-            top: "additive",
-            left: "additive",
-            right: "additive",
+            paddingBottom: insets.bottom,
+            paddingTop: insets.top,
+            paddingLeft: insets.left,
+            paddingRight: insets.right,
           }}
         >
           <View style={styles.progressBarsContainer}>
@@ -304,8 +302,9 @@ export function Stories({ stories, navigation }: StoriesProps) {
               </Text>
             )}
           </View>
-        </SafeAreaView>
+        </View>
 
+{/* check if i cna use plceholde on video! */}
         <Video
           ref={video}
           style={styles.video}
@@ -326,8 +325,8 @@ const styles = StyleSheet.create({
   },
   video: {
     position: "absolute",
-    height: screen.height,
-    width: screen.width,
+    height: windowDimensions.height,
+    width: windowDimensions.width,
     zIndex: 110,
     backgroundColor: theme.palette.gray[900],
   },
