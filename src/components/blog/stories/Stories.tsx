@@ -304,7 +304,6 @@ export function Stories({ stories, navigation }: StoriesProps) {
           </View>
         </View>
 
-{/* check if i cna use plceholde on video! */}
         <Video
           ref={video}
           style={styles.video}
