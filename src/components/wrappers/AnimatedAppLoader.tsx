@@ -49,6 +49,7 @@ function AnimatedSplashScreen({
   image: { uri: string };
 }) {
   const [isAppReady, setAppReady] = useState(false);
+  const [isInitialImageVisible, setIsInitialImageVisible] = useState(true);
 
   const { width, height } = useWindowDimensions();
 
@@ -67,6 +68,7 @@ function AnimatedSplashScreen({
       });
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsInitialImageVisible(false);
 
       textOpacity.value = withTiming(endOpacity, {
         duration: 500,
@@ -121,16 +123,19 @@ function AnimatedSplashScreen({
               style={{ width: "100%", height: "100%" }}
             />
           </Animated.View>
-          <Animated.Image
-            style={{
-              width,
-              height,
-              resizeMode:
-                Constants?.expoConfig?.splash?.resizeMode || "contain",
-            }}
-            source={image}
-            onLoadEnd={onImageLoaded}
-          />
+
+          {isInitialImageVisible && (
+            <Animated.Image
+              style={{
+                width,
+                height,
+                resizeMode:
+                  Constants?.expoConfig?.splash?.resizeMode || "contain",
+              }}
+              source={image}
+              onLoadEnd={onImageLoaded}
+            />
+          )}
 
           <Animated.Text
             style={{
