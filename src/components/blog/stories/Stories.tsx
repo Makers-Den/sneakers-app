@@ -271,7 +271,7 @@ export function Stories({ stories, navigation }: StoriesProps) {
             position: "relative",
             zIndex: 120,
             flexDirection: "column",
-            paddingBottom: insets.bottom,
+            paddingBottom: Platform.OS === "android" ? 0 : insets.bottom,
             paddingTop: insets.top,
             paddingLeft: insets.left,
             paddingRight: insets.right,
