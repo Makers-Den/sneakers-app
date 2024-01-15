@@ -5,14 +5,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  ShoppingScreen,
-  ShoppingScreensProps,
-  ShoppingStackParamList,
-} from "@/types/navigation";
+import { ShoppingScreen, ShoppingScreensProps } from "@/types/navigation";
 import { searchShoes } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 import { theme } from "@/lib/theme";
