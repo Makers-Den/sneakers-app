@@ -45,6 +45,8 @@ const UPDATE_INTERVAL = 100;
 
 const windowDimensions = Dimensions.get("window");
 
+const screen = Dimensions.get("screen");
+
 export type StoryStates = "loading" | "loaded";
 
 export type StoriesState = {
@@ -324,8 +326,8 @@ const styles = StyleSheet.create({
   },
   video: {
     position: "absolute",
-    height: windowDimensions.height,
-    width: windowDimensions.width,
+    height: screen.height,
+    width: screen.width,
     zIndex: 110,
     backgroundColor: theme.palette.gray[900],
   },
