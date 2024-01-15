@@ -23,7 +23,7 @@ export function TabBar<T extends Route>({
         tabStyle={styles.tab}
         indicatorStyle={styles.tabIndicator}
         activeColor={theme.palette.gray[100]}
-        pressColor="transparent"
+        pressColor={theme.palette.gray[800]}
         inactiveColor={theme.palette.gray[400]}
         gap={theme.spacing(3)}
         renderLabel={({ route, color }) => (
