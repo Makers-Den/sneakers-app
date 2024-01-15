@@ -13,8 +13,12 @@
       },
       "distribution": "internal"
     },
-    "staging-store": {},
-    "production": {}
+    "staging-store": {
+      "autoIncrement": true
+    },
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
     "production": {}
