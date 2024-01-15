@@ -27,6 +27,7 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#fff"
       },
+      "backgroundColor": "#2B2B2B",
       "googleServicesFile": "./google-services.json",
       "package": "io.makersden.sneakersapp"
     },
