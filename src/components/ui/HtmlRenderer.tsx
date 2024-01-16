@@ -8,9 +8,16 @@ export interface HtmlRendererProps {
   width: number;
 }
 
+const ignoredDomTags = ["meta"];
+
 export function HtmlRenderer({ html, width }: HtmlRendererProps) {
   return (
-    <RenderHtml contentWidth={width} source={{ html }} tagsStyles={styles} />
+    <RenderHtml
+      contentWidth={width}
+      source={{ html }}
+      tagsStyles={styles}
+      ignoredDomTags={ignoredDomTags}
+    />
   );
 }
 
