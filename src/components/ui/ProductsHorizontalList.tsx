@@ -98,11 +98,15 @@ const styles = StyleSheet.create({
   cardImageWrapper: {
     height: productCardDimensions.image.height,
     width: productCardDimensions.image.width,
+    position: "relative",
   },
   cardImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+    position: "absolute",
+    top: theme.spacing(3),
+    left: 0,
   },
   cardTitle: {
     marginTop: theme.spacing(0.5),
