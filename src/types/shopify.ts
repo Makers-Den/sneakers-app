@@ -22,3 +22,12 @@ export enum ShopifyMetaObjectType {
   stories = "stories",
   product = "product",
 }
+
+export enum ShopifyBlogPostFieldKey {
+  Category = "category",
+  Content = "content",
+  Date = "date",
+  Products = "products",
+  Thumbnail = "thumbnail",
+  Title = "title",
+}

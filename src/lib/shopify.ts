@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  ShopifyBlogPostFieldKey,
   ShopifyFieldKey,
   ShopifyMetaFieldKey,
   ShopifyMetaObjectType,
@@ -40,6 +41,10 @@ import {
   getStoryById,
   getStoryByIdSchema,
 } from "@/queries/getStoryById";
+import {
+  getBlogPostByIdSchema,
+  getBlogPostsByIdQuery,
+} from "@/queries/getBlogPostById";
 
 const SHOPIFY_API_VERSION = "2023-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = `https://${envVariables.shopify.storeDomain}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -415,28 +420,36 @@ export async function getContentCategoryById({
   };
 }
 
-export type GetBlogPostQuery = {
+export type GetBlogPostByIdQuery = {
   blogPostId: string;
+  productImage: {
+    maxWidth: number;
+    maxHeight: number;
+  };
+  image: {
+    maxWidth: number;
+    maxHeight: number;
+  };
   signal?: AbortSignal;
-  image?: { maxHeight: number; maxWidth: number };
 };
 
-export async function getBlogPost({
+export async function getBlogPostById({
   blogPostId,
-  signal,
   image,
-}: GetBlogPostQuery) {
-  const storyResponse = await makeShopifyGraphqlRequest({
-    query: getMetaObjectQuery({ id: blogPostId, image }),
-    schema: getMetaObjectSchema,
+  productImage,
+  signal,
+}: GetBlogPostByIdQuery) {
+  const blogPostResponse = await makeShopifyGraphqlRequest({
+    query: getBlogPostsByIdQuery({ id: blogPostId, image, productImage }),
+    schema: getBlogPostByIdSchema,
     signal: signal,
   });
 
-  if (storyResponse === null) {
+  if (blogPostResponse === null) {
     return null;
   }
 
-  const blogPostNode = storyResponse.data.metaobject;
+  const blogPostNode = blogPostResponse.data.metaobject;
 
   const blogPostData = mapFieldsToObject<{
     title: string;
@@ -445,9 +458,20 @@ export async function getBlogPost({
     content: string;
   }>(blogPostNode.fields);
 
+  const blogPostProductsField = blogPostNode.fields.find(
+    (metafield) => metafield.key === ShopifyBlogPostFieldKey.Products
+  );
+
+  const products =
+    blogPostProductsField?.key === ShopifyBlogPostFieldKey.Products &&
+    blogPostProductsField.references
+      ? blogPostProductsField.references.nodes.map(mapProduct)
+      : [];
+
   const blogPost = {
     id: blogPostNode.id,
     handle: blogPostNode.handle,
+    products,
     data: {
       ...blogPostData,
       thumbnail: blogPostData.thumbnail.image.url,
