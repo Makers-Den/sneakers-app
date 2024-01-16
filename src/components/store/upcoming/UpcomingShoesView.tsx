@@ -4,7 +4,7 @@ import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
 import {
-  Navigation,
+  RootScreen,
   ShoppingScreen,
   ShoppingScreensProps,
 } from "@/types/navigation";
@@ -179,7 +179,7 @@ export function UpcomingShoesView({
                           : null
                       }
                       onPress={() => {
-                        navigation.navigate(ShoppingScreen.ShoesDetails, {
+                        navigation.navigate(RootScreen.ShoesDetails, {
                           shoesId: item.shoes.id,
                         });
                       }}

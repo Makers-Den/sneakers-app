@@ -106,12 +106,8 @@ export function BlogPostScreen({
   }, []);
 
   const handleProductPress = useCallback((product: Product) => {
-    navigation.navigate(RootScreen.Main, {
-      screen: MainScreen.ShoppingScreens,
-      params: {
-        screen: ShoppingScreen.ShoesDetails,
-        params: { shoesId: product.id },
-      },
+    navigation.navigate(RootScreen.ShoesDetails, {
+      shoesId: product.id,
     });
   }, []);
 

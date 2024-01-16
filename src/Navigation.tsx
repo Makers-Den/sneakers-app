@@ -42,6 +42,16 @@ export function RootNavigation() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
+          name={RootScreen.ShoesSearch}
+          component={ShoesSearchScreen}
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <RootStack.Screen
+          name={RootScreen.ShoesDetails}
+          component={ShoesDetailsScreen}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+        />
+        <RootStack.Screen
           name={RootScreen.Story}
           component={StoriesScreen}
           options={{ headerShown: false, animation: "slide_from_bottom" }}
@@ -122,16 +132,6 @@ function ShoppingNavigation() {
           name={ShoppingScreen.ShoesList}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name={ShoppingScreen.ShoesDetails}
-          component={ShoesDetailsScreen}
-          options={{ headerShown: false, animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
-          name={ShoppingScreen.ShoesSearch}
-          component={ShoesSearchScreen}
-          options={{ headerShown: false, animation: "slide_from_right" }}
-        />
       </Stack.Navigator>
     </FadeInAnimation>
   );
@@ -139,8 +139,7 @@ function ShoppingNavigation() {
 
 export function NotificationNavigator() {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const navigation =
-    useNavigation<NavigationProp<MainTabParamList & ShoppingStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     if (!lastNotificationResponse) {
@@ -162,7 +161,7 @@ export function NotificationNavigator() {
 
     switch (parseNotificationDataResult.data.type) {
       case "ShoesDropped":
-        navigation.navigate(ShoppingScreen.ShoesDetails, {
+        navigation.navigate(RootScreen.ShoesDetails, {
           shoesId: parseNotificationDataResult.data.shoesId,
         });
         break;

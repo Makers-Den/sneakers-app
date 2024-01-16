@@ -7,7 +7,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect, useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ShoppingScreen, ShoppingScreensProps } from "@/types/navigation";
+import { RootScreen, RootScreensProps } from "@/types/navigation";
 import { searchShoes } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 import { theme } from "@/lib/theme";
@@ -41,7 +41,7 @@ function estimateListHeight(listItemCount: number) {
 
 export function ShoesSearchScreen({
   navigation,
-}: ShoppingScreensProps<ShoppingScreen.ShoesSearch>) {
+}: RootScreensProps<RootScreen.ShoesSearch>) {
   const queryClient = useQueryClient();
   const windowDimensions = useWindowDimensions();
   const [query, setQuery] = useState("");
@@ -144,7 +144,7 @@ export function ShoesSearchScreen({
               model={shoes.model}
               modelVariant={shoes.modelVariant}
               onPress={() =>
-                navigation.navigate(ShoppingScreen.ShoesDetails, {
+                navigation.navigate(RootScreen.ShoesDetails, {
                   shoesId: shoes.id,
                 })
               }

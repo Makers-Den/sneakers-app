@@ -3,6 +3,7 @@ import { StyleSheet, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Route, TabBarProps, TabView } from "react-native-tab-view";
 import {
+  RootScreen,
   ShoppingScreen,
   ShoppingScreensProps,
 } from "@/types/navigation";
@@ -66,7 +67,7 @@ export function ShoesListScreen({
   const renderTabBar = useMemo(() => {
     return (props: TabBarProps<Route>) => (
       <TabBar
-        onSearchPress={() => navigation.navigate(ShoppingScreen.ShoesSearch)}
+        onSearchPress={() => navigation.navigate(RootScreen.ShoesSearch)}
         {...props}
       />
     );
