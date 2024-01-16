@@ -26,7 +26,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlogPostScreen } from "./screens/BlogPostScreen";
 import { CategoryScreen } from "./screens/CategoryScreen";
 import { StoriesScreen } from "./screens/StoriesScreen";
-import { FadeInAnimation } from "./components/wrappers/FadeInAnimation";
 
 const logger = createNamedLogger("Navigation");
 
