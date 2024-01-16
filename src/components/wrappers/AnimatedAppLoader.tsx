@@ -13,13 +13,17 @@ import Animated, {
 import { theme } from "@/lib/theme";
 import WhiteSneaker from "../svg/WhiteSneaker";
 
+interface AnimatedAppLoaderProps {
+  children: ReactNode;
+  image: { uri: string };
+  onAfterLoad?: () => void;
+}
+
 export function AnimatedAppLoader({
   children,
   image,
-}: {
-  children: ReactNode;
-  image: { uri: string };
-}) {
+  onAfterLoad,
+}: AnimatedAppLoaderProps) {
   const [isSplashReady, setSplashReady] = useState(false);
 
   useEffect(() => {
@@ -36,18 +40,26 @@ export function AnimatedAppLoader({
     return null;
   }
 
-  return <AnimatedSplashScreen image={image}>{children}</AnimatedSplashScreen>;
+  return (
+    <AnimatedSplashScreen image={image} onAfterLoad={onAfterLoad}>
+      {children}
+    </AnimatedSplashScreen>
+  );
 }
 
 const endOpacity = 1;
 
+interface AnimatedSplashScreenProps {
+  children: ReactNode;
+  image: { uri: string };
+  onAfterLoad?: () => void;
+}
+
 function AnimatedSplashScreen({
   children,
   image,
-}: {
-  children: ReactNode;
-  image: { uri: string };
-}) {
+  onAfterLoad,
+}: AnimatedSplashScreenProps) {
   const [isAppReady, setAppReady] = useState(false);
   const [isInitialImageVisible, setIsInitialImageVisible] = useState(true);
 
@@ -80,6 +92,7 @@ function AnimatedSplashScreen({
       // handle errors
     } finally {
       setAppReady(true);
+      onAfterLoad?.();
     }
   }, []);
 
