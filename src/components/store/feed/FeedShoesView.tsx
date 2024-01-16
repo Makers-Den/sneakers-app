@@ -160,7 +160,7 @@ export function FeedShoesView({
                 }}
                 onShoeCardButtonPress={handleButtonPress}
                 onShoeCardPress={(shoe) => {
-                  navigation.navigate(ShoppingScreen.ShoesDetails, {
+                  navigation.navigate(RootScreen.ShoesDetails, {
                     shoesId: shoe.id,
                   });
                 }}

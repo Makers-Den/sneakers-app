@@ -10,14 +10,10 @@ import {
 
 export enum ShoppingScreen {
   ShoesList = "ShoesList",
-  ShoesDetails = "ShoesDetails",
-  ShoesSearch = "ShoesSearch",
 }
 
 export type ShoppingStackParamList = {
   [ShoppingScreen.ShoesList]: undefined;
-  [ShoppingScreen.ShoesDetails]: { shoesId: string };
-  [ShoppingScreen.ShoesSearch]: undefined;
 };
 
 export type Navigation = NativeStackNavigationProp<
@@ -38,6 +34,8 @@ export type MainTabParamList = {
 
 export enum RootScreen {
   Main = "Main",
+  ShoesSearch = "ShoesSearch",
+  ShoesDetails = "ShoesDetails",
   Story = "Story",
   BlogPostScreen = "BlogPostScreen",
   CategoryScreen = "CategoryScreen",
@@ -45,6 +43,8 @@ export enum RootScreen {
 
 export type RootStackParamList = {
   [RootScreen.Main]: NavigatorScreenParams<MainTabParamList>;
+  [RootScreen.ShoesSearch]: undefined;
+  [RootScreen.ShoesDetails]: { shoesId: string };
   [RootScreen.Story]: { id: string };
   [RootScreen.BlogPostScreen]: { blogPostId: string };
   [RootScreen.CategoryScreen]: { categoryId: string };

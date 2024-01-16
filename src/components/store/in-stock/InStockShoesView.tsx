@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { getShoesByCollectionId } from "@/lib/shopify";
 import { envVariables } from "@/lib/env";
 import { queryKeys } from "@/lib/query";
-import { ShoppingScreen, ShoppingScreensProps } from "@/types/navigation";
+import { RootScreen, ShoppingScreen, ShoppingScreensProps } from "@/types/navigation";
 import { memo, useMemo } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { InStockShoesCard, getInStockCardDimensions } from "./InStockShoesCard";
@@ -105,7 +105,7 @@ export function InStockShoesView({
               <InStockShoesCard
                 image={shoes.previewImage}
                 onPress={() => {
-                  navigation.navigate(ShoppingScreen.ShoesDetails, {
+                  navigation.navigate(RootScreen.ShoesDetails, {
                     shoesId: shoes.id,
                   });
                 }}

@@ -1,13 +1,6 @@
 import { View, ScrollView, StyleSheet, Text } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  MainScreen,
-  RootScreen,
-  ShoppingScreen,
-  ShoppingScreensProps,
-  ShoppingStackParamList,
-} from "@/types/navigation";
+import { RootScreen, RootScreensProps } from "@/types/navigation";
 import { useQuery } from "react-query";
 import { getShoesById } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
@@ -32,7 +25,7 @@ import { ShopifyMetaObjectType } from "@/types/shopify";
 export function ShoesDetailsScreen({
   navigation,
   route,
-}: ShoppingScreensProps<ShoppingScreen.ShoesDetails>) {
+}: RootScreensProps<RootScreen.ShoesDetails>) {
   const shoesId = route.params.shoesId;
   const notificationModal = useNotificationModal();
   const checkoutProcess = useCheckoutProcess();
