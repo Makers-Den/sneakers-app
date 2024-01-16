@@ -32,6 +32,7 @@ import { useCheckoutProcess } from "@/hooks/useCheckoutProcess";
 import { useNotificationModal } from "@/hooks/useNotificationModal";
 import { Checkout } from "@/components/store/checkout/Checkout";
 import { NotificationModal } from "@/components/store/notification/NotificationModal";
+import { ProductsHorizontalList } from "@/components/ui/ProductsHorizontalList";
 
 const BLOG_IMAGE_ASPECT_RATIO = 1;
 
@@ -105,7 +106,7 @@ export function BlogPostScreen({
     });
   }, []);
 
-  const handleProductPress = useCallback((product: Product) => {
+  const handleProductPress = useCallback((product: { id: string }) => {
     navigation.navigate(RootScreen.ShoesDetails, {
       shoesId: product.id,
     });
@@ -133,10 +134,25 @@ export function BlogPostScreen({
     [checkoutProcess, notificationModal]
   );
 
+  const products = useMemo(() => {
+    if (blogPostQuery.data?.products) {
+      return blogPostQuery.data.products.map(
+        ({ id, previewImage, model, modelVariant }) => ({
+          id,
+          previewImage,
+          title: modelVariant || "",
+          subTitle: model,
+        })
+      );
+    }
+
+    return [];
+  }, [blogPostQuery.data?.products]);
+
   return (
     <SafeAreaView
       edges={{
-        bottom: "off",
+        bottom: "additive",
         top: "additive",
         left: "additive",
         right: "additive",
@@ -169,28 +185,10 @@ export function BlogPostScreen({
                 <HtmlRenderer html={html} width={dimensions.width} />
               </View>
 
-              {blogPostQuery.data.products.map((product) => {
-                const currencyFormatter = new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: product.price.currencyCode,
-                });
-
-                return (
-                  <FeedShoesCard
-                    key={product.id}
-                    image={product.previewImage}
-                    model={product.model}
-                    modelVariant={product.modelVariant}
-                    buttonText={
-                      product.isUpcoming
-                        ? "Notify Me"
-                        : currencyFormatter.format(product.price.amount)
-                    }
-                    onButtonPress={() => handleProductButtonPress(product)}
-                    onPress={() => handleProductPress(product)}
-                  />
-                );
-              })}
+              <ProductsHorizontalList
+                products={products}
+                onProductPress={handleProductPress}
+              />
             </>
           )}
         </View>
@@ -205,7 +203,7 @@ export function BlogPostScreen({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.palette.gray[700],
+    backgroundColor: theme.palette.gray[900],
   },
   scrollView: {
     backgroundColor: theme.palette.gray[900],
@@ -215,6 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: theme.palette.gray[900],
+    paddingBottom: theme.spacing(4),
   },
   contentWrapper: {
     flex: 1,
