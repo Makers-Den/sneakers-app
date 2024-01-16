@@ -125,15 +125,13 @@ const Stack = createNativeStackNavigator<ShoppingStackParamList>();
 
 function ShoppingNavigation() {
   return (
-    <FadeInAnimation>
-      <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
-        <Stack.Screen
-          component={ShoesListScreen}
-          name={ShoppingScreen.ShoesList}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </FadeInAnimation>
+    <Stack.Navigator initialRouteName={ShoppingScreen.ShoesList}>
+      <Stack.Screen
+        component={ShoesListScreen}
+        name={ShoppingScreen.ShoesList}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 }
 
