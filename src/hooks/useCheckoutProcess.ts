@@ -5,7 +5,6 @@ import {
 } from "@/components/store/checkout/Checkout";
 import { createCheckout } from "@/lib/shopify";
 import { useCallback, useMemo, useState } from "react";
-import * as WebBrowser from "expo-web-browser";
 import { useMutation } from "react-query";
 import { Alert } from "react-native";
 import { createNamedLogger } from "@/lib/log";
@@ -15,6 +14,7 @@ const logger = createNamedLogger("useCheckoutProcess");
 export function useCheckoutProcess() {
   const [shoes, setShoes] = useState<CheckoutShoes | null>(null);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
 
   const createCheckoutMutation = useMutation({
     mutationFn: async () =>
@@ -26,16 +26,7 @@ export function useCheckoutProcess() {
         return;
       }
 
-      try {
-        await WebBrowser.openBrowserAsync(data.webUrl);
-      } catch (error) {
-        Alert.alert(
-          "Something went wrong",
-          "We were not able to start the checkout process. Please try again later."
-        );
-
-        logger.error("Opening browser failed", error);
-      }
+      setCheckoutUrl(data.webUrl);
     },
     onError: (error) => {
       Alert.alert(
@@ -74,6 +65,7 @@ export function useCheckoutProcess() {
 
     setShoes(null);
     setSelectedSize(null);
+    setCheckoutUrl(null);
   }, [setShoes, setSelectedSize, createCheckoutMutation.isLoading]);
 
   const selectSize = useCallback(
@@ -99,6 +91,7 @@ export function useCheckoutProcess() {
     (): CheckoutProps => ({
       selectedSize: validatedSelectedSize,
       shoes,
+      checkoutUrl,
       isBuying: createCheckoutMutation.isLoading,
       onCancel: cancelCheckoutProcess,
       onSelectSize: selectSize,
@@ -106,6 +99,7 @@ export function useCheckoutProcess() {
     }),
     [
       shoes,
+      checkoutUrl,
       validatedSelectedSize,
       createCheckoutMutation.isLoading,
       cancelCheckoutProcess,
