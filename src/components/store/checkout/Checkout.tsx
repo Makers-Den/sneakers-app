@@ -1,3 +1,4 @@
+import { CheckoutDemoModal } from "./CheckoutDemoModal";
 import { CheckoutSizeModal } from "./CheckoutSizeModal";
 import { CheckoutSummaryModal } from "./CheckoutSummaryModal";
 
@@ -17,6 +18,7 @@ export interface CheckoutShoes {
 export interface CheckoutProps {
   shoes: CheckoutShoes | null;
   selectedSize: Size | null;
+  checkoutUrl: string | null;
   isBuying: boolean;
   onCancel: () => void;
   onSelectSize: (size: Size) => void;
@@ -26,6 +28,7 @@ export interface CheckoutProps {
 export function Checkout({
   shoes,
   selectedSize,
+  checkoutUrl,
   isBuying,
   onBuy,
   onCancel,
@@ -46,11 +49,13 @@ export function Checkout({
         priceAmount={shoes?.priceAmount || 0}
         priceCurrencyCode={shoes?.priceCurrencyCode || "EUR"}
         sizeLabel={selectedSize?.label || ""}
-        isOpen={selectedSize !== null}
+        isOpen={selectedSize !== null && checkoutUrl === null}
         isBuying={isBuying}
         onBuy={onBuy}
         onClose={onCancel}
       />
+
+      <CheckoutDemoModal isOpen={checkoutUrl !== null} onClose={onCancel} />
     </>
   );
 }
