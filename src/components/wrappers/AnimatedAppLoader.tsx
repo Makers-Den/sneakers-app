@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { theme } from "@/lib/theme";
 import WhiteSneaker from "../svg/WhiteSneaker";
+import { delay } from "@/lib/async";
 
 interface AnimatedAppLoaderProps {
   children: ReactNode;
@@ -61,11 +62,12 @@ function AnimatedSplashScreen({
   onAfterLoad,
 }: AnimatedSplashScreenProps) {
   const [isAppReady, setAppReady] = useState(false);
-  const [isInitialImageVisible, setIsInitialImageVisible] = useState(true);
 
   const { width, height } = useWindowDimensions();
 
   const textOpacity = useSharedValue(0);
+
+  const initialImageOpacity = useSharedValue(1);
 
   const scale = useSharedValue(0);
 
@@ -79,15 +81,18 @@ function AnimatedSplashScreen({
         easing: Easing.cubic,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setIsInitialImageVisible(false);
+      await delay(2000);
+
+      initialImageOpacity.value = withTiming(0, {
+        duration: 100,
+      });
 
       textOpacity.value = withTiming(endOpacity, {
         duration: 500,
         easing: Easing.cubic,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await delay(600);
     } catch (e) {
       // handle errors
     } finally {
@@ -137,19 +142,18 @@ function AnimatedSplashScreen({
             />
           </Animated.View>
 
-          {isInitialImageVisible && (
-            <Animated.Image
-              style={{
-                width,
-                height,
-                resizeMode:
-                  Constants?.expoConfig?.splash?.resizeMode || "contain",
-              }}
-              fadeDuration={0}
-              source={image}
-              onLoadEnd={onImageLoaded}
-            />
-          )}
+          <Animated.Image
+            style={{
+              opacity: initialImageOpacity,
+              width,
+              height,
+              resizeMode:
+                Constants?.expoConfig?.splash?.resizeMode || "contain",
+            }}
+            fadeDuration={0}
+            source={image}
+            onLoadEnd={onImageLoaded}
+          />
 
           <Animated.Text
             style={{
@@ -168,23 +172,3 @@ function AnimatedSplashScreen({
     </View>
   );
 }
-
-// const styles = StyleSheet.create({
-//   wrapper: {
-//     width: "100%",
-//     height: "100%",
-//     backgroundColor: Constants?.expoConfig?.splash?.backgroundColor || "#fff",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     overflow: "hidden",
-//   },
-//   image: {
-//     width: "100%",
-//     height: "100%",
-//     resizeMode: Constants?.expoConfig?.splash?.resizeMode || "contain",
-//   },
-//   icon: {
-//     width: "100%",
-//     height: "100%",
-//   },
-// });
