@@ -32,13 +32,13 @@ function ProductCard({
     <Pressable style={styles.cardWrapper} onPress={onPress}>
       <View style={styles.cardImageWrapper}>
         <Text
-          numberOfLines={2}
+          numberOfLines={1}
           ellipsizeMode="tail"
           style={styles.cardSubTitle}
         >
           {subTitle}
         </Text>
-        <Text numberOfLines={2} ellipsizeMode="tail" style={styles.cardTitle}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cardTitle}>
           {title}
         </Text>
         {previewImage && (
