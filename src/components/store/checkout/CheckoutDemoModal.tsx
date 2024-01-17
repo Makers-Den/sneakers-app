@@ -18,26 +18,17 @@ export function CheckoutDemoModal({ isOpen, onClose }: CheckoutDemoModalProps) {
   return (
     <BottomModal isOpen={isOpen} onClose={onClose}>
       <View style={styles.wrapper}>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: theme.spacing(3),
-          }}
-        >
+        <View style={styles.logoWrapper}>
           <Pressable onPress={openMakersDenWebsite}>
-            <MakersDenLogo style={{ width: 200, aspectRatio: 5.5 }} />
+            <MakersDenLogo style={styles.logo} />
           </Pressable>
         </View>
 
         <Text style={styles.text}>
           💡 Demo Alert: No live checkout! This app is for demonstration
-          purposes. Explore our features and experience the demo journey. Thank you
-          for using our app. To learn more about our services, please visit{" "}
-          <Text
-            onPress={openMakersDenWebsite}
-            style={{ color: theme.palette.green[400] }}
-          >
+          purposes. Explore our features and experience the demo journey. Thank
+          you for using our app. To learn more about our services, please visit{" "}
+          <Text onPress={openMakersDenWebsite} style={styles.textLink}>
             makersden.io
           </Text>
           .
@@ -55,11 +46,23 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing(4),
     paddingTop: theme.spacing(3),
   },
+  logoWrapper: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(3),
+  },
+  logo: {
+    width: 200,
+    aspectRatio: 5.5,
+  },
   text: {
     fontSize: theme.typography.fontSize.base,
     lineHeight:
       theme.typography.fontSize.base * theme.typography.lineHeight.normal,
     color: theme.palette.gray[100],
     marginBottom: theme.spacing(3),
+  },
+  textLink: {
+    color: theme.palette.green[400],
   },
 });
