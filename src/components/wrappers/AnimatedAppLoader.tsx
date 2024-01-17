@@ -145,6 +145,7 @@ function AnimatedSplashScreen({
                 resizeMode:
                   Constants?.expoConfig?.splash?.resizeMode || "contain",
               }}
+              fadeDuration={0}
               source={image}
               onLoadEnd={onImageLoaded}
             />
