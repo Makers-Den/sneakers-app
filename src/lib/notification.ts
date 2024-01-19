@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { z } from "zod";
 import { createNamedLogger } from "./log";
+import { registerPushToken } from "./backend";
 
 const logger = createNamedLogger("notification");
 
@@ -63,5 +64,5 @@ export async function registerForPushNotificationsAsync() {
     projectId: easProjectId,
   });
 
-  return expoPushToken.data;
+  await registerPushToken(expoPushToken.data);
 }
