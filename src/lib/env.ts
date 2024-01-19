@@ -3,6 +3,10 @@ import { z } from "zod";
 type EnvVariables = z.infer<typeof envVariablesSchema>;
 
 const envVariablesSchema = z.object({
+  backend: z.object({
+    /* Base url of the Sneakers App backend */
+    baseUrl: z.string().url(),
+  }),
   shopify: z.object({
     collectionId: z.object({
       /* Shopify "In Stock" collection id: Should follow format: "gid://shopify/Collection/{the-actual-id}" */
@@ -21,6 +25,9 @@ const envVariablesSchema = z.object({
 });
 
 const devEnvVariables = (): EnvVariables => ({
+  backend: {
+    baseUrl: "https://sneakers-app-makersden.vercel.app",
+  },
   shopify: {
     collectionId: {
       inStock: "gid://shopify/Collection/601946947784",
