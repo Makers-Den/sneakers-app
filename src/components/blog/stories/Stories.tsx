@@ -1,4 +1,11 @@
-import { View, StyleSheet, Dimensions, Text, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Text,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { theme } from "@/lib/theme";
@@ -312,6 +319,8 @@ export function Stories({ stories, navigation }: StoriesProps) {
           isLooping={false}
           resizeMode={ResizeMode.COVER}
           progressUpdateIntervalMillis={UPDATE_INTERVAL}
+          PosterComponent={Poster}
+          usePoster={true}
           onLoad={onLoad}
           onPlaybackStatusUpdate={onPlaybackStatusUpdate}
         />
@@ -320,9 +329,20 @@ export function Stories({ stories, navigation }: StoriesProps) {
   );
 }
 
+function Poster() {
+  return (
+    <View style={styles.poster}>
+      <View style={styles.activityIndicatorWrapper}>
+        <ActivityIndicator size="large" color={theme.palette.gray[400]} />
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.palette.gray[900],
   },
   video: {
     position: "absolute",
@@ -330,6 +350,18 @@ const styles = StyleSheet.create({
     width: screen.width,
     zIndex: 110,
     backgroundColor: theme.palette.gray[900],
+  },
+  poster: {
+    position: "absolute",
+    height: screen.height,
+    width: screen.width,
+    zIndex: 110,
+    backgroundColor: theme.palette.gray[900],
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: theme.palette.gray[900],
+    flex: 1,
+    justifyContent: "center",
   },
   contentWrapper: {
     width: "100%",
