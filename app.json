@@ -23,6 +23,11 @@
     },
     "android": {
       "icon": "./assets/icon.png",
+      "adaptiveIcon": {
+        "backgroundColor": "#2B2B2B",
+        "backgroundImage": "./assets/adaptive-background.png",
+        "foregroundImage": "./assets/adaptive-foreground.png"
+      },
       "backgroundColor": "#2B2B2B",
       "googleServicesFile": "./google-services.json",
       "package": "io.makersden.sneakersapp"
@@ -35,6 +40,14 @@
         "projectId": "5047a071-227e-4102-a30b-b89c86ef709b"
       }
     },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png"
+        }
+      ]
+    ],
     "owner": "makers-den"
   }
 }
