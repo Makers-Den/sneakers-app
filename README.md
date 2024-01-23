@@ -32,5 +32,6 @@ yarn start:ios
 - [Expo](https://expo.dev/accounts/makers-den/projects/sneakers-app)
 - [Figma](https://www.figma.com/file/bHwPCoH6JkSKMX4CQGk7D0/MakerSneakers?type=design&node-id=0%3A1&mode=design&t=LWR79xHmBxtVUJbh-1)
 - [Google Play Console](https://play.google.com/console/u/0/developers/6345751192958164007/app/4975671350969101415/app-dashboard?timespan=thirtyDays)
+- [Google Play](https://play.google.com/store/apps/details?id=io.makersden.sneakersapp)
 - [App Store Connect](https://appstoreconnect.apple.com/apps/6475402431/appstore/ios/version/inflight)
 - [Inspired By](https://www.nike.com/snkrs-app)
