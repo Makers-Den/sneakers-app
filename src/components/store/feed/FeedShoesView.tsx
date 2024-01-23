@@ -3,8 +3,6 @@ import { useInfiniteQuery } from "react-query";
 import { Feed, getFeed, getShoesByCollectionId } from "@/lib/shopify";
 import { queryKeys } from "@/lib/query";
 import {
-  Navigation,
-  MainScreen,
   ShoppingScreen,
   ShoppingScreensProps,
   RootScreen,
@@ -174,8 +172,8 @@ export function FeedShoesView({
             feedShoesQuery.isFetchingNextPage ? (
               <ActivityIndicator
                 size="large"
-                color={theme.palette.green[400]}
-                style={{ marginVertical: 10 }}
+                color={theme.palette.gray[400]}
+                style={{ marginVertical: theme.spacing(2) }}
               />
             ) : null
           }

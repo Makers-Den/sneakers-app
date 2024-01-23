@@ -1,13 +1,11 @@
 import { Stories } from "@/components/blog/stories/Stories";
-import { PlaceholderLoading } from "@/components/ui/PlaceholderLoading";
 import { queryKeys } from "@/lib/query";
 import { getStoryQuery } from "@/lib/shopify";
+import { theme } from "@/lib/theme";
 import { RootScreen, RootScreensProps } from "@/types/navigation";
 import { useMemo } from "react";
-import { Dimensions } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useQuery } from "react-query";
-
-const windowDimensions = Dimensions.get("window");
 
 export function StoriesScreen({
   route,
@@ -35,13 +33,20 @@ export function StoriesScreen({
   return (
     <>
       {storiesQuery.isLoading ? (
-        <PlaceholderLoading
-          height={windowDimensions.height}
-          width={windowDimensions.width}
-        />
+        <View style={styles.activityIndicatorWrapper}>
+          <ActivityIndicator size="large" color={theme.palette.gray[400]} />
+        </View>
       ) : (
         <Stories stories={stories} navigation={navigation} />
       )}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  activityIndicatorWrapper: {
+    backgroundColor: theme.palette.gray[900],
+    flex: 1,
+    justifyContent: "center",
+  },
+});
