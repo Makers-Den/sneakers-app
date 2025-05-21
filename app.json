@@ -30,7 +30,8 @@
       },
       "backgroundColor": "#2B2B2B",
       "googleServicesFile": "./google-services.json",
-      "package": "io.makersden.sneakersapp"
+      "package": "io.makersden.sneakersapp",
+      "targetSdkVersion": 35
     },
     "web": {
       "favicon": "./assets/favicon.png"
